@@ -1,0 +1,2 @@
+module Admincp::ApplicationHelper
+end

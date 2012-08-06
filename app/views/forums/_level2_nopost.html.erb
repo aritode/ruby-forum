@@ -1,0 +1,8 @@
+<tr>
+  <td class="tcat" colspan="5">
+    <div><%= link_to h(child.name), forum_path(child.id) %></div>
+    <% if child.description? %>
+      <div class="smallfont"><%= h(child.description) %></div>
+    <% end %>
+  </td>
+</tr>

@@ -1,0 +1,2 @@
+module Admincp::ForumsHelper
+end

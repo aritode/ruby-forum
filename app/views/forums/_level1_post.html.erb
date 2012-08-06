@@ -1,0 +1,34 @@
+<tr align="center">
+  <td class="alt2">
+    <%= image_tag "icons/forum_old.gif" %>
+  </td>
+  <td class="alt1Active" align="left" id="f11">
+    <div>
+      <strong><%= link_to h(child.name), forum_path(child.id) %></strong>
+    </div>
+    <div class="smallfont"><%=h child.description %></div>
+  </td>
+  <td class="alt2">
+    <div class="smallfont" align="left">
+      <% if child.most_recent_post %>
+        <div>
+          <span style="white-space:nowrap">
+            <strong><%= link_to "#{child.most_recent_post.name}", "/topics/#{child.most_recent_post.id}" %></strong>
+          </span>
+        </div>
+        <div style="white-space:nowrap">
+          by <%= link_to child.most_recent_post.user.username, "/users/#{child.most_recent_post.last_poster_id}" %>
+        </div>
+        <div align="right" style="white-space:nowrap">
+          <%= distance_of_time_in_words_to_now child.most_recent_post.last_post_at %> ago
+        </div>
+      <% else %>
+        <div align="center" style="white-space:nowrap">
+          -
+        </div>
+      <% end %>
+    </div>
+  </td>
+  <td class="alt1"><%= child.number_of_topics %></td>
+  <td class="alt2"><%= child.number_of_post %></td>
+</tr>

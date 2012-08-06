@@ -1,0 +1,22 @@
+<% title "Forums" %>
+
+<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+<tr align="center">
+  <td class="thead"/>&nbsp;</td>
+  <td class="thead" width="100%" align="left">Forum</td>
+  <td class="thead">Last Post</td>
+  <td class="thead">Threads</td>
+  <td class="thead">Posts</td>
+</tr>
+
+<% for forum in @forums %>
+  <% if forum.is_root? && !forum.can_contain_topics.nil?%>
+    <%= render :partial => 'level1_nopost', :locals => {:forum => forum} %>
+    <% if forum.has_children? %>
+      <% for child in build_child_info(forum.child_ids, @forums) %>
+        <%= render :partial => "level1_post", :locals => {:child => child} %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+</table>

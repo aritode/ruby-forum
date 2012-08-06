@@ -1,0 +1,36 @@
+<% title "Forum Manager" %>
+
+<div class="widget widget-table">
+  <div class="widget-header">
+    <span class="icon-list"></span>
+      <h3 class="icon chart">Forum Manager</h3>
+  </div>
+
+  <%= form_for @forums, :url => admincp_order_forum_path do |f| %>
+  
+  <%= f.error_messages %>
+  <div class="widget-content">
+    <table class="table table-striped">
+      <% for forum in @forums %>
+        <% if forum.is_root? && !forum.can_contain_topics.nil?%>
+        <tbody>
+          <tr>
+            <td class="table-category"><strong>Forum</strong></td>
+            <td class="table-category"><strong>Display Order</strong></td>
+            <td class="table-category"><strong>Controls</strong></td>
+          </tr>
+          <%= render :partial => 'forum', :locals => {:forum => forum} %>
+          <%= raw construct_forum_manager(forum, @forums) %>
+        </tbody>
+        <% end %>
+      <% end %>
+      <tr>
+        <td colspan="3" align="center" style="border-bottom: none; ">
+          <%= f.submit "Save Display Order", :class => "btn btn-blue" %>
+          <%= f.submit "Reset", :class => "btn", :type => "reset" %>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <% end %>
+</div>

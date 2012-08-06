@@ -1,0 +1,2 @@
+module Admincp::DashboardHelper
+end

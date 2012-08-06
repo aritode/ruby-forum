@@ -1,0 +1,82 @@
+<%= form_for @forum, :url => params[:action] == 'new' ? admincp_create_forum_path : admincp_update_forum_path(@forum.id) do |f| %>
+  <%= f.error_messages %>
+  <div class="widget widget-table">
+    <div class="widget-header">
+      <span class="icon-plus"></span>
+        <h3 class="icon chart">
+          <%= params[:action] == 'new' ? "Add New Forum" : "Edit Forum : #{@forum.name}" %>
+        </h3>
+    </div>
+    <div class="widget-content">
+      <table class="table table-striped">
+      <tbody>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :name, "Title" %></strong></div>
+          </td>
+          <td align="right"><%= f.text_field :name %></td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :description %></strong></div>
+          </td>
+          <td align="right"><%= f.text_area :description, :cols => 40, :rows => 4 %></td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :display_order %></strong></div>
+          </td>
+          <td align="right"><%= f.text_field :display_order %></td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :parent_id, "Parent Forum" %></strong></div>
+          </td>
+          <td align="right"><%= select_tag :parent_id, construct_forum_chooser_options(@forums, @forum.parent_id), :prompt => "No parent forum" %></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="table-category">
+            <h4>Posting Options</h4>
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_contain_topics, "Act as forum?" %></strong></div>
+            <div>Will act as category if no</div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_contain_topics, 1, {:checked => (@forum.can_contain_topics ? true : false)} %> Yes
+            <%= f.radio_button :can_contain_topics, 0, {:checked => (@forum.can_contain_topics ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :is_active, "Forum is Active?" %></strong></div>
+            <div>Will not appear if set to no, but remains accessible if the forum's URL is known</div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :is_active, 1, {:checked => (@forum.is_active ? true : false)} %> Yes
+            <%= f.radio_button :is_active, 0, {:checked => (@forum.is_active ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :allow_posting, "Forum is Open?" %></strong></div>
+            <div>Set this to 'No' to prevent any new posts being made in this forum</div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :allow_posting, 1, {:checked => (@forum.allow_posting ? true : false)} %> Yes
+            <%= f.radio_button :allow_posting, 0, {:checked => (@forum.allow_posting ? false : true)} %> No
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <%= f.submit "Save", :class => "btn btn-blue" %>
+            <%= f.submit "Reset", :class => "btn", :type => "reset" %>
+          </td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>

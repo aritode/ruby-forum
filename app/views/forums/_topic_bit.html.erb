@@ -1,0 +1,19 @@
+<tr>
+  <td class="alt1"><%= image_tag "icons/thread.gif" %></td>
+  <td class="alt2">&nbsp;</td>
+  <td class="alt1">
+    <div><strong><%= link_to h(topic.name), topic_path(topic.id) %></strong></div>
+    <div class="smallfont">
+      <%= link_to topic.user.username, "/users/#{topic.user_id}" %>
+    </div>
+  </td>
+  <td class="alt2">
+    <div class="smallfont" style="text-align:right; white-space:nowrap">
+      <%= distance_of_time_in_words_to_now topic.last_post_at %> ago <br />
+      by <%= link_to topic.user.username, "/users/#{topic.last_poster_id}" %>
+    </div>
+  </td>
+  <td class="alt1" align="center"><%= topic.posts.count - 1%></td>
+  <td class="alt2" align="center">0</td>
+  <td class="alt1" align="center"><%= link_to "x", topic, :confirm => 'Are you sure?', :method => :delete %></td>
+</tr>

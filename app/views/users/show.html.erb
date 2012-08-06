@@ -1,0 +1,14 @@
+<% title 'user: ' + @user.username %>
+<div id="topics">
+  <strong>topics</strong>
+  <% @user.topics.each do |topic| %>
+    <%= link_to topic.name, topic_url(topic.forum.id) %>
+  <% end %>
+  
+  <br />
+  <br />
+
+  <%= link_to "Edit User", edit_user_path(@user) %> |
+  <%= link_to "Destroy User", @user, :confirm => 'Are you sure?', :method => :delete %>
+  
+</div>

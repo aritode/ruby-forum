@@ -1,0 +1,15 @@
+<tr class="odd gradeX">
+  <td width="50%">
+    <strong><%= link_to forum.name, admincp_edit_forum_path(forum) %></strong>
+  </td>
+  <td><input type="text" name="order[<%= forum.id %>]" value="<%= forum.display_order %>" tabindex="1" size="3" title="Edit Display Order"/></td>
+  <td>
+    <select name="f<%= forum.id %>" onchange="js_forum_jump(<%= forum.id %>);" class="bginput">
+      <option value="edit">Edit Forum</option>
+      <option value="view">View Forum</option>
+      <option value="remove">Delete Forum</option>
+      <option value="add">Add Child Forum</option>
+    </select>
+    <input type="button" class="btn btn-small btn-quaternary" value="Go" onclick="js_forum_jump(<%= forum.id %>);"/>
+  </td>
+</tr>

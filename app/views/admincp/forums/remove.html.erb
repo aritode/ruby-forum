@@ -1,0 +1,32 @@
+<% title "Confirm Removal" %>
+
+<div class="widget widget-table" style="margin:0px auto; width:600px;">
+  
+    <div class="widget-header">
+      <span class="icon-denied"></span>
+      <h3 class="icon chart">Warning</h3>
+    </div>
+  
+    <%= form_for @forum, :url => admincp_destroy_forum_path, :method => :delete do |f| %>
+    <div class="widget-content">
+      <table class="table table-bordered table-striped">
+      <tbody>
+        <tr class="even gradeX" style="border-bottom: none;">
+          <td>
+            Are you sure you want to delete the forum called <strong>'<%= @forum.name %>'</strong>?
+            <br />
+            <br />
+            This action cannot be undone.
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td style="border-bottom: none;" align="center">
+            <%= f.submit "Delete Forum", :class => "btn btn-red" %>
+            <%= f.submit "Go Back", :class => "btn btn-gray", :onclick => "history.go(-1); return false;" %>
+          </td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <% end %>
+</div>

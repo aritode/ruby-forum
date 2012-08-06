@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : "Untitled" %></title>
+    <%= stylesheet_link_tag "admincp/all" %>
+    <!--[if gte IE 9]><%= stylesheet_link_tag "admincp/ie9" %><![endif]-->
+    <!--[if gte IE 8]><%= stylesheet_link_tag "admincp/ie8" %><![endif]-->
+    <%= javascript_include_tag "admincp/application" %>
+    <%= csrf_meta_tag %>
+    <%= yield(:head) %>
+  </head>
+<body>
+
+  <div id="wrapper">
+    <div id="header">
+      <h1><a href="./">EMP Admin</a></h1>
+
+      <a href="javascript:;" id="reveal-nav">
+        <span class="reveal-bar"></span>
+        <span class="reveal-bar"></span>
+        <span class="reveal-bar"></span>
+      </a>
+    </div>
+    <div id="search">
+      <form>
+        <input type="text" name="search" placeholder="Search for user..." id="searchField" />
+      </form>   
+    </div>
+    <div id="sidebar">
+      <ul id="mainNav">
+        <li id="navDash" class="nav">
+          <span class="icon-home"></span>
+          <%= link_to "Dashboard", admincp_root_path %>
+        </li>
+        <li id="navOptions" class="nav">
+          <span class="icon-cog-alt"></span>
+          <a href="./options">General Options</a>
+        </li>
+        <li id="navForums" class="nav active">
+          <span class="icon-list"></span>
+          <a href="javascript:;">Forums &amp; Moderators</a>
+
+          <ul class="subNav">
+            <li><%= link_to "Forum Manager", admincp_forum_path %>
+              <li><%= link_to "Add New Forum", admincp_new_forum_path %>
+            <li><a href="./people.html">Forum Permissions</a></li>
+          </ul>
+
+        </li> 
+        <li id="navUsers" class="nav">
+          <span class="icon-user"></span>
+          <a href="javascript:;">Users</a>
+
+          <ul class="subNav">
+            <li><a href="./forms.html">Layouts &amp; Elements</a></li>
+            <li><a href="./forms-validations.html">Validations</a></li>         
+          </ul> 
+
+        </li>
+        <li id="navUsergroups" class="nav">
+          <span class="icon-user"></span>
+          <a href="javascript:;">Usergroups</a>
+
+          <ul class="subNav">
+            <li><a href="./forms.html">Layouts &amp; Elements</a></li>
+            <li><a href="./forms-validations.html">Validations</a></li>         
+          </ul> 
+
+        </li>
+      </ul>
+    </div>
+    <div id="content">
+      <div id="contentHeader">
+        <h1><%= content_for?(:title) ? yield(:title) : "Untitled" %></h1>
+      </div>
+
+      <div class="container">
+        <div class="grid-24">
+        <% flash.each do |name, msg| %>
+          <div class="notify notify-success">
+            <a href="javascript:;" class="close">&times;</a>
+            <p><%= msg %></p>
+          </div> <!-- .notify -->
+        <% end %>
+      
+        <%= yield %>
+        </div>
+      </div>
+    </div>
+    <div id="topNav">
+       <ul>
+        <li>
+          <a href="#menuProfile" class="menu"><%= current_user.username %></a>
+          <div id="menuProfile" class="menu-container menu-dropdown">
+            <div class="menu-content">
+              <ul class="">
+                <li><a href="javascript:;">Edit Profile</a></li>
+                <li><a href="javascript:;">Edit Settings</a></li>
+                <li><a href="javascript:;">Suspend Account</a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li><%= link_to "logout", logout_path %></li>
+        <li><%= link_to "Forums Home", forums_path %></li>
+       </ul>
+    </div>
+  </div>
+
+  <div id="footer">
+    Copyright &copy; 2012, EscalateMedia LP - All Rights Reserved.
+  </div>
+
+  <script src="/admincp/all.js"></script>
+
+</body>
+</html>
+
+
