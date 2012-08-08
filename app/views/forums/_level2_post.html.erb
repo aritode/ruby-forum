@@ -23,7 +23,7 @@
         by <%= link_to child.most_recent_post.user.username, "/users/#{child.most_recent_post.last_poster_id}" %>
       </div>
       <div align="right" style="white-space:nowrap">
-        <%= distance_of_time_in_words_to_now child.most_recent_post.last_post_at %> ago
+        <%= time_tag child.most_recent_post.last_post_at, :format =>'%m-%d-%y %l:%M %p' %>
       </div>
     <% else %>
       <div align="center" style="white-space:nowrap">
