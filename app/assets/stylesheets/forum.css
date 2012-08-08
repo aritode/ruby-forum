@@ -1,3 +1,32 @@
+body
+{
+	background: #e6e6e6;
+	color: #000;
+	font: 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	margin: 0px;
+	padding: 0px;
+}
+a:link, body_alink
+{
+	color: #084B82;
+}
+a:visited, body_avisited
+{
+	color: #084B82;
+}
+a:hover, a:active, body_ahover
+{
+	color: #084B82;
+}
+.page
+{
+	background: #FFFFFF;
+	color: #000000;
+}
+td, th, p, li
+{
+	font: 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
 .tborder
 {
 	background: #ffffff;
@@ -244,5 +273,4 @@ a.shade:active, a.shade:hover { color: #FF4400; text-decoration: underline; }
 /* ***** define margin and font-size for elements inside panels ***** */
 .fieldset { margin-bottom: 6px; }
 .fieldset, .fieldset td, .fieldset p, .fieldset li { font-size: 11px; }
-/* reset */
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp,  strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, form, legend, caption{margin:0; padding:0; border:0; outline:0; vertical-align:baseline}
+
