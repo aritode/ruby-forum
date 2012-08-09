@@ -1,6 +1,6 @@
 <tr class="odd gradeX">
   <td width="50%">
-    <strong><%= link_to forum.name, admincp_edit_forum_path(forum) %></strong>
+    <strong><%= depth_char(forum.depth, "- - ") %> <%= link_to forum.name, admincp_edit_forum_path(forum) %></strong>
   </td>
   <td><input type="text" name="order[<%= forum.id %>]" value="<%= forum.display_order %>" tabindex="1" size="3" title="Edit Display Order"/></td>
   <td>

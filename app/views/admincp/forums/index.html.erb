@@ -20,7 +20,7 @@
             <td class="table-category"><strong>Controls</strong></td>
           </tr>
           <%= render :partial => 'forum', :locals => {:forum => forum} %>
-          <%= raw construct_forum_manager(forum, @forums) %>
+          <%= render_child_forums(forum.descendants.arrange(:order => :display_order)) %>
         </tbody>
         <% end %>
       <% end %>

@@ -1,44 +1,4 @@
 module ForumsHelper
-
-  def construct_forum_manager(forum, forums, html = "", depth = 1, depth_char = "- - ")
-    
-    char = construct_depth_char(depth, depth_char)
-    
-    if forum.has_children?
-      for child in build_child_info(forum.child_ids, forums)
-        html << %Q{
-          <tr class="odd gradeX">
-            <td width="50%">
-              <strong>#{char} #{link_to child.name, admincp_edit_forum_path(child)}</a></strong>
-            </td>
-            <td><input type="text" name="order[#{child.id}]" value="#{child.display_order}" tabindex="1" size="3" title="Edit Display Order"/></td>
-            <td>
-              <select name="f#{child.id}" onchange="js_forum_jump(#{child.id});">
-                <option value="edit">Edit Forum</option>
-                <option value="view">View Forum</option>
-                <option value="remove">Delete Forum</option>
-                <option value="add">Add Child Forum</option>
-              </select>
-              <input type="button" class="btn btn-small btn-quaternary" value="Go" onclick="js_forum_jump(#{child.id});"/>
-            </td>
-          </tr>
-        }
-
-        construct_forum_manager(child, forums, html, depth + 1)
-      end
-      
-      return html
-    end
-  end
-
-  def construct_depth_char(depth, depth_char = "--")
-    char = ""
-    depth.times do |d|
-      char << depth_char
-    end
-    return char
-  end
-
   # Returns a <select> list of forums, complete with display order, parenting and depth information
   # for when you need to select parent forums via the "Add New Forum" feature.
   #
@@ -90,5 +50,4 @@ module ForumsHelper
     end
     return forums
   end
-
 end
