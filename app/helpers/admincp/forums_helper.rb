@@ -1,5 +1,5 @@
 module Admincp::ForumsHelper
-  # Repeats a character x amount of times to give forums their proper depth in a tree.
+  # Repeats a character x amount of times to give forums their proper depth position in the tree.
   #
   # @parm Integer The number of times to repeat the character
   # @parm String  The actual character to use
@@ -11,7 +11,7 @@ module Admincp::ForumsHelper
     return char
   end
 
-  # Recursive function to render all child forums for a parent forum.
+  # Recursive function to render all child forums for a parent forum in the forums manager index.
   #
   # @parm Hash    The nested hash of child forums
   # @parm String  The HTML that will be rendered when finished
@@ -19,7 +19,7 @@ module Admincp::ForumsHelper
     hash.each do |key, val|
       html << render(:partial => 'forum', :locals => {:forum => key})
       if !val.empty?
-        render_descendants(val, html)
+        render_child_forums(val, html)
       end
     end
 
@@ -31,12 +31,12 @@ module Admincp::ForumsHelper
   #
   # @parm Array   An Array of all the forums present in the database
   # @parm Fixnum  The forum id that should be marked as selected
-  def construct_forum_chooser_options(collection, selected = nil)
-    options = []
-    for forum in collection
+  # @parm Array   Any addtional options you would like to include in the <select> list
+  def construct_forum_chooser_options(forums, selected = nil, options = [])
+    for forum in forums
       if forum.is_root? && !forum.can_contain_topics.nil?
-        options.push(["-- #{forum.name}", forum.id])
-        construct_child_forums(forum, options, collection)
+        options.push(["#{forum.name}", forum.id])
+        construct_child_chooser_options(forum.descendants.arrange(:order => :display_order), options)
       end
     end
 
@@ -45,22 +45,16 @@ module Admincp::ForumsHelper
 
   # Recursive function to build a parent forum's children for <select> elements.
   #
-  # @parm Forum   The root forum object we're checking for children
-  # @parm Array   Previously built array of forums
-  # @parm Array   An Array of all the forums present in the database (avoids querying the db)
-  # @parm Fixnum  The depth level we're currently at
-  # @parm String  The charector to use to determine the depth of a forum
-  def construct_child_forums(forum, options, collection, depth = 1, depth_char = "--")
-    if forum.has_children?
-      char = ""
-      depth.times do |d|
-        char << depth_char
-      end
-
-      for child in build_child_info(forum.child_ids, collection)
-        options.push(["--#{char} #{child.name}", child.id])
-        construct_child_forums(child, options, collection, depth + 1)
+  # @parm Hash    The nested hash of child forums
+  # @parm Array   Array of select options previously built
+  def construct_child_chooser_options(forums, options)
+    forums.each do |key, val|
+      options.push(["#{depth_char(key.depth)} #{key.name}", key.id])
+      if !val.empty?
+        construct_child_chooser_options(val, options)
       end
     end
+    
+    return options
   end
 end
