@@ -15,7 +15,7 @@ module Admincp::ForumsHelper
   #
   # @parm Hash    The nested hash of child forums
   # @parm String  The HTML that will be rendered when finished
-  def render_child_forums(hash, html = "")
+  def render_admincp_child_forums(hash, html = "")
     hash.each do |key, val|
       html << render(:partial => 'forum', :locals => {:forum => key})
       if !val.empty?
