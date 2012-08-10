@@ -8,15 +8,10 @@
   <td class="thead">Threads</td>
   <td class="thead">Posts</td>
 </tr>
-
 <% for forum in @forums %>
   <% if forum.is_root? && !forum.can_contain_topics.nil?%>
     <%= render :partial => 'level1_nopost', :locals => {:forum => forum} %>
-    <% if forum.has_children? %>
-      <% for child in build_child_info(forum.child_ids, @forums) %>
-        <%= render :partial => "level1_post", :locals => {:child => child} %>
-      <% end %>
-    <% end %>
+    <%= render_child_forums(forum.descendants.arrange(:order => :display_order)) %>
   <% end %>
 <% end %>
 </table>

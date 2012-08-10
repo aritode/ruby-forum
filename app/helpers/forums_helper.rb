@@ -12,4 +12,20 @@ module ForumsHelper
     end
     return forums
   end
+
+  # Recursive function to render all child forums for a parent forum in the forums index & show page.
+  #
+  # @parm Hash    The nested hash of child forums
+  # @parm String  The HTML that will be rendered when finished
+  def render_child_forums(forum, html = "")
+    forum.each do |key, val|
+      break if key.depth >= 2 # break iteration after max_depth is reach
+      html << render(:partial => "level#{key.depth}_post", :locals => {:child => key})
+      if !val.empty?
+        render_child_forums(val, html)
+      end
+    end
+
+    return raw html
+  end
 end

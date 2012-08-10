@@ -2,32 +2,10 @@
 <br />
 
 <% if @forum.has_children? %>
-<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center" style="border-bottom-width:0px">
-<tr>
-  <td class="tcat" width="100%">Sub-Forums<span class="normal"> : <%= @forum.name %></span></td>
-</tr>
-</table>
-<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
-<tr align="center">
-  <td class="thead">&nbsp;</td>
-  <td class="thead" width="100%" align="left">Forum</td>
-  <td class="thead">Last Post</td>
-  <td class="thead">Threads</td>
-  <td class="thead">Posts</td>
-</tr>
-<% for child in @forum.fetch_child_forums(@forum.child_ids) %>
-  <% if child.can_contain_topics?%>
-    <%= render :partial => 'level2_post', :locals => {:child => child} %>
-  <% else %>
-    <%= render :partial => 'level2_nopost', :locals => {:child => child} %>
-  <% end %>
-<% end %>
-</table>
-<br />
+  <%= render :partial => 'sub_forums', :locals => {:forum => @forum} %>
 <% end %>
 
 <% if @forum.can_contain_topics? %>
-  
   <!-- controls above thread list -->
   <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:3px">
   <tr valign="bottom">
@@ -76,6 +54,5 @@
   </tr>
   </table>
   <!-- /controls below thread list -->
-  
 <% end %>
 
