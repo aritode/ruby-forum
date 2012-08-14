@@ -33,5 +33,7 @@ Seed the database
     rake db:seed
 
 Start the server and log into the forums using the following credentials:
+
 Mail: admin@escalatemedia.com 
+
 Pass: admin 
