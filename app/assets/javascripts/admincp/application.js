@@ -48,14 +48,24 @@ function drawChart () {
 }
 
 function js_forum_jump(forum_id) {
-	action = $("select[name=f" + forum_id + "]").val();
-	
-	switch (action) {
-		case 'edit': page = "/admincp/forums/edit/" + forum_id; break;
-		case 'remove': page = "/admincp/forums/remove/" + forum_id; break;
-		case 'add': page = "/admincp/forums/new?parent_id=" + forum_id; break;
-		case 'view': page = "/forums/" + forum_id; break;
-	}
-	
-	window.location = page;
+    action = $("select[name=f" + forum_id + "]").val();
+    
+    switch (action) {
+        case 'edit': page = "/admincp/forums/" + forum_id + "/edit/"; break;
+        case 'remove': page = "/admincp/forums/" + forum_id + "/remove"; break;
+        case 'add': page = "/admincp/forums/new?parent_id=" + forum_id; break;
+        case 'view': page = "/forums/" + forum_id; break;
+    }
+    
+    window.location = page;
+}
+
+function js_usergroup_jump(usergroup_id) {
+    action = $("select[name=f" + usergroup_id + "]").val();
+    
+    switch (action) {
+        case 'edit': page = "/admincp/usergroups/"+ usergroup_id +"/edit/"; break;
+    }
+    
+    window.location = page;
 }

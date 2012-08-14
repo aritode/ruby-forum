@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Title:</b>
+  <%= @usergroup.title %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @usergroup.description %>
+</p>
+
+<p>
+  <b>Usertitle:</b>
+  <%= @usergroup.usertitle %>
+</p>
+
+<p>
+  <b>Forumpermissions:</b>
+  <%= @usergroup.forumpermissions %>
+</p>
+
+
+<%= link_to 'Edit', edit_usergroup_path(@usergroup) %> |
+<%= link_to 'Back', usergroups_path %>

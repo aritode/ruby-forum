@@ -1,0 +1,215 @@
+<%= form_for @usergroup, :url => params[:action] == 'new' ? admincp_create_usergroup_path : admincp_update_usergroup_path(@usergroup.id) do |f| %>
+  <%= f.error_messages %>
+  <div class="widget widget-table">
+    <div class="widget-header">
+      <span class="icon-plus"></span>
+        <h3 class="icon chart">
+          <%= params[:action] == 'new' ? "Add New Usergroup" : "Edit Usergroup : #{@usergroup.title} (id: #{@usergroup.id})" %>
+        </h3>
+    </div>
+    <div class="widget-content">
+      <table class="table table-striped">
+      <tbody>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :title, "Title" %></strong></div>
+          </td>
+          <td align="right"><%= f.text_field :title %></td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :description %></strong></div>
+          </td>
+          <td align="right"><%= f.text_area :description, :cols => 40, :rows => 4 %></td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :usertitle %></strong></div>
+          </td>
+          <td align="right"><%= f.text_field :usertitle %></td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :open_close_tag, "Username HTML Markup" %></strong></div>
+            <div>Specify an opening and closing HTML tag with which to display the names of users in this group.</div>
+          </td>
+          <td align="right">
+            <%= f.text_field :open_tag, :size => "12" %>
+            <%= f.text_field :close_tag, :size => "12" %>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" class="table-category" align="center">
+            <h4>Forum Viewing Permissions</h4>
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_view_forum, "Can view forum" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_view_forum, 1, {:checked => (@usergroup.can_view_forum ? true : false)} %> Yes
+            <%= f.radio_button :can_view_forum, 0, {:checked => (@usergroup.can_view_forum ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_view_threads, "Can View Thread Content" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_view_threads, 1, {:checked => (@usergroup.can_view_threads ? true : false)} %> Yes
+            <%= f.radio_button :can_view_threads, 0, {:checked => (@usergroup.can_view_threads ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_view_others_threads, "Can View Others' Threads" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_view_others_threads, 1, {:checked => (@usergroup.can_view_forum ? true : false)} %> Yes
+            <%= f.radio_button :can_view_others_threads, 0, {:checked => (@usergroup.can_view_forum ? false : true)} %> No
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" class="table-category" align="center">
+            <h4>Post / Thread Permissions</h4>
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_post_threads, "Can Post Threads" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_post_threads, 1, {:checked => (@usergroup.can_post_threads ? true : false)} %> Yes
+            <%= f.radio_button :can_post_threads, 0, {:checked => (@usergroup.can_post_threads ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_reply_to_own_threads, "Can Reply to Own Threads" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_reply_to_own_threads, 1, {:checked => (@usergroup.can_reply_to_own_threads ? true : false)} %> Yes
+            <%= f.radio_button :can_reply_to_own_threads, 0, {:checked => (@usergroup.can_reply_to_own_threads ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_reply_to_others_threads, "Can Reply to Others' Threads" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_reply_to_others_threads, 1, {:checked => (@usergroup.can_reply_to_others_threads ? true : false)} %> Yes
+            <%= f.radio_button :can_reply_to_others_threads, 0, {:checked => (@usergroup.can_reply_to_others_threads ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_edit_own_posts, "Can Edit Own Posts" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_edit_own_posts, 1, {:checked => (@usergroup.can_edit_own_posts ? true : false)} %> Yes
+            <%= f.radio_button :can_edit_own_posts, 0, {:checked => (@usergroup.can_edit_own_posts ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_delete_own_posts, "Can Delete Own Posts" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_delete_own_posts, 1, {:checked => (@usergroup.can_delete_own_posts ? true : false)} %> Yes
+            <%= f.radio_button :can_delete_own_posts, 0, {:checked => (@usergroup.can_delete_own_posts ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_delete_own_threads, "Can Delete Own Threads" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_delete_own_threads, 1, {:checked => (@usergroup.can_delete_own_threads ? true : false)} %> Yes
+            <%= f.radio_button :can_delete_own_threads, 0, {:checked => (@usergroup.can_delete_own_threads ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_open_close_own_threads, "Can Open / Close Own Threads" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_open_close_own_threads, 1, {:checked => (@usergroup.can_open_close_own_threads ? true : false)} %> Yes
+            <%= f.radio_button :can_open_close_own_threads, 0, {:checked => (@usergroup.can_open_close_own_threads ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_move_own_threads, "Can Move Own Threads" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_move_own_threads, 1, {:checked => (@usergroup.can_move_own_threads ? true : false)} %> Yes
+            <%= f.radio_button :can_move_own_threads, 0, {:checked => (@usergroup.can_move_own_threads ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_rate_threads, "Can Rate Threads" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_rate_threads, 1, {:checked => (@usergroup.can_rate_threads ? true : false)} %> Yes
+            <%= f.radio_button :can_rate_threads, 0, {:checked => (@usergroup.can_rate_threads ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :follow_forum_moderation_rules, "Follow Forum Moderation Rules" %></strong></div>
+            <div>If no, posts are always placed into moderation queue</div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :follow_forum_moderation_rules, 1, {:checked => (@usergroup.follow_forum_moderation_rules ? true : false)} %> Yes
+            <%= f.radio_button :follow_forum_moderation_rules, 0, {:checked => (@usergroup.follow_forum_moderation_rules ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_tag_own_threads, "Can Tag Own Threads" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_tag_own_threads, 1, {:checked => (@usergroup.can_tag_own_threads ? true : false)} %> Yes
+            <%= f.radio_button :can_tag_own_threads, 0, {:checked => (@usergroup.can_tag_own_threads ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_tag_others_threads, "Can Tag Others' Threads" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_tag_others_threads, 1, {:checked => (@usergroup.can_tag_others_threads ? true : false)} %> Yes
+            <%= f.radio_button :can_tag_others_threads, 0, {:checked => (@usergroup.can_tag_others_threads ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_delete_tags_own_threads, "Can Delete Tags on Own Threads" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_delete_tags_own_threads, 1, {:checked => (@usergroup.can_delete_tags_own_threads ? true : false)} %> Yes
+            <%= f.radio_button :can_delete_tags_own_threads, 0, {:checked => (@usergroup.can_delete_tags_own_threads ? false : true)} %> No
+          </td>
+        </tr>
+        <tr class="odd gradeX">
+          <td>
+            <div><strong><%= f.label :can_create_tags, "Can Create Tags" %></strong></div>
+          </td>
+          <td align="right">
+            <%= f.radio_button :can_create_tags, 1, {:checked => (@usergroup.can_create_tags ? true : false)} %> Yes
+            <%= f.radio_button :can_create_tags, 0, {:checked => (@usergroup.can_create_tags ? false : true)} %> No
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <%= f.submit "Save", :class => "btn btn-blue" %>
+            <%= f.submit "Reset", :class => "btn", :type => "reset" %>
+          </td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>

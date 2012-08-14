@@ -24,9 +24,23 @@ Forums::Application.routes.draw do
     match 'forums/new'          => 'forums#new'     , :as => :new_forum
     match 'forums/create'       => 'forums#create'  , :as => :create_forum
     match 'forums/order'        => 'forums#order'   , :as => :order_forum
-    match 'forums/edit/:id'     => 'forums#edit'    , :as => :edit_forum
-    match 'forums/update/:id'   => 'forums#update'  , :as => :update_forum
-    match 'forums/remove/:id'   => 'forums#remove'  , :as => :remove_forum
-    match 'forums/destroy/:id'  => 'forums#destroy' , :as => :destroy_forum
+    match 'forums/:id/edit'     => 'forums#edit'    , :as => :edit_forum
+    match 'forums/:id/update'   => 'forums#update'  , :as => :update_forum
+    match 'forums/:id/remove'   => 'forums#remove'  , :as => :remove_forum
+    match 'forums/:id/destroy'  => 'forums#destroy' , :as => :destroy_forum
+    
+    # usergroups manager
+    match 'usergroups'              => 'usergroups#index'   , :as => :usergroup
+    match 'usergroups/new'          => 'usergroups#new'     , :as => :new_usergroup
+    match 'usergroups/create'       => 'usergroups#create'  , :as => :create_usergroup
+    match 'usergroups/:id/edit'     => 'usergroups#edit'    , :as => :edit_usergroup
+    match 'usergroups/:id/update'   => 'usergroups#update'  , :as => :update_usergroup
+    match 'usergroups/:id/remove'   => 'usergroups#remove'  , :as => :remove_usergroup
+    match 'usergroups/:id/destroy'  => 'usergroups#destroy' , :as => :destroy_usergroup
+    
+    
   end
+  
 end
+
+

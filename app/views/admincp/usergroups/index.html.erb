@@ -1,0 +1,44 @@
+<% title "Usergroup Manager" %>
+
+<div class="widget widget-table">
+  <div class="widget-header">
+    <span class="icon-user"></span>
+      <h3 class="icon chart">Default Usergroups</h3>
+  </div>
+
+  <div class="widget-content">
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <td class="table-category"><strong>Title</strong></td>
+          <td class="table-category" align="center"><strong>Primary Users</strong></td>
+          <td class="table-category" align="center"><strong>Additional Users</strong></td>
+          <td class="table-category" align="right"><strong>Controls</strong></td>
+        </tr>
+      </tbody>
+      <% @usergroups.each do |usergroup| %>
+      <tr class="odd gradeX">
+        <td width="50%">
+          <strong><%= link_to usergroup.title, admincp_edit_usergroup_path(usergroup) %></strong>
+        </td>
+        <td align="center">0</td>
+        <td align="center">0</td>
+        <td align="right">
+          <select name="f<%= usergroup.id %>" onchange="js_usergroup_jump(<%= usergroup.id %>);" class="bginput">
+            <option value="edit">Edit Usergroup (id: <%= usergroup.id %>)</option>
+            <option value="view">Show All Primary Users</option>
+            <option value="remove">Show All Additional Users</option>
+          </select>
+          <input type="button" class="btn btn-small btn-quaternary" value="Go" onclick="js_usergroup_jump(<%= usergroup.id %>);"/>
+        </td>
+      </tr>
+      <% end %>
+      <tr>
+        <td colspan="4" align="center" style="border-bottom: none; ">
+          <%= submit_tag "Add New Usergroup", :class => "btn btn-blue", :onclick => "window.location = '#{admincp_new_usergroup_path}';" %>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+

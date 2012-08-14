@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120725004544) do
+ActiveRecord::Schema.define(:version => 20120814065203) do
 
   create_table "forums", :force => true do |t|
     t.string   "name"
@@ -27,20 +27,31 @@ ActiveRecord::Schema.define(:version => 20120725004544) do
 
   create_table "posts", :force => true do |t|
     t.text     "content"
-    t.integer  "topic_id"
-    t.integer  "user_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "topic_id"
+    t.integer  "user_id"
   end
 
   create_table "topics", :force => true do |t|
     t.string   "name"
     t.integer  "last_poster_id"
     t.datetime "last_post_at"
-    t.integer  "forum_id"
-    t.integer  "user_id"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
+    t.integer  "forum_id"
+    t.integer  "user_id"
+  end
+
+  create_table "usergroups", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.string   "usertitle"
+    t.string   "open_tag"
+    t.string   "close_tag"
+    t.integer  "forum_permissions"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "users", :force => true do |t|
@@ -50,6 +61,7 @@ ActiveRecord::Schema.define(:version => 20120725004544) do
     t.string   "password_salt"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.integer  "usergroup_id"
   end
 
 end
