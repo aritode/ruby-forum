@@ -19,6 +19,8 @@ Forums::Application.routes.draw do
     # admincp home
     root to: "dashboard#index"
 
+    match 'options' => 'options#index'   , :as => :options
+
     # forums manager
     match 'forums'              => 'forums#index'   , :as => :forum
     match 'forums/new'          => 'forums#new'     , :as => :new_forum

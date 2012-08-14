@@ -28,13 +28,13 @@
     </div>
     <div id="sidebar">
       <ul id="mainNav">
-        <li id="navDash" class="nav">
+        <li id="navDash" class="nav<%= params[:controller] == "admincp/dashboard" ? " active" : "" %>">
           <span class="icon-home"></span>
           <%= link_to "Dashboard", admincp_root_path %>
         </li>
-        <li id="navOptions" class="nav">
+        <li id="navOptions" class="nav<%= params[:controller] == "admincp/options" ? " active" : "" %>">
           <span class="icon-cog-alt"></span>
-          <a href="./options">General Options</a>
+          <%= link_to "General Options", admincp_options_path %>
         </li>
         <li id="navForums" class="nav<%= params[:controller] == "admincp/forums" ? " active" : "" %>">
           <span class="icon-list"></span>
