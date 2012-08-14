@@ -19,7 +19,7 @@ module Admincp::ForumsHelper
     hash.each do |key, val|
       html << render(:partial => 'forum', :locals => {:forum => key})
       if !val.empty?
-        render_child_forums(val, html)
+        render_admincp_child_forums(val, html)
       end
     end
 
