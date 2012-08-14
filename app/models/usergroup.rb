@@ -1,7 +1,7 @@
 class Usergroup < ActiveRecord::Base
   include Bitfields
 
-  attr_accessible :description, :title, :usertitle, :open_tag, :close_tag,
+  attr_accessible :description, :title, :usertitle, :open_tag, :close_tag, :forum_permissions,
                   # permission attributes
                   :can_view_forum, :can_view_threads, :can_view_others_threads, :can_post_threads, 
                   :can_reply_to_own_threads, :can_reply_to_others_threads, :can_edit_own_posts, 
