@@ -36,18 +36,17 @@
           <span class="icon-cog-alt"></span>
           <a href="./options">General Options</a>
         </li>
-        <li id="navForums" class="nav active">
+        <li id="navForums" class="nav<%= params[:controller] == "admincp/forums" ? " active" : "" %>">
           <span class="icon-list"></span>
           <a href="javascript:;">Forums &amp; Moderators</a>
 
           <ul class="subNav">
             <li><%= link_to "Forum Manager", admincp_forum_path %>
-              <li><%= link_to "Add New Forum", admincp_new_forum_path %>
-            <li><a href="./people.html">Forum Permissions</a></li>
+            <li><%= link_to "Add New Forum", admincp_new_forum_path %>
           </ul>
 
         </li> 
-        <li id="navUsers" class="nav">
+        <!-- <li id="navUsers" class="nav">
           <span class="icon-user"></span>
           <a href="javascript:;">Users</a>
 
@@ -56,14 +55,15 @@
             <li><a href="./forms-validations.html">Validations</a></li>         
           </ul> 
 
-        </li>
-        <li id="navUsergroups" class="nav">
+        </li> -->
+        
+        <li id="navUsergroups" class="nav<%= params[:controller] == "admincp/usergroups" ? " active" : "" %>">
           <span class="icon-user"></span>
           <a href="javascript:;">Usergroups</a>
-
+          
           <ul class="subNav">
-            <li><a href="./forms.html">Layouts &amp; Elements</a></li>
-            <li><a href="./forms-validations.html">Validations</a></li>         
+            <li><%= link_to "Usergroup Manager", admincp_usergroup_path %>
+            <li><%= link_to "Add New Usergroup", admincp_new_usergroup_path %>
           </ul> 
 
         </li>
@@ -96,7 +96,7 @@
   </div>
 
   <div id="footer">
-    Copyright &copy; 2012, EscalateMedia LP - All Rights Reserved.
+    Copyright &copy; <%= time_tag Date.today, :format => "%Y" %>, EscalateMedia LP - All Rights Reserved.
   </div>
 
   <script src="/admincp/all.js"></script>
