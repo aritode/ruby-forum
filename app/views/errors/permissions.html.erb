@@ -1,0 +1,66 @@
+<% if current_user %>
+  <table class="tborder" cellpadding="6" cellspacing="1" border="0" width="70%" align="center">
+<tr>
+  <td class="tcat">Error Message</td>
+</tr>
+<tr>
+  <td class="panelsurround" align="center">
+    <div class="panel">
+      <div align="left">
+        <div style="margin: 10px">
+          <p><strong><%= current_user.username %></strong>, you do not have permission to access this page. This could be due to one of several reasons:</p>
+          <ol>
+            <li>Your user account may not have sufficient privileges to access this page. Are you trying to edit someone else's post, access administrative features or some other privileged system?</li>
+            <li>If you are trying to post, the administrator may have disabled your account, or it may be awaiting activation.</li>
+          </ol>
+      </div>
+    </div>
+  </td>
+</tr>
+</table>
+<% else %>
+  <table class="tborder" cellpadding="6" cellspacing="1" border="0" width="70%" align="center">
+  <tr>
+    <td class="tcat">Error Message</td>
+  </tr>
+  <tr>
+    <td class="panelsurround" align="center">
+      <div class="panel">
+      <div align="left">
+        <div class="smallfont">You are not logged in or you do not have permission to access this page. This could be due to one of several reasons:</div>
+        <ol>
+          <li class="smallfont">You are not logged in. Fill in the form at the bottom of this page and try again.</li>
+          <li class="smallfont">You may not have sufficient privileges to access this page. Are you trying to edit someone else's post, access administrative features or some other privileged system?</li>
+          <li class="smallfont">If you are trying to post, the administrator may have disabled your account, or it may be awaiting activation.</li>
+        </ol>
+
+        <%= form_tag sessions_path do %>
+        <fieldset class="fieldset">
+          <legend>Log in</legend>
+          <table cellpadding="0" cellspacing="3" border="0" align="center">
+          <tr>
+            <td><%= label_tag :login, "Email" %><br /><%= text_field_tag :login, params[:login], :size => "50" %></td>
+          </tr>
+          <tr>
+            <td><%= label_tag :password, "Password" %><br /><%= password_field_tag :password, "", :size => "50" %></td>
+          </tr>
+          <tr>
+            <td align="right">
+              <input type="submit" class="button" value="Log in" accesskey="s" tabindex="1" />
+              <input type="reset" class="button" value="Reset Fields" accesskey="r" tabindex="1" />
+            </td>
+          </tr>
+          </table>
+        </fieldset>
+        <% end %>
+        
+        <div class="smallfont">The administrator may have required you to <%= link_to "register", signup_path %> before you can view this page.</div>
+        </form>
+      </div>
+    </div>
+    </td>
+  </tr>
+</table>
+<% end %>
+
+<br />
