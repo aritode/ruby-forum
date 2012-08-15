@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
 
   has_many :posts, :dependent => :nullify
   has_many :topics, :dependent => :nullify
+
+  has_one :usergroups
   
   validates_presence_of :username
   validates_uniqueness_of :username, :email, :allow_blank => true
