@@ -4,10 +4,14 @@ class TopicsController < ApplicationController
   end
 
   def new
+    check_permissions :can_post_threads
+
     @topic = Topic.new
   end
 
   def create
+    check_permissions :can_post_threads
+
     # create the topic
     @topic = Topic.new(
       :name           => params[:topic][:name], 
@@ -36,6 +40,8 @@ class TopicsController < ApplicationController
   end
 
   def destroy
+    check_permissions :can_delete_own_posts
+
     @topic = Topic.find(params[:id])
     @topic.destroy
     redirect_to topics_url, :notice => "Successfully destroyed topic."
