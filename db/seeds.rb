@@ -43,5 +43,5 @@ puts "Usergroup data loaded"
 ######################################################################################################
 ActiveRecord::Base.connection.execute("ALTER TABLE users AUTO_INCREMENT = 1")
 User.delete_all
-User.create(:username => "Admin", :email => "admin@escalatemedia.com", :password => "admin", :password_confirmation => "admin")
+User.create(:username => "Admin", :email => "admin@escalatemedia.com", :password => "admin", :password_confirmation => "admin", :usergroup_id => "6")
 puts "User data loaded"
