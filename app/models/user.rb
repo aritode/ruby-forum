@@ -36,4 +36,21 @@ class User < ActiveRecord::Base
       self.password_hash = encrypt_password(password)
     end
   end
+  
+  def is_admin?
+    return current_user.usergroup_id == 6 ? true : false
+  end
+
+  def is_super_mod?
+    return current_user.usergroup_id == 5 ? true : false
+  end
+
+  def is_mod?
+    return current_user.usergroup_id == 7 ? true : false
+  end
+  
+  def is_banned?
+    return current_user.usergroup_id == 8 ? true : false
+  end
+
 end

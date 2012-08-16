@@ -4,13 +4,19 @@ class TopicsController < ApplicationController
   end
 
   def new
-    check_permissions :can_post_threads
+    # check posting permissions
+    check_forum_permissions :can_contain_topics, params[:forum]
+    check_forum_permissions :allow_posting     , params[:forum]
+    check_user_permissions  :can_post_threads
 
     @topic = Topic.new
   end
 
   def create
-    check_permissions :can_post_threads
+    # check posting permissions
+    check_forum_permissions :can_contain_topics, params[:forum]
+    check_forum_permissions :allow_posting     , params[:forum]
+    check_user_permissions  :can_post_threads
 
     # create the topic
     @topic = Topic.new(
@@ -40,8 +46,9 @@ class TopicsController < ApplicationController
   end
 
   def destroy
-    check_permissions :can_delete_own_posts
-
+    # check deleting permissions
+    check_user_permissions :can_delete_own_threads if !is_admin?
+    
     @topic = Topic.find(params[:id])
     @topic.destroy
     redirect_to topics_url, :notice => "Successfully destroyed topic."
