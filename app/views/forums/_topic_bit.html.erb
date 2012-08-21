@@ -13,7 +13,7 @@
       by <%= link_to topic.user.username, "/users/#{topic.last_poster_id}" %>
     </div>
   </td>
-  <td class="alt1" align="center"><%= topic.posts.count - 1%></td>
-  <td class="alt2" align="center">0</td>
+  <td class="alt1" align="center"><%= number_with_delimiter(topic.replies) %></td>
+  <td class="alt2" align="center"><%= number_with_delimiter(topic.views) %></td>
   <td class="alt1" align="center"><%= link_to "x", topic, :confirm => 'Are you sure?', :method => :delete %></td>
 </tr>

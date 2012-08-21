@@ -17,7 +17,7 @@
       <div class="smallfont">
         <div>&nbsp;</div>
         <div>Join Date: <%= time_tag post.user.created_at, :format => "%b %Y" %></div>
-        <div>Posts: <%= post.user.post_count %></div>
+        <div>Posts: <%= number_with_delimiter(post.user.post_count) %></div>
       </div>
   </td>
   

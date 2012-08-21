@@ -2,9 +2,10 @@ class TopicsController < ApplicationController
 
   # show the topic and all post associated with it
   def show
-    @topic = Topic.find(params[:id])
     @posts = []
-    
+    @topic = Topic.find(params[:id])
+    @topic.update_attribute('views', @topic.views + 1)
+
     @topic.posts.each_with_index do |post, i|
       @posts[i] = post
       @posts[i][:post_count] = i + 1

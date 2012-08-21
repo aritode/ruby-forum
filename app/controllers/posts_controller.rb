@@ -21,7 +21,8 @@ class PostsController < ApplicationController
       @topic = Topic.find(@post.topic_id)
       @topic.update_attributes(
         :last_poster_id => current_user.id, 
-        :last_post_at   => Time.now
+        :last_post_at   => Time.now,
+        :replies        => @topic.replies + 1
       )
 
       @user = User.find(current_user.id)
