@@ -1,95 +1,276 @@
-body {
-  background-color: #4B7399;
-  font-family: Verdana, Helvetica, Arial;
-  font-size: 14px;
+body
+{
+	background: #e6e6e6;
+	color: #000;
+	font: 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	margin: 5px 10px 10px 10px;
+	padding: 0px;
 }
-
-a img {
-  border: none;
+a:link, body_alink
+{
+	color: #084B82;
 }
-
-a {
-  color: #0000FF;
+a:visited, body_avisited
+{
+	color: #084B82;
 }
-
-.clear {
-  clear: both;
-  height: 0;
-  overflow: hidden;
+a:hover, a:active, body_ahover
+{
+	color: #084B82;
 }
-
-#container {
-  width: 75%;
-  margin: 0 auto;
-  background-color: #FFF;
-  padding: 20px 40px;
-  border: solid 1px black;
-  margin-top: 20px;
+.page
+{
+	background: #FFFFFF;
+	color: #000000;
 }
-
-#flash_notice, #flash_error, #flash_alert {
-  padding: 5px 8px;
-  margin: 10px 0;
+td, th, p, li
+{
+	font: 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
 }
-
-#flash_notice {
-  background-color: #CFC;
-  border: solid 1px #6C6;
+.tborder
+{
+	background: #ffffff;
+	color: #000000;
+	border: 1px solid #999999;
 }
-
-#flash_error, #flash_alert {
-  background-color: #FCC;
-  border: solid 1px #C66;
+.tcat
+{
+	background: #5973a4;
+	color: #FFFFFF;
+	font: bold 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
 }
-
-.fieldWithErrors {
-  display: inline;
+.tcat a:link, .tcat_alink
+{
+	color: #ffffff;
+	text-decoration: none;
 }
-
-.error_messages {
-  width: 400px;
-  border: 2px solid #CF0000;
-  padding: 0px;
-  padding-bottom: 12px;
-  margin-bottom: 20px;
-  background-color: #f0f0f0;
-  font-size: 12px;
+.tcat a:visited, .tcat_avisited
+{
+	color: #ffffff;
+	text-decoration: none;
 }
-
-.error_messages h2 {
-  text-align: left;
-  font-weight: bold;
-  padding: 5px 10px;
-  font-size: 12px;
-  margin: 0;
-  background-color: #c00;
-  color: #fff;
+.tcat a:hover, .tcat a:active, .tcat_ahover
+{
+	color: #ffffff;
+	text-decoration: underline;
 }
-
-.error_messages p {
-  margin: 8px 10px;
+.thead
+{
+	background: #00345c;
+	color: #FFFFFF;
+	font: bold 11px tahoma, verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
 }
-
-.error_messages ul {
-  margin: 0;
+.thead a:link, .thead_alink
+{
+	color: #FFFFFF;
 }
-
-/*table tr th {background:#222; color:#fff; padding:0; border:#111 solid 1px;}
-table tr td {border:1px #ccc solid; padding:5px;}
-table tr td.right {background: #eee;}
-table tr td h4 {margin:0; padding:0; font-weight:normal;}
-*/
-.post {width:100%; display:table;}
-.post span {padding:5px; border:3px solid #eee; margin:0;}
-.post span.left {width:150px; background:#eee; border:3px solid #eee; display:table-cell;}
-.post span.right { border:3px solid #eee; display:table-cell;}
-
-#user_container {
-	float:right;
+.thead a:visited, .thead_avisited
+{
+	color: #FFFFFF;
 }
-
-#footer {
-	text-align:right;
-	margin-top:25px;
-	font-size:10px;
+.thead a:hover, .thead a:active, .thead_ahover
+{
+	color: #FFFFFF;
+	text-decoration: underline;
 }
+.tfoot
+{
+	background: #00345c;
+	color: #ffffff;
+}
+.tfoot a:link, .tfoot_alink
+{
+	color: #ffffff;
+}
+.tfoot a:visited, .tfoot_avisited
+{
+	color: #ffffff;
+}
+.tfoot a:hover, .tfoot a:active, .tfoot_ahover
+{
+	color: #ffffff;
+	text-decoration: underline;
+}
+.alt1, .alt1Active
+{
+	background: #ffffff;
+	color: #000000;
+	font:normal normal normal 10pt/normal verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	
+}
+.alt2, .alt2Active
+{
+	background: #ededed;
+	color: #000000;
+	font:normal normal normal 10pt/normal verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	
+}
+.inlinemod
+{
+	background: #FFFFCC;
+	color: #000000;
+}
+.wysiwyg
+{
+	background: #ffffff;
+	color: #000000;
+	font: 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	margin: 5px 10px 10px 10px;
+	padding: 0px;
+}
+.wysiwyg a:link, .wysiwyg_alink
+{
+	color: #22229C;
+}
+.wysiwyg a:visited, .wysiwyg_avisited
+{
+	color: #22229C;
+}
+.wysiwyg a:hover, .wysiwyg a:active, .wysiwyg_ahover
+{
+	color: #FF4400;
+}
+textarea, .bginput
+{
+	font: 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	border:1px solid #666666;
+}
+.bginput option, .bginput optgroup
+{
+	font-size: 10pt;
+	font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.button
+{
+	font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.smallfont
+{
+	font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.highlight
+{
+	color: #FF0000;
+	font-weight: bold;
+}
+.fjsel
+{
+	background: #3E5C92;
+	color: #E0E0F6;
+}
+.fjdpth0
+{
+	background: #F7F7F7;
+	color: #000000;
+}
+.panel
+{
+	background: #ffffff;
+	color: #000000;
+	padding: 10px;
+	border: 2px outset;
+}
+.panelsurround
+{
+	background: #e2e3e1;
+	color: #000000;
+}
+legend
+{
+	color: #004d8b;
+	font: 11px tahoma, verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.vbmenu_control
+{
+	background: #5973A4;
+	color: #FFFFFF;
+	font: bold 11px tahoma, verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	padding: 3px 6px 3px 6px;
+	white-space: nowrap;
+}
+.vbmenu_control a:link, .vbmenu_control_alink
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.vbmenu_control a:visited, .vbmenu_control_avisited
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.vbmenu_control a:hover, .vbmenu_control a:active, .vbmenu_control_ahover
+{
+	color: #FFFFFF;
+	text-decoration: underline;
+}
+.vbmenu_popup
+{
+	background: #FFFFFF;
+	color: #000000;
+	border: 1px solid #0B198C;
+}
+.vbmenu_option
+{
+	background: #f4f4f4;
+	color: #000000;
+	font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	white-space: nowrap;
+	cursor: pointer;
+}
+.vbmenu_option a:link, .vbmenu_option_alink
+{
+	color: #003366;
+	text-decoration: none;
+}
+.vbmenu_option a:visited, .vbmenu_option_avisited
+{
+	color: #003366;
+	text-decoration: none;
+}
+.vbmenu_option a:hover, .vbmenu_option a:active, .vbmenu_option_ahover
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.vbmenu_hilite
+{
+	background: #73AE52;
+	color: #FFFFFF;
+	font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	white-space: nowrap;
+	cursor: pointer;
+}
+.vbmenu_hilite a:link, .vbmenu_hilite_alink
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.vbmenu_hilite a:visited, .vbmenu_hilite_avisited
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.vbmenu_hilite a:hover, .vbmenu_hilite a:active, .vbmenu_hilite_ahover
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+/* ***** styling for 'big' usernames on postbit etc. ***** */
+.bigusername { font-size: 14pt; }
+
+/* ***** small padding on 'thead' elements ***** */
+td.thead, th.thead, div.thead { padding: 4px; }
+
+/* ***** basic styles for multi-page nav elements */
+.pagenav a { text-decoration: none; }
+.pagenav td { padding: 2px 4px 2px 4px; }
+
+/* ***** de-emphasized text */
+.shade, a.shade:link, a.shade:visited { color: #777777; text-decoration: none; }
+a.shade:active, a.shade:hover { color: #FF4400; text-decoration: underline; }
+.tcat .shade, .thead .shade, .tfoot .shade { color: #DDDDDD; }
+
+/* ***** define margin and font-size for elements inside panels ***** */
+.fieldset { margin-bottom: 6px; }
+.fieldset, .fieldset td, .fieldset p, .fieldset li { font-size: 11px; }
+

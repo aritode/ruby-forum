@@ -3,6 +3,8 @@ Forums::Application.routes.draw do
   root :to => 'forums#index'
 
   resources :posts
+  match 'posts/:id/quote' => 'post#quote', :as => :quote_post
+  
   resources :topics
   resources :forums
   resources :sessions

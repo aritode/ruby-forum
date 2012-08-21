@@ -1,0 +1,44 @@
+<table id="post5487" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+<tr>
+		<td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1; border-right: 0px" >
+			08-19-2011, 12:16 AM
+		</td>
+		<td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1; border-left: 0px" align="right">
+			&nbsp;
+		</td>
+	
+</tr>
+<tr valign="top">
+	<td class="alt2" width="175" style="border: 1px solid #D1D1E1; border-top: 0px; border-bottom: 0px">
+			<%= link_to post.user.username, user_url(post.user), :class => "bigusername" %>
+			<div class="smallfont">Junior Member</div>
+
+			<div class="smallfont">
+				&nbsp;<br />
+				<div>Join Date: Jun 2011</div>
+				<div>Posts: 20</div>
+			</div>
+	</td>
+	
+	<td class="alt1" style="border-right: 1px solid #D1D1E1">
+    <%= post.content %>
+	</td>
+</tr>
+<tr>
+  <td class="alt2" style="border: 1px solid #D1D1E1; border-top: 0px">
+    &nbsp;
+  </td>
+  <td class="alt1" align="right" style="border: 1px solid #D1D1E1; border-left: 0px; border-top: 0px">
+    <%= link_to image_tag("forum/buttons/edit.gif"), edit_post_path(post) %>
+    <%= link_to image_tag("forum/buttons/quote.gif"), quote_post_path(post) %>
+    <%= link_to "x", post, :confirm => 'Are you sute?', :method => :delete %>
+  </td>
+</tr>
+</table>
+<br />
+
+
+<!-- <div class="post">
+  <span class="left"><%= link_to post.user.username, user_url(post.user) %><br /><%= link_to "Edit", edit_post_path(post) %><br /><%= link_to "Delete", post, :confirm => 'Are you sute?', :method => :delete %></span>
+  <span class="right"><%= post.content %></span>
+</div> -->
