@@ -17,6 +17,7 @@ gem "bitfields"
 
 # views & layouts
 gem 'jquery-rails'
+gem "breadcrumbs_on_rails"
 
 # Gems used only for assets and not required
 # in production environments by default.

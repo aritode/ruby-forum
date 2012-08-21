@@ -36,6 +36,7 @@
         <tr>
           <td class="alt1" width="100%">
               <div class="navbar" style="font-size:10pt">
+                <%= render_breadcrumbs :separator => ' / ' %>
                 <strong><%= content_for?(:title) ? yield(:title) : "Untitled" %></strong>
               </div>
           </td>

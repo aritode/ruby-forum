@@ -10,7 +10,9 @@ class TopicsController < ApplicationController
       @posts[i] = post
       @posts[i][:post_count] = i + 1
     end
-    
+
+    add_breadcrumb "Forum", :root_path
+    add_breadcrumb @topic.forum.title, :forum_path
   end
 
   # start a new topic 
