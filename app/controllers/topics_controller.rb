@@ -14,8 +14,8 @@ class TopicsController < ApplicationController
 
   def create
     # check posting permissions
-    check_forum_permissions :can_contain_topics, params[:forum]
-    check_forum_permissions :allow_posting     , params[:forum]
+    check_forum_permissions :can_contain_topics, params[:topic][:forum_id]
+    check_forum_permissions :allow_posting     , params[:topic][:forum_id]
     check_user_permissions  :can_post_threads
 
     # create the topic
