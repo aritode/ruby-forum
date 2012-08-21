@@ -5,7 +5,7 @@
     <td><%= image_tag "forum/icons/forum_old.gif" %></td>
     <td>&nbsp;</td>
     <td>
-      <div><strong><%= link_to h(child.name), forum_path(child.id) %></strong></div>
+      <div><strong><%= link_to h(child.title), forum_path(child.id) %></strong></div>
       <div class="smallfont"><%=h child.description %></div>
     </td>
   </tr>
@@ -16,7 +16,7 @@
     <% if child.most_recent_post %>
       <div>
         <span style="white-space:nowrap">
-          <strong><%= link_to "#{child.most_recent_post.name}", "/topics/#{child.most_recent_post.id}" %></strong>
+          <strong><%= link_to "#{child.most_recent_post.title}", "/topics/#{child.most_recent_post.id}" %></strong>
         </span>
       </div>
       <div style="white-space:nowrap">

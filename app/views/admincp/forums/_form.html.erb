@@ -4,7 +4,7 @@
     <div class="widget-header">
       <span class="icon-plus"></span>
         <h3 class="icon chart">
-          <%= params[:action] == 'new' ? "Add New Forum" : "Edit Forum : #{@forum.name}" %>
+          <%= params[:action] == 'new' ? "Add New Forum" : "Edit Forum : #{@forum.title}" %>
         </h3>
     </div>
     <div class="widget-content">
@@ -12,9 +12,9 @@
       <tbody>
         <tr class="odd gradeX">
           <td>
-            <div><strong><%= f.label :name, "Title" %></strong></div>
+            <div><strong><%= f.label :title, "Title" %></strong></div>
           </td>
-          <td align="right"><%= f.text_field :name %></td>
+          <td align="right"><%= f.text_field :title %></td>
         </tr>
         <tr class="odd gradeX">
           <td>

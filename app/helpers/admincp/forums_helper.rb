@@ -35,7 +35,7 @@ module Admincp::ForumsHelper
   def construct_forum_chooser_options(forums, selected = nil, options = [])
     for forum in forums
       if forum.is_root? && !forum.can_contain_topics.nil?
-        options.push(["#{forum.name}", forum.id])
+        options.push(["#{forum.title}", forum.id])
         construct_child_chooser_options(forum.descendants.arrange(:order => :display_order), options)
       end
     end
@@ -49,7 +49,7 @@ module Admincp::ForumsHelper
   # @parm Array   Array of select options previously built
   def construct_child_chooser_options(forums, options)
     forums.each do |key, val|
-      options.push(["#{depth_char(key.depth)} #{key.name}", key.id])
+      options.push(["#{depth_char(key.depth)} #{key.title}", key.id])
       if !val.empty?
         construct_child_chooser_options(val, options)
       end

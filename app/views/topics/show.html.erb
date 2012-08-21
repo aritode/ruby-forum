@@ -1,4 +1,4 @@
-<% title @topic.name %>
+<% title @topic.title %>
 
 <% for post in @topic.posts %>
   <%= render :partial => 'postbit', :locals => {:post => post} %>

@@ -1,6 +1,6 @@
 <tr>
   <td class="tcat" colspan="5">
-    <div><%= link_to h(forum.name), forum_path(forum.id) %></div>
+    <div><%= link_to h(forum.title), forum_path(forum.id) %></div>
     <% if forum.description? %>
       <div class="smallfont"><%= h(forum.description) %></div>
     <% end %>

@@ -1,7 +1,7 @@
 class Forum < ActiveRecord::Base
   include Bitfields
 
-  attr_accessible :name, :description, :parent_id, :can_contain_topics, :is_active, 
+  attr_accessible :title, :description, :parent_id, :can_contain_topics, :is_active, 
                   :allow_posting, :display_order, :ancestry, :options
   
   has_many :topics, :dependent => :destroy
@@ -9,7 +9,7 @@ class Forum < ActiveRecord::Base
   # includes methods from the "ancestry" gem
   acts_as_tree
 
-  validates_presence_of :name
+  validates_presence_of :title
 
   # define the forums options here using bitfields
   bitfield :options, 

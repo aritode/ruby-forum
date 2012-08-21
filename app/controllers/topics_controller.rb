@@ -20,7 +20,7 @@ class TopicsController < ApplicationController
 
     # create the topic
     @topic = Topic.new(
-      :name           => params[:topic][:name], 
+      :title          => params[:topic][:title], 
       :last_poster_id => current_user.id,
       :last_post_at   => Time.new,
       :forum_id       => params[:topic][:forum_id], 
