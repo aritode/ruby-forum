@@ -1,9 +1,22 @@
 source 'https://rubygems.org'
 
+gem 'rake'
 gem 'rails', '3.2.6'
 
+# databases
 gem 'mysql2'
-gem "nifty-generators", :group => :development
+
+# user management
+gem "bcrypt-ruby", :require => "bcrypt"
+
+# forum management
+gem "ancestry"
+
+# options & settings
+gem "bitfields"
+
+# views & layouts
+gem 'jquery-rails'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -17,13 +30,7 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails'
-gem "mocha", :group => :test
-gem "bcrypt-ruby", :require => "bcrypt"
-
-gem "ancestry"
-gem "bitfields"
-
 group :development, :test do
   gem 'debugger'
+  gem "nifty-generators"
 end
