@@ -13,6 +13,6 @@ class AddThreadAndTopicDataToForums < ActiveRecord::Migration
     add_column :forums, :last_post_user_id, :integer, :after => :last_post_at
     add_column :forums, :last_topic_at,     :integer, :after => :last_post_user_id
     add_column :forums, :last_topic_id,     :integer, :after => :last_topic_at
-    add_column :forums, :last_topic_title,  :integer, :after => :last_topic_id
+    add_column :forums, :last_topic_title,  :string,  :after => :last_topic_id
   end
 end

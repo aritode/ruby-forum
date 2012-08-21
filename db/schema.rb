@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(:version => 20120821051407) do
     t.integer  "last_post_user_id"
     t.integer  "last_topic_at"
     t.integer  "last_topic_id"
-    t.integer  "last_topic_title"
+    t.string   "last_topic_title"
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
   end
