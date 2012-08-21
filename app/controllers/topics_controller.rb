@@ -1,8 +1,18 @@
 class TopicsController < ApplicationController
+
+  # show the topic and all post associated with it
   def show
     @topic = Topic.find(params[:id])
+    @posts = []
+    
+    @topic.posts.each_with_index do |post, i|
+      @posts[i] = post
+      @posts[i][:post_count] = i + 1
+    end
+    
   end
 
+  # start a new topic 
   def new
     # check posting permissions
     check_forum_permissions :can_contain_topics, params[:forum]

@@ -3,7 +3,9 @@ Forums::Application.routes.draw do
   root :to => 'forums#index'
 
   resources :posts
-  match 'posts/:id/quote' => 'post#quote', :as => :quote_post
+  match 'posts/:id/quote'       => 'posts#quote',  :as => :quote_post
+  #match 'posts/:id/:post_count' => 'posts#index',  :as => :view_post
+  
   
   resources :topics
   resources :forums

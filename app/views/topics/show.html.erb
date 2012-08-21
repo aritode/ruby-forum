@@ -1,6 +1,6 @@
 <% title @topic.title %>
 
-<% for post in @topic.posts %>
+<% for post in @posts  %>
   <%= render :partial => 'postbit', :locals => {:post => post} %>
 <% end %>
 
