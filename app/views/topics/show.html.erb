@@ -32,4 +32,49 @@
 
 <br />
 
-test
+<!-- quick reply editor -->
+<% content_for :head do %>
+  <%= javascript_include_tag "tiny_mce/tiny_mce.js" %>
+  <script type="text/javascript">
+    tinyMCE.init({
+            theme : "advanced",
+            mode : "textareas",
+            plugins : "bbcode,emotions,paste",
+            theme_advanced_buttons1 : "cleanup,|,bold,italic,underline,strikethrough,|,forecolor,|,link,unlink,image,blockquote",
+            theme_advanced_toolbar_location : "top",
+            theme_advanced_toolbar_align : "left",
+            theme_advanced_styles : "Code=codeStyle;Quote=quoteStyle",
+            entity_encoding : "raw",
+            paste_auto_cleanup_on_paste : true,
+            paste_remove_spans : true
+    });
+  </script>
+<% end %>
+
+<%= form_for :post, :url => {:controller => "posts", :action => "create"} do |f| %>
+<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+<tr>
+  <td class="tcat" colspan="2">
+    Quick Reply
+  </td>
+</tr>
+<tr>
+  <td class="panelsurround" align="center">
+    <div class="panel">
+      <div align="left" style="max-width:640px; width:auto !important; width:640px">
+        <div class="smallfont">Message:</div>
+        <fieldset style="border:0px; padding:0px; margin:0px">
+          <%= f.text_area :content, :rows => "10", :cols => "60", :style => "width:100%; height:100px" %>
+        </fieldset>
+      </div>
+    </div>
+    <div style="margin-top:6px">
+      <%= f.hidden_field :topic_id, :value => @topic.id %>
+      <%= f.submit "Post Quick Reply", :class => "button" %>
+      <%= f.submit "Go Advanced", :class => "button", :name => "preview" %>
+    </div>
+  </td>
+</tr>
+</table>
+<% end %>
+<!-- /quick reply editor -->
