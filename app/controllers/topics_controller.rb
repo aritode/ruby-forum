@@ -2,7 +2,7 @@ class TopicsController < ApplicationController
   # Show the topic and all post associated with it
   def show
     @topic    = Topic.find(params[:id])
-    @posts    = Post.order(:created_at).page(params[:page]).per(15)
+    @posts    = Post.where(:topic_id => @topic.id).page(params[:page]).per(25)
     @postbits = []
     
     # loop through the post and check permissions, visibility, etc.
