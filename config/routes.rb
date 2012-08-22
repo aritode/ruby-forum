@@ -2,13 +2,18 @@ Forums::Application.routes.draw do
 
   root :to => 'forums#index'
 
+  # post
   resources :posts
   match 'posts/:id/quote'       => 'posts#quote',  :as => :quote_post
-  #match 'posts/:id/:post_count' => 'posts#index',  :as => :view_post
   
+  ## forums
+  #match 'forums'      => 'forums#index' , :as => :forum
+  match 'forums/:id'  => 'forums#show'  , :as => :forum
   
+  #resources :forums
+
+
   resources :topics
-  resources :forums
   resources :sessions
   resources :users
 
@@ -46,6 +51,8 @@ Forums::Application.routes.draw do
     
     
   end
+  
+  
   
 end
 

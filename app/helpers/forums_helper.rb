@@ -28,4 +28,13 @@ module ForumsHelper
 
     return raw html
   end
+  
+  # Returns true if you're at the forums home page. I use this for constructing breadcrumbs mostly,
+  # but could be useful for layouts & structuring pages, ads, etc.
+  #
+  # @return Boolean   Returns true if a visitor is at the forums home page.
+  def is_forum_home?
+    params[:controller] == 'forums' && params[:action] == 'index'
+  end
+  
 end

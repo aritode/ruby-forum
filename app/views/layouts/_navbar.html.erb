@@ -1,0 +1,61 @@
+<br />
+
+<!-- breadcrumb, login, pm info -->
+<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+<tr>
+  <td class="alt1" width="100%">
+      <div class="navbar" style="font-size:10pt">
+        <% if is_forum_home? %>
+          <%= link_to image_tag("forum/misc/navbits_start.gif"), root_path %> <strong><%= content_for?(:title) ? yield(:title) : "Untitled" %></strong>
+        <% else %>
+          <table cellpadding="0" cellspacing="0" border="0">
+          <tr valign="bottom">
+            <td>
+              <%= link_to image_tag("forum/misc/navbits_start.gif", :title => "Go Back"), "", :onclick => "history.back(1); return false;" %>
+            </td>
+            <td>&nbsp;</td>
+            <td width="100%">
+              <%= render_breadcrumbs :separator => ' > ' %>
+            </td>
+          </tr>
+          <tr>
+            <td class="navbar" style="font-size:10pt; padding-top:1px" colspan="3">
+              <%= link_to image_tag("forum/misc/navbits_finallink_ltr.gif", :title => "Reload the page") %>
+              <strong><%= content_for?(:title) ? yield(:title) : "Untitled" %></strong>
+            </td>
+          </tr>
+          </table>
+        <% end %>
+      </div>
+  </td>
+  <td class="alt2" nowrap="nowrap">
+    <% if current_user %>
+      <div class="smallfont">
+        <div><strong>Welcome, <%= link_to current_user.username, users_path %></strong></div>
+        <div>You last visited: n/a</div>
+        <div><%= link_to "Private Messages" %>: Unread 0, Total 0.</div>
+      </div>
+    <% else %>
+      <%= link_to "Sign Up", signup_path %> | <%= link_to "Login", login_path %>
+    <% end %>
+  </td>
+</tr>
+</table>
+<!-- / breadcrumb, login, pm info -->
+
+<!-- nav buttons bar -->
+<div class="tborder" style="padding:1px; border-top-width:0px">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
+  <tr align="center">
+    <td class="vbmenu_control"><%= link_to "Placeholder", logout_path %></td>
+    <td class="vbmenu_control"><%= link_to "Placeholder", logout_path %></td>
+    <td class="vbmenu_control"><%= link_to "Placeholder", logout_path %></td>
+    <td class="vbmenu_control"><%= link_to "Placeholder", logout_path %></td>
+    <td class="vbmenu_control"><%= link_to "Placeholder", logout_path %></td>
+    <td class="vbmenu_control"><%= link_to "Logout", logout_path, :confirm => "Are you sure you want to logout?" %></td>
+  </tr>
+  </table>
+</div>
+<!-- / nav buttons bar -->
+
+<br />

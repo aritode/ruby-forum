@@ -1,22 +1,35 @@
 class PostsController < ApplicationController
-  # view a single post
+  # Shows the post content on it's own page
   def show
     @post = Post.find(params[:id])
   end
 
-  # post reply form
+  # The form to post reply to a topic
   def new
-    @post = Post.new
+    @post  = Post.new
+    @topic = Topic.find(params[:topic]) # find the topic we're posting in
+
+    # breadcrumbs
+    add_breadcrumb "Forum", :root_path
+    if !@topic.forum.ancestors.empty?
+      for ancestor in @topic.forum.ancestors
+        add_breadcrumb ancestor.title, ancestor.id
+      end
+      add_breadcrumb @topic.forum.title, forum_path(@topic.forum_id) # add current forum
+      add_breadcrumb @topic.title, topic_path(@topic)                # add current topic
+    end
   end
 
-  # add post reply to topic
+  # Saves post into the database
   def create
+    # create the post object
     @post = Post.new(
       :content  => params[:post][:content], 
       :topic_id => params[:post][:topic_id], 
       :user_id  => current_user.id
     )
     
+    # save the post and update the users and forum stats
     if @post.save
       @topic = Topic.find(@post.topic_id)
       @topic.update_attributes(
@@ -43,19 +56,31 @@ class PostsController < ApplicationController
         :last_topic_title   => @topic.title
       )
 
-      flash[:notice] = "Successfully created post."
       redirect_to topic_url @post.topic_id
     else
       render :action => 'new'
     end
   end
 
-  # edit post
+  # The form to edit posts
   def edit
-    @post = Post.find(params[:id])
+    @post  = Post.find(params[:id])
+    @topic = Topic.find(@post.topic_id) # find the topic we're posting in
+
+    # breadcrumbs
+    add_breadcrumb "Forum", :root_path
+    if !@topic.forum.ancestors.empty?
+      for ancestor in @topic.forum.ancestors
+        add_breadcrumb ancestor.title, ancestor.id
+      end
+      add_breadcrumb @topic.forum.title, forum_path(@topic.forum_id)    # add current forum
+      add_breadcrumb @topic.title, topic_path(@topic)                   # add current topic
+      add_breadcrumb @post.content.truncate(35), topic_path(@topic)     # add current post
+    end
+
   end
 
-  # update edited post
+  # Saves all post edits to the database
   def update
     @post = Post.find(params[:id])
     if @post.update_attributes(params[:post])
@@ -64,13 +89,13 @@ class PostsController < ApplicationController
         :last_poster_id => current_user.id, 
         :last_post_at   => Time.now
       )
-      redirect_to @post, :notice  => "Successfully updated post."
+      redirect_to topic_path(@post.topic_id)
     else
       render :action => 'edit'
     end
   end
 
-  # delete post
+  # Removes posts from the database
   def destroy
     @post = Post.find(params[:id])
     @post.destroy

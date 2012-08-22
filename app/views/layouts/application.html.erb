@@ -9,90 +9,21 @@
   </head>
 <body>
 
-  <!-- header -->
-  <table border="0" width="100%" cellpadding="0" cellspacing="0" align="center" valign="bottom">
-  <tr>
-    <td align="left"><%= link_to image_tag("forum/misc/vbulletin3_logo_white.gif") , root_path %></td>
-    <td align="right" id="header_right_cell">
-      &nbsp;
-    </td>
-  </tr>
-  </table>
-  <!-- /header -->
-
-  <!-- content -->
+  <%= render :partial => 'layouts/header' %>
+  
+  <!-- main content -->
   <div align="center">
     <div class="page" style="width:100%; text-align:left">
       <div style="padding:0px 25px 0px 25px" align="left">
-        
-        <br />
-
-        <% flash.each do |name, msg| %>
-          <%= content_tag :div, msg, :id => "flash_#{name}" %>
-        <% end %>
-
-        <!-- breadcrumb, login, pm info -->
-        <table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
-        <tr>
-          <td class="alt1" width="100%">
-              <div class="navbar" style="font-size:10pt">
-                <%= render_breadcrumbs :separator => ' / ' %>
-                <strong><%= content_for?(:title) ? yield(:title) : "Untitled" %></strong>
-              </div>
-          </td>
-          <td class="alt2" nowrap="nowrap">
-            <% if current_user %>
-              Welcome, <%= current_user.username %> - <%= link_to "logout", logout_path %>
-            <% else %>
-              <%= link_to "Sign Up", signup_path %> | <%= link_to "Login", login_path %>
-            <% end %>
-          </td>
-        </tr>
-        </table>
-        <!-- / breadcrumb, login, pm info -->
-
-        <!-- nav buttons bar -->
-        <div class="tborder" style="padding:1px; border-top-width:0px">
-          <table cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
-          <tr align="center">
-            <td class="vbmenu_control">&nbsp;</td>
-          </tr>
-          </table>
-        </div>
-        <!-- / nav buttons bar -->
-
-        <br />
-
+        <%= render :partial => 'layouts/navbar' %>
         <%= yield %>
-        
         <br />
-
       </div>
     </div>
   </div>
-  <!-- /content -->
+  <!-- /main content -->
 
-  <table cellpadding="6" cellspacing="0" border="0" width="100%" class="page" align="center">
-  <tr>
-    <td class="tfoot" align="right" width="100%">
-      <div class="smallfont">
-        <strong>
-          <%= link_to "Admin", admincp_root_path %> - 
-          <a href="#top" onclick="self.scrollTo(0, 0); return false;">Top</a>
-        </strong>
-      </div>
-    </td>
-  </tr>
-  </table>
-
-  <br />
-
-  <div align="center">
-    <div class="smallfont" align="center">
-      Copyright &copy; <%= time_tag Date.today, :format => "%Y" %>, EscalateMedia LP - All Rights Reserved.
-    </div>
-  </div>
-
+  <%= render :partial => 'layouts/footer' %>
 </body>
 </html>
 
