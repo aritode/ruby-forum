@@ -1,25 +1,27 @@
 class TopicsController < ApplicationController
   # Show the topic and all post associated with it
   def show
-    @posts = [] # for the postbits
-    @topic = Topic.find(params[:id])
-    @topic.update_attribute('views', @topic.views + 1)
+    @topic    = Topic.find(params[:id])
+    @posts    = Post.order(:created_at).page(params[:page]).per(15)
+    @postbits = []
     
     # loop through the post and check permissions, visibility, etc.
-    @topic.posts.each_with_index do |post, i|
-      @posts[i] = post
-      @posts[i][:post_count] = i + 1
+    @posts.each_with_index do |post, i|
+      @postbits[i] = post
+      @postbits[i][:post_count] = (i + 1)
     end
 
     # breadcrumbs
-    add_breadcrumb "Forum", :root_path
-    if !@topic.forum.ancestors.empty? # include any ancestor forums
+    add_breadcrumb "Forum", root_path
+    if !@topic.forum.ancestors.empty?
       for ancestor in @topic.forum.ancestors
-        add_breadcrumb ancestor.title, ancestor.id
+        add_breadcrumb ancestor.title, forum_path(ancestor)
       end
-      add_breadcrumb @topic.forum.title, :forum_path # add the current forum
+      add_breadcrumb @topic.forum.title, forum_path(@topic.forum)
     end
     
+    # update the views count
+    @topic.update_attribute('views', @topic.views + 1)
   end
 
   # The form to start a new topic
@@ -34,10 +36,10 @@ class TopicsController < ApplicationController
     @forum = Forum.find(params[:forum])
     
     # breadcrumbs
-    add_breadcrumb "Home", :root_path
-    if !@forum.ancestors.empty? # include any ancestor forums
+    add_breadcrumb "Home", root_path
+    if !@forum.ancestors.empty?
       for ancestor in @forum.ancestors
-        add_breadcrumb ancestor.title, ancestor.id
+        add_breadcrumb ancestor.title, forum_path(ancestor)
       end
     end
   end

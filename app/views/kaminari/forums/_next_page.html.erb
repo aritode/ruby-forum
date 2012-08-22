@@ -1,0 +1,5 @@
+<% if !current_page.last? %>
+<td class="alt1 smallfont">
+  <%= link_to raw('&gt;'), url, :rel => 'next', :remote => remote %>
+</td>
+<% end %>

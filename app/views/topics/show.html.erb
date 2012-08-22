@@ -1,12 +1,31 @@
 <% title @topic.title %>
 
-<% for post in @posts  %>
+<!-- controls above postbits -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:3px">
+<tr valign="bottom">
+  <td class="smallfont">
+    <%= link_to image_tag("forum/buttons/reply.gif"), "#{new_post_path}?topic=#{@topic.id}" %>
+  </td>
+  <td align="right">
+    <%= paginate @posts, :theme => "forums", :window => 3 %>
+  </td>
+</tr>
+</table>
+<!-- / controls above postbits -->
+
+<% for post in @postbits  %>
   <%= render :partial => 'postbit', :locals => {:post => post} %>
 <% end %>
 
-
-<br />
-<p>
-  <%= link_to "Reply", "#{new_post_path}?topic=#{@topic.id}" %> |
-  <%= link_to "Destroy Topic", @topic, :confirm => 'Are you sure?', :method => :delete %>
-</p>
+<!-- controls below postbits -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:3px">
+<tr valign="top">
+  <td class="smallfont">
+    <%= link_to image_tag("forum/buttons/reply.gif"), "#{new_post_path}?topic=#{@topic.id}" %>
+  </td>
+  <td align="right">
+    <%= paginate @posts, :theme => "forums", :window => 3 %>
+  </td>
+</tr>
+</table>
+<!-- / controls below postbits -->

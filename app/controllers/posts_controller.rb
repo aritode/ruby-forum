@@ -1,7 +1,19 @@
 class PostsController < ApplicationController
   # Shows the post content on it's own page
   def show
-    @post = Post.find(params[:id])
+    @post  = Post.find(params[:id])
+    @topic = Topic.find(@post.topic_id)
+
+    # breadcrumbs
+    add_breadcrumb "Forum", root_path
+    if !@topic.forum.ancestors.empty?
+      for ancestor in @topic.forum.ancestors
+        add_breadcrumb ancestor.title, forum_path(ancestor)
+      end
+      add_breadcrumb @topic.forum.title, forum_path(@topic.forum_id)
+      add_breadcrumb @topic.title, topic_path(@topic)
+      add_breadcrumb @post.content.truncate(35), topic_path(@topic)
+    end
   end
 
   # The form to post reply to a topic
@@ -10,13 +22,13 @@ class PostsController < ApplicationController
     @topic = Topic.find(params[:topic]) # find the topic we're posting in
 
     # breadcrumbs
-    add_breadcrumb "Forum", :root_path
+    add_breadcrumb "Forum", root_path
     if !@topic.forum.ancestors.empty?
       for ancestor in @topic.forum.ancestors
-        add_breadcrumb ancestor.title, ancestor.id
+        add_breadcrumb ancestor.title, forum_path(ancestor)
       end
-      add_breadcrumb @topic.forum.title, forum_path(@topic.forum_id) # add current forum
-      add_breadcrumb @topic.title, topic_path(@topic)                # add current topic
+      add_breadcrumb @topic.forum.title, forum_path(@topic.forum_id)
+      add_breadcrumb @topic.title, topic_path(@topic)
     end
   end
 
@@ -68,14 +80,14 @@ class PostsController < ApplicationController
     @topic = Topic.find(@post.topic_id) # find the topic we're posting in
 
     # breadcrumbs
-    add_breadcrumb "Forum", :root_path
+    add_breadcrumb "Forum", root_path
     if !@topic.forum.ancestors.empty?
       for ancestor in @topic.forum.ancestors
-        add_breadcrumb ancestor.title, ancestor.id
+        add_breadcrumb ancestor.title, forum_path(ancestor)
       end
-      add_breadcrumb @topic.forum.title, forum_path(@topic.forum_id)    # add current forum
-      add_breadcrumb @topic.title, topic_path(@topic)                   # add current topic
-      add_breadcrumb @post.content.truncate(35), topic_path(@topic)     # add current post
+      add_breadcrumb @topic.forum.title, forum_path(@topic.forum_id)
+      add_breadcrumb @topic.title, topic_path(@topic)
+      add_breadcrumb @post.content.truncate(35), topic_path(@topic)
     end
 
   end

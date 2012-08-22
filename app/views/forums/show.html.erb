@@ -12,7 +12,9 @@
     <td>
       <%= link_to image_tag("forum/buttons/newthread.gif") , "/topics/new?forum=#{@forum.id}" %>
     </td>
-    <td align="right">&nbsp;</td>
+    <td align="right">
+      <%= paginate @topics, :theme => "forums", :window => 3 %>
+    </td>
   </tr>
   </table>
   <!-- /controls above thread list -->
@@ -30,8 +32,8 @@
     <td class="thead" align="center" nowrap="nowrap">&nbsp;</td>
   </tr>
 
-  <% if @forum.topics != [] %>
-    <% for topic in @forum.topics %>
+  <% if !@topicbits.empty? %>
+    <% for topic in @topicbits %>
     <%= render :partial => 'topic_bit', :locals => {:topic => topic} %>
     <% end %>
   <% else %>
@@ -50,7 +52,9 @@
     <td>
       <%= link_to image_tag("forum/buttons/newthread.gif") , "/topics/new?forum=#{@forum.id}" %>
     </td>
-    <td align="right">&nbsp;</td>
+    <td align="right">
+      <%= paginate @topics, :theme => "forums", :window => 3 %>
+    </td>
   </tr>
   </table>
   <!-- /controls below thread list -->

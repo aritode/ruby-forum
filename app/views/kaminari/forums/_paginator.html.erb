@@ -1,0 +1,23 @@
+<%= paginator.render do -%>
+  <div class="pagenav" align="right">
+    <table class="tborder" cellpadding="3" cellspacing="1" border="0">
+      <tr>
+        <td class="vbmenu_control" style="font-weight:normal">Page <%= current_page %> of <%= num_pages %></td>
+        <%= first_page_tag unless current_page.first? %>
+        <%= prev_page_tag unless current_page.first? %>
+        <% each_page do |page| -%>
+          <% if page.left_outer? || page.right_outer? || page.inside_window? -%>
+            <%= page_tag page %>
+          <% elsif !page.was_truncated? -%>
+            <%= gap_tag %>
+          <% end -%>
+        <% end -%>
+        <%= next_page_tag unless current_page.last? %>
+        <%= last_page_tag unless current_page.last? %>
+      </tr>
+    </table>
+  </div>
+<% end -%>
+
+
+
