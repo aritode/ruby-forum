@@ -37,4 +37,16 @@ module ForumsHelper
     params[:controller] == 'forums' && params[:action] == 'index'
   end
   
+  # Constructs a link with a list of sorting paramters for the threads list
+  #
+  # @parm String   The linked text
+  # @parm String   The name of the sort field to sort by (e.g. lastpost, views, etc)
+  def build_sort_link(text, sort)
+    link_to(text, :sort => sort, 
+      :order      => params[:order]     == 'desc' ? 'asc' : 'desc', 
+      :page       => params[:page]      ||= 1, 
+      :daysprune  => params[:daysprune] ||= 1
+    )
+  end
+  
 end

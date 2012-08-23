@@ -4,12 +4,24 @@ class ForumsController < ApplicationController
     @forums = Forum.all(:order => "ancestry ASC, display_order ASC")
   end
 
-  # Show a particular forum with any and all topics
+  # Show a forum with all it's topics
   def show
-    @forum  = Forum.find(params[:id])
-    @topics = Topic.where(:forum_id => @forum.id).page(params[:page]).per(25).order("updated_at DESC")
-    @topicbits = []
+    size  = 25
+    page  = params[:page]      || 1
+    sort  = params[:sort]      || "updated_at"
+    days  = params[:daysprune] || 0
+    order = params[:order]     || "desc"
     
+    # fetch the topics
+    @topics = Topic.where(:forum_id => params[:id])
+                   .joins(:user)
+                   .page(page)
+                   .per(size)
+                   .order("#{sort} #{order}")
+
+    @forum     = Forum.find(params[:id])
+    @topicbits = []
+
     # loop through the topics and check permissions, visibility, etc.
     @topics.each_with_index do |topic, i|
       @topicbits[i] = topic

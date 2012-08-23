@@ -24,11 +24,11 @@
   <tr>
     <td class="thead" colspan="2">&nbsp;</td>
     <td class="thead" width="100%">
-      Thread / Thread Starter
+      <%= build_sort_link("Thread", 'title') %> / <%= build_sort_link("Thread Starter", 'username') %>
     </td>
-    <td class="thead" width="150" align="center" nowrap="nowrap"><span style="white-space:nowrap">Last Post</span></td>
-    <td class="thead" align="center" nowrap="nowrap"><span style="white-space:nowrap">Replies</span></td>
-    <td class="thead" align="center" nowrap="nowrap"><span style="white-space:nowrap">Views</span></td>
+    <td class="thead" width="150" align="center" nowrap="nowrap"><%= build_sort_link("Last Post", 'updated_at') %></td>
+    <td class="thead" align="center" nowrap="nowrap"><%= build_sort_link("Replies", 'replies') %></td>
+    <td class="thead" align="center" nowrap="nowrap"><%= build_sort_link("Views", 'views') %></td>
     <td class="thead" align="center" nowrap="nowrap">&nbsp;</td>
   </tr>
 
