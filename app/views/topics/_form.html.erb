@@ -1,16 +1,80 @@
+<% content_for :head do %>
+  <%= javascript_include_tag "tiny_mce/tiny_mce.js" %>
+  <script type="text/javascript">
+    tinyMCE.init({
+            theme : "advanced",
+            mode : "textareas",
+            plugins : "bbcode,emotions,paste",
+            theme_advanced_buttons1 : "cleanup,|,bold,italic,underline,|,forecolor,|,link,unlink,image,blockquote",
+            theme_advanced_toolbar_location : "top",
+            theme_advanced_toolbar_align : "left",
+            theme_advanced_styles : "Code=codeStyle;Quote=quoteStyle",
+            entity_encoding : "raw",
+            paste_auto_cleanup_on_paste : true,
+            paste_remove_spans : true
+    });
+  </script>
+<% end %>
+
+<% if !params[:preview].nil? && !params[:post][:content].empty? %>
+<!-- post preview -->
+<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+<tr>
+  <td class="tcat">Preview</td>
+</tr>
+<tr>
+  <td class="alt1">
+      <%= raw bbcode2text(params[:post][:content]) %>
+  </td>
+</tr>
+</table>
+<br />
+<!-- post preview -->
+<% end %>
+
 <%= form_for @topic do |f| %>
-  <%= f.error_messages %>
-  <% if params[:forum] %>
-    <%= f.hidden_field :forum_id, :value => params[:forum] %>
-  <% end %>
-  <p>
-    <%= f.label :title %><br />
-    <%= f.text_field :title %>
-  </p>
-  <p>
-    <%= fields_for :post do |p| %>
-      <%= p.text_area :content, :cols => "80", :rows => "20" %>
-    <% end %>
-  </p>
-  <p><%= f.submit "Create" %></p>
+<%= f.error_messages %>
+<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+<tr>
+  <td class="tcat">
+    New Topic
+  </td>
+</tr>
+<tr>
+  <td class="panelsurround" align="center">
+    <div class="panel">
+      <div style="width:640px" align="left">
+        <!-- user is logged in -->
+        <div class="smallfont" style="float:right">
+          Logged in as <%= link_to current_user.username, user_path(current_user), :target => "_blank" %>
+        </div>
+
+        <!-- subject field -->
+        <table cellpadding="0" cellspacing="0" border="0" class="fieldset">
+        <tr>
+          <td class="smallfont" colspan="3">Title:</td>
+        </tr>
+        <tr>
+          <td><%= f.text_field :title, :class => "bginput", :size => "50", :maxlength => "85" %></td>
+        </tr>
+        </table>
+        <!-- / subject field -->
+
+        <!-- message area -->
+        <div class="smallfont">Message:</div>
+        <%= fields_for :post do |p| %>
+          <%= p.text_area :content, :rows => "10", :cols => "60", :style => "width:540px; height:250px" %>
+        <% end %>
+        <!-- / message area -->
+      </div>
+    </div>
+
+    <div style="margin-top:6px">
+      <%= f.hidden_field :forum_id %>
+      <%= f.submit "Submit New Topic", :class => "button" %>
+      <%= f.submit "Preview Post", :class => "button", :name => "preview" %>
+    </div>
+  </td>
+</tr>
+</table>
 <% end %>

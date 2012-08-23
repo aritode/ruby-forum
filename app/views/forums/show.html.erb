@@ -10,7 +10,7 @@
   <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:3px">
   <tr valign="bottom">
     <td>
-      <%= link_to image_tag("forum/buttons/newthread.gif") , "/topics/new?forum=#{@forum.id}" %>
+      <%= link_to image_tag("forum/buttons/newthread.gif") , new_topic_path(:forum_id => @forum.id) %>
     </td>
     <td align="right">
       <%= paginate @topics, :theme => "forums", :window => 3 %>
@@ -50,7 +50,7 @@
   <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:3px">
   <tr valign="top">
     <td>
-      <%= link_to image_tag("forum/buttons/newthread.gif") , "/topics/new?forum=#{@forum.id}" %>
+      <%= link_to image_tag("forum/buttons/newthread.gif") , new_topic_path(:forum_id => @forum.id) %>
     </td>
     <td align="right">
       <%= paginate @topics, :theme => "forums", :window => 3 %>
