@@ -41,6 +41,7 @@ class TopicsController < ApplicationController
       for ancestor in @forum.ancestors
         add_breadcrumb ancestor.title, forum_path(ancestor)
       end
+      add_breadcrumb @forum.title, forum_path(@forum.id)
     end
   end
 
@@ -67,6 +68,7 @@ class TopicsController < ApplicationController
         for ancestor in @forum.ancestors
           add_breadcrumb ancestor.title, forum_path(ancestor)
         end
+        add_breadcrumb @forum.title, forum_path(@forum.id)
       end
 
       render :action => "new"
