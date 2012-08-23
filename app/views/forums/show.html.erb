@@ -23,9 +23,7 @@
   <table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
   <tr>
     <td class="thead" colspan="2">&nbsp;</td>
-    <td class="thead" width="100%">
-      <%= build_sort_link("Thread", 'title') %> / <%= build_sort_link("Thread Starter", 'username') %>
-    </td>
+    <td class="thead" width="100%"><%= build_sort_link("Thread", 'title') %> / <%= build_sort_link("Thread Starter", 'username') %></td>
     <td class="thead" width="150" align="center" nowrap="nowrap"><%= build_sort_link("Last Post", 'updated_at') %></td>
     <td class="thead" align="center" nowrap="nowrap"><%= build_sort_link("Replies", 'replies') %></td>
     <td class="thead" align="center" nowrap="nowrap"><%= build_sort_link("Views", 'views') %></td>
@@ -54,9 +52,28 @@
     </td>
     <td align="right">
       <%= paginate @topics, :theme => "forums", :window => 3 %>
+      
+      <!-- thread moderation -->
+      <div class="smallfont" style="text-align:left; white-space:nowrap; float:right">
+        <div><strong>Moderation</strong></div>
+        <select name="do">
+          <option value="deletethread">Delete Threads</option>
+          <option value="undeletethread">Undelete Threads</option>
+          <option value="spamthread">Delete Threads as Spam</option>
+          <option value="open">Open Threads</option>
+          <option value="close">Close Threads</option>
+          <option value="approvethread">Approve Threads</option>
+          <option value="unapprovethread">Unapprove Threads</option>
+          <option value="stick">Stick Threads</option>
+          <option value="unstick">Unstick Threads</option>
+          <option value="movethread">Move Threads</option>
+          <option value="mergethread">Merge Threads</option>
+        </select>
+        <input type="submit" class="button" id="inlinego" value="Go (0)" />
+      </div>
+      <!-- /thread moderation -->
     </td>
   </tr>
   </table>
   <!-- /controls below thread list -->
 <% end %>
-

@@ -1,4 +1,4 @@
-<tr>
+<tr id="thread_line_<%= topic.id %>">
   <td class="alt1"><%= image_tag "forum/icons/thread.gif" %></td>
   <td class="alt2">&nbsp;</td>
   <td class="alt1">
@@ -15,5 +15,5 @@
   </td>
   <td class="alt1" align="center"><%= number_with_delimiter(topic.replies) %></td>
   <td class="alt2" align="center"><%= number_with_delimiter(topic.views) %></td>
-  <td class="alt1" align="center"><%= link_to "x", topic, :confirm => 'Are you sure?', :method => :delete %></td>
+  <td class="alt1" align="center"><input type="checkbox" name="tlist[<%= topic.id %>]" value="0" id="tlist_<%= topic.id %>" class="inline_mod" /></td>
 </tr>

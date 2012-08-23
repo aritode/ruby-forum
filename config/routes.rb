@@ -4,7 +4,9 @@ Forums::Application.routes.draw do
 
   # post
   resources :posts
-  match 'posts/:id/quote'       => 'posts#quote',  :as => :quote_post
+  match 'posts/:id/quote' => 'posts#quote',  :as => :quote_post
+  #match 'post/new(?topic_id=:topic_id)(quote_post=:post_id)' => "posts#new", :as => :new_post
+  
   
   ## forums
   #match 'forums'      => 'forums#index' , :as => :forum
