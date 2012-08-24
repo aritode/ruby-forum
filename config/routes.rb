@@ -12,10 +12,14 @@ Forums::Application.routes.draw do
   #match 'forums'      => 'forums#index' , :as => :forum
   match 'forums/:id'  => 'forums#show'  , :as => :forum
   
-  #resources :forums
-
-
+  # Topics
   resources :topics
+  match 'topics/manage'         => 'topics#manage', :as => :manage_topics, :via => [:post]
+  match 'topics/manage/move'    => 'topics#move',   :as => :move_topics,   :via => [:post]
+  match 'topics/manage/merge'   => 'topics#merge',  :as => :merge_topics,  :via => [:post]
+  match 'topics/manage/delete'  => 'topics#delete', :as => :delete_topics, :via => [:post]
+
+
   resources :sessions
   resources :users
 

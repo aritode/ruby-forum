@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120821195338) do
+ActiveRecord::Schema.define(:version => 20120823103528) do
 
   create_table "forums", :force => true do |t|
     t.string   "title"
@@ -46,6 +46,11 @@ ActiveRecord::Schema.define(:version => 20120821195338) do
     t.string   "title"
     t.integer  "forum_id"
     t.integer  "user_id"
+    t.integer  "visible",        :default => 1
+    t.integer  "open",           :default => 1
+    t.integer  "redirect",       :default => 0
+    t.datetime "expires"
+    t.integer  "stickied",       :default => 0
     t.integer  "views",          :default => 0
     t.integer  "replies",        :default => 0
     t.integer  "last_poster_id"
