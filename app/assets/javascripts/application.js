@@ -13,4 +13,5 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery_cookies
+//= require tinymce
 //= require forums

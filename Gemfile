@@ -20,6 +20,7 @@ gem 'jquery-rails'
 gem "breadcrumbs_on_rails"
 gem 'kaminari' # pagnation
 gem "rbbcode"
+gem 'tinymce-rails'
 
 # Gems used only for assets and not required
 # in production environments by default.
