@@ -16,3 +16,6 @@
 
 # Ignore rails version manager files
 .rvmrc
+
+# Ignore public/assets
+/public/assets
