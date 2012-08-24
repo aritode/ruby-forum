@@ -4,7 +4,7 @@ class CreateUsergroups < ActiveRecord::Migration
       t.string :title
       t.text :description
       t.string :usertitle
-      t.integer :forum_spermissions
+      t.integer :forum_permissions
 
       t.timestamps
     end

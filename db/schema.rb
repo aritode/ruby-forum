@@ -17,6 +17,8 @@ ActiveRecord::Schema.define(:version => 20120823103528) do
     t.string   "title"
     t.text     "description"
     t.string   "link"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.string   "ancestry"
     t.integer  "options",           :default => 0, :null => false
     t.integer  "display_order",     :default => 0
@@ -28,22 +30,24 @@ ActiveRecord::Schema.define(:version => 20120823103528) do
     t.datetime "last_topic_at"
     t.integer  "last_topic_id"
     t.string   "last_topic_title"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
   end
 
   add_index "forums", ["ancestry"], :name => "index_forums_on_ancestry"
 
   create_table "posts", :force => true do |t|
     t.text     "content"
-    t.integer  "topic_id"
-    t.integer  "user_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "topic_id"
+    t.integer  "user_id"
   end
 
   create_table "topics", :force => true do |t|
     t.string   "title"
+    t.integer  "last_poster_id"
+    t.datetime "last_post_at"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
     t.integer  "forum_id"
     t.integer  "user_id"
     t.integer  "visible",        :default => 1
@@ -53,21 +57,17 @@ ActiveRecord::Schema.define(:version => 20120823103528) do
     t.integer  "stickied",       :default => 0
     t.integer  "views",          :default => 0
     t.integer  "replies",        :default => 0
-    t.integer  "last_poster_id"
-    t.datetime "last_post_at"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
   end
 
   create_table "usergroups", :force => true do |t|
     t.string   "title"
     t.text     "description"
     t.string   "usertitle"
-    t.string   "open_tag"
-    t.string   "close_tag"
     t.integer  "forum_permissions"
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
+    t.string   "open_tag"
+    t.string   "close_tag"
   end
 
   create_table "users", :force => true do |t|
@@ -75,6 +75,8 @@ ActiveRecord::Schema.define(:version => 20120823103528) do
     t.string   "email"
     t.string   "password_hash"
     t.string   "password_salt"
+    t.datetime "created_at",                                  :null => false
+    t.datetime "updated_at",                                  :null => false
     t.integer  "usergroup_id"
     t.string   "membergroupids"
     t.integer  "displaygroupid", :default => 0
@@ -83,8 +85,6 @@ ActiveRecord::Schema.define(:version => 20120823103528) do
     t.integer  "post_count",     :default => 0
     t.datetime "lastpost_at"
     t.integer  "lastpost_id"
-    t.datetime "created_at",                                  :null => false
-    t.datetime "updated_at",                                  :null => false
   end
 
 end

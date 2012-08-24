@@ -11,16 +11,16 @@
 ######################################################################################################
 Forum.delete_all
 ActiveRecord::Base.connection.execute("ALTER TABLE forums AUTO_INCREMENT = 1")
-Forum.create(:name => "Contractors Talk Forums",                                    :options => 2, :display_order => 1)
-Forum.create(:name => "General Discussion",                     :ancestry => "1",   :options => 7, :display_order => 1)
-Forum.create(:name => "Introductions",                          :ancestry => "1",   :options => 7, :display_order => 2)
-Forum.create(:name => "New Site Feedback & Technical Support",  :ancestry => "1",   :options => 7, :display_order => 3)
-Forum.create(:name => "Business Discussion",                                        :options => 6, :display_order => 2)
-Forum.create(:name => "Business",                               :ancestry => "5",   :options => 3, :display_order => 1)
-Forum.create(:name => "Contractor Licensing",                   :ancestry => "5/6", :options => 7, :display_order => 1)
-Forum.create(:name => "File Swap",                              :ancestry => "5/6", :options => 7, :display_order => 2)
-Forum.create(:name => "Marketing & Sales",                      :ancestry => "5",   :options => 7, :display_order => 2)
-Forum.create(:name => "Technology",                             :ancestry => "5",   :options => 7, :display_order => 3)
+Forum.create(:title => "Contractors Talk Forums",                                    :options => 2, :display_order => 1)
+Forum.create(:title => "General Discussion",                     :ancestry => "1",   :options => 7, :display_order => 1)
+Forum.create(:title => "Introductions",                          :ancestry => "1",   :options => 7, :display_order => 2)
+Forum.create(:title => "New Site Feedback & Technical Support",  :ancestry => "1",   :options => 7, :display_order => 3)
+Forum.create(:title => "Business Discussion",                                        :options => 6, :display_order => 2)
+Forum.create(:title => "Business",                               :ancestry => "5",   :options => 3, :display_order => 1)
+Forum.create(:title => "Contractor Licensing",                   :ancestry => "5/6", :options => 7, :display_order => 1)
+Forum.create(:title => "File Swap",                              :ancestry => "5/6", :options => 7, :display_order => 2)
+Forum.create(:title => "Marketing & Sales",                      :ancestry => "5",   :options => 7, :display_order => 2)
+Forum.create(:title => "Technology",                             :ancestry => "5",   :options => 7, :display_order => 3)
 puts "Forum data loaded"
 
 ######################################################################################################
