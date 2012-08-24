@@ -25,23 +25,4 @@ class Forum < ActiveRecord::Base
     return Forum.all(:conditions => ['id IN(?)', ids])
   end
 
-  # Returns the most recent post a forum (including sub-forums) has.
-  def most_recent_post
-    return Topic.first(
-      :order      => 'last_post_at DESC', 
-      :conditions => ['forum_id IN(?)', self.child_ids << self.id])
-  end
-
-  # Returns the total number of replies a forum has (including sub-forums).
-  def number_of_post
-    return Post.count(
-      :joins      => [:topic], 
-      :conditions => ['forum_id IN(?)', self.child_ids << self.id])
-  end
-
-  # Returns the total number of topics a forum has (including sub-forums).
-  def number_of_topics
-    return Topic.count(:conditions => ['forum_id IN(?)', self.child_ids << self.id])
-  end
-
 end

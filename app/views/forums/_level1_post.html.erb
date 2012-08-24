@@ -10,17 +10,17 @@
   </td>
   <td class="alt2">
     <div class="smallfont" align="left">
-      <% if child.most_recent_post %>
+      <% if child.topic_count? %>
         <div>
           <span style="white-space:nowrap">
-            <strong><%= link_to "#{child.most_recent_post.title}", "/topics/#{child.most_recent_post.id}" %></strong>
+            <strong><%= link_to "#{child.last_topic_title}", topic_path(child.last_topic_id) %></strong>
           </span>
         </div>
         <div style="white-space:nowrap">
-          by <%= link_to child.most_recent_post.user.username, "/users/#{child.most_recent_post.last_poster_id}" %>
+          by <%= link_to child.last_post_user_id, user_path(child.last_post_user_id) %>
         </div>
         <div align="right" style="white-space:nowrap">
-          <%= time_tag child.most_recent_post.last_post_at, :format =>'%m-%d-%y %l:%M %p' %>
+          <%= time_tag child.last_post_at, :format =>'%m-%d-%y %l:%M %p' %>
         </div>
       <% else %>
         <div align="center" style="white-space:nowrap">
@@ -29,6 +29,6 @@
       <% end %>
     </div>
   </td>
-  <td class="alt1"><%= child.number_of_topics %></td>
-  <td class="alt2"><%= child.number_of_post %></td>
+  <td class="alt1"><%= child.topic_count %></td>
+  <td class="alt2"><%= child.reply_count %></td>
 </tr>

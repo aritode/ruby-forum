@@ -1,19 +1,57 @@
-<tr>
+<tr id="thread_line_<%= topic.id %>">
   <td class="alt1"><%= image_tag "forum/icons/thread.gif" %></td>
   <td class="alt2">&nbsp;</td>
   <td class="alt1">
-    <div><strong><%= link_to h(topic.title), topic_path(topic.id) %></strong></div>
+    <div>
+      <span style="float:right">
+        <%= image_tag("forum/icons/moderated_small.gif") if !topic.visible? %>
+        <%= image_tag("forum/icons/sticky.gif") if topic.stickied? %>
+        <%= image_tag("forum/icons/trashcan_small.gif") if topic.visible == 2 %>
+      </span>
+
+      <%= "Moderated:" if !topic.visible? %>
+      <%= "Sticky:" if topic.stickied? and !topic.redirect? and topic.visible? %>
+      <%= "Moved:"  if topic.redirect? and topic.visible? %>
+
+      <% if topic.visible == 2 %>
+        <em><%= h(topic.title) %></em>
+      <% else %>
+        <strong><%= link_to h(topic.title), topic_path(topic.redirect? ? topic.redirect : topic.id) %></strong>
+      <% end %>
+    </div>
     <div class="smallfont">
       <%= link_to topic.user.username, "/users/#{topic.user_id}" %>
     </div>
   </td>
-  <td class="alt2">
-    <div class="smallfont" style="text-align:right; white-space:nowrap">
-      <%= time_tag topic.last_post_at, :format =>'%m-%d-%y %l:%M %p' %> <br />
-      by <%= link_to topic.user.username, "/users/#{topic.last_poster_id}" %>
+  <% if topic.visible == 2 %>
+    <td class="alt2" colspan="3" align="center">
+      <div class="smallfont">Thread deleted</div>
     </div>
-  </td>
-  <td class="alt1" align="center"><%= number_with_delimiter(topic.replies) %></td>
-  <td class="alt2" align="center"><%= number_with_delimiter(topic.views) %></td>
-  <td class="alt1" align="center"><%= link_to "x", topic, :confirm => 'Are you sure?', :method => :delete %></td>
+  <% else %>
+    <td class="alt2">
+      <% if topic.redirect? %>
+        <div align="center">-</div>
+      <% else %>
+        <div class="smallfont" style="text-align:right; white-space:nowrap">
+          <%= time_tag topic.last_post_at, :format =>'%m-%d-%y %l:%M %p' %> <br />
+          by <%= link_to topic.user.username, "/users/#{topic.last_poster_id}" %>
+        </div>
+      <% end %>
+    </td>
+    <td class="alt1" align="center">
+      <% if topic.redirect? %>
+        <div align="center">-</div>
+      <% else %>
+        <%= number_with_delimiter(topic.replies) %>
+      <% end %>
+    </td>
+    <td class="alt2" align="center">
+      <% if topic.redirect? %>
+        <div align="center">-</div>
+      <% else %>
+        <%= number_with_delimiter(topic.views) %>
+      <% end %>
+    </td>
+  <% end %>
+  <td class="alt1" align="center"><input type="checkbox" name="topic_ids[]" value="<%= topic.id %>" id="tlist_<%= topic.id %>" class="inline_mod" /></td>
 </tr>

@@ -19,13 +19,12 @@
   </table>
   <!-- /controls above thread list -->
 
-  <!-- threads list  -->
+  <!-- Topics list  -->
+  <%= form_for :topics, :url => manage_topics_path do |f| %>
   <table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
   <tr>
     <td class="thead" colspan="2">&nbsp;</td>
-    <td class="thead" width="100%">
-      <%= build_sort_link("Thread", 'title') %> / <%= build_sort_link("Thread Starter", 'username') %>
-    </td>
+    <td class="thead" width="100%"><%= build_sort_link("Thread", 'title') %> / <%= build_sort_link("Thread Starter", 'username') %></td>
     <td class="thead" width="150" align="center" nowrap="nowrap"><%= build_sort_link("Last Post", 'updated_at') %></td>
     <td class="thead" align="center" nowrap="nowrap"><%= build_sort_link("Replies", 'replies') %></td>
     <td class="thead" align="center" nowrap="nowrap"><%= build_sort_link("Views", 'views') %></td>
@@ -44,7 +43,7 @@
     </tr>
   <% end %>
   </table>
-  <!-- /threads list  -->
+  <!-- /Topics list  -->
 
   <!-- controls below thread list -->
   <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:3px">
@@ -54,9 +53,29 @@
     </td>
     <td align="right">
       <%= paginate @topics, :theme => "forums", :window => 3 %>
+      
+      <!-- thread moderation -->
+      <div class="smallfont" style="text-align:left; white-space:nowrap; float:right">
+        <select name="do">
+          <option value="delete">Delete Topics</option>
+          <option value="undelete">Undelete Topics</option>
+          <option value="open">Open Topics</option>
+          <option value="close">Close Topics</option>
+          <option value="approve">Approve Topics</option>
+          <option value="unapprove">Unapprove Topics</option>
+          <option value="stick">Stick Topics</option>
+          <option value="unstick">Unstick Topics</option>
+          <option value="move">Move Topics</option>
+          <option value="merge">Merge Topics</option>
+        </select>
+        <input type="submit" class="button" id="inlinego" value="Go" />
+        <input type="hidden" name="forum_id" value="<%= @forum.id %>" />
+      </div>
+      <!-- /thread moderation -->
     </td>
   </tr>
   </table>
   <!-- /controls below thread list -->
-<% end %>
+  <% end %>
 
+<% end %>

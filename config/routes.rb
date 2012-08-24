@@ -4,16 +4,22 @@ Forums::Application.routes.draw do
 
   # post
   resources :posts
-  match 'posts/:id/quote'       => 'posts#quote',  :as => :quote_post
+  match 'posts/:id/quote' => 'posts#quote',  :as => :quote_post
+  #match 'post/new(?topic_id=:topic_id)(quote_post=:post_id)' => "posts#new", :as => :new_post
+  
   
   ## forums
   #match 'forums'      => 'forums#index' , :as => :forum
   match 'forums/:id'  => 'forums#show'  , :as => :forum
   
-  #resources :forums
-
-
+  # Topics
   resources :topics
+  match 'topics/manage'         => 'topics#manage', :as => :manage_topics, :via => [:post]
+  match 'topics/manage/move'    => 'topics#move',   :as => :move_topics,   :via => [:post]
+  match 'topics/manage/merge'   => 'topics#merge',  :as => :merge_topics,  :via => [:post]
+  match 'topics/manage/delete'  => 'topics#delete', :as => :delete_topics, :via => [:post]
+
+
   resources :sessions
   resources :users
 
