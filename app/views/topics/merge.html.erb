@@ -44,7 +44,7 @@
               <%= f.label :redirect_expires, "Leave Expiring Redirect" %>
             </div>
             
-            <%= image_tag("forum/misc/tree_ltr.gif", :class => "inlineimg", :style => "position:relative; top:7px;")  %> Expires
+            <%= image_tag("/assets/forum/misc/tree_ltr.gif", :class => "inlineimg", :style => "position:relative; top:7px;")  %> Expires
             <%= f.date_select :expires, :order => [:month, :day, :year], :start_year => Time.now.year, :default => 5.days.from_now %>
             (Current Date: <%= time_tag DateTime.now, :format =>'%B %d, %y' %>)
           </div>

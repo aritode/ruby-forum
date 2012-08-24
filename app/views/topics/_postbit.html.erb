@@ -30,8 +30,8 @@
     &nbsp;
   </td>
   <td class="alt1" align="right" style="border: 1px solid #D1D1E1; border-left: 0px; border-top: 0px">
-    <%= link_to image_tag("forum/buttons/edit.gif"), edit_post_path(post) %>
-    <%= link_to image_tag("forum/buttons/quote.gif"), new_post_path(:topic_id => @topic.id, :quote => post.id) %>
+    <%= link_to image_tag("/assets/forum/buttons/edit.gif"), edit_post_path(post) %>
+    <%= link_to image_tag("/assets/forum/buttons/quote.gif"), new_post_path(:topic_id => @topic.id, :quote => post.id) %>
     
     <%= link_to "x", post, :confirm => 'Are you sute?', :method => :delete %>
   </td>

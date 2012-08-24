@@ -6,12 +6,12 @@
   <td class="alt1" width="100%">
       <div class="navbar" style="font-size:10pt">
         <% if is_forum_home? %>
-          <%= link_to image_tag("forum/misc/navbits_start.gif"), root_path %> <strong><%= content_for?(:title) ? yield(:title) : "Untitled" %></strong>
+          <%= link_to image_tag("/assets/forum/misc/navbits_start.gif"), root_path %> <strong><%= content_for?(:title) ? yield(:title) : "Untitled" %></strong>
         <% else %>
           <table cellpadding="0" cellspacing="0" border="0">
           <tr valign="bottom">
             <td>
-              <%= link_to image_tag("forum/misc/navbits_start.gif", :title => "Go Back"), "", :onclick => "history.back(1); return false;" %>
+              <%= link_to image_tag("/assets/forum/misc/navbits_start.gif", :title => "Go Back"), "", :onclick => "history.back(1); return false;" %>
             </td>
             <td>&nbsp;</td>
             <td width="100%">
@@ -20,7 +20,7 @@
           </tr>
           <tr>
             <td class="navbar" style="font-size:10pt; padding-top:1px" colspan="3">
-              <%= link_to image_tag("forum/misc/navbits_finallink_ltr.gif", :title => "Reload the page") %>
+              <%= link_to image_tag("/assets/forum/misc/navbits_finallink_ltr.gif", :title => "Reload the page") %>
               <strong><%= content_for?(:title) ? yield(:title) : "Untitled" %></strong>
             </td>
           </tr>
