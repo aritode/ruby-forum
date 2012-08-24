@@ -32,7 +32,7 @@
           <td>
             <div><strong><%= f.label :parent_id, "Parent Forum" %></strong></div>
           </td>
-          <td align="right"><%= select_tag :parent_id, construct_forum_chooser_options(@forums, @forum.parent_id), :prompt => "No parent forum" %></td>
+          <td align="right"><%= select_tag :parent_id, build_forum_chooser_options(@forums, @forum.parent_id), :prompt => "No parent forum" %></td>
         </tr>
         <tr>
           <td colspan="2" class="table-category">

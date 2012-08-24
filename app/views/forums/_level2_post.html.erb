@@ -1,37 +1,37 @@
 <tr align="center">
-<td class="alt1Active" colspan="2" align="left" id="f115">
-  <table cellpadding="0" cellspacing="0" border="0">
-  <tr>
-    <td><%= image_tag "forum/icons/forum_old.gif" %></td>
-    <td>&nbsp;</td>
-    <td>
-      <div><strong><%= link_to h(child.title), forum_path(child.id) %></strong></div>
-      <div class="smallfont"><%=h child.description %></div>
-    </td>
-  </tr>
-  </table>
-</td>
-<td class="alt2">
-  <div class="smallfont" align="left">
-    <% if child.most_recent_post %>
-      <div>
-        <span style="white-space:nowrap">
-          <strong><%= link_to "#{child.most_recent_post.title}", "/topics/#{child.most_recent_post.id}" %></strong>
-        </span>
-      </div>
-      <div style="white-space:nowrap">
-        by <%= link_to child.most_recent_post.user.username, "/users/#{child.most_recent_post.last_poster_id}" %>
-      </div>
-      <div align="right" style="white-space:nowrap">
-        <%= time_tag child.most_recent_post.last_post_at, :format =>'%m-%d-%y %l:%M %p' %>
-      </div>
-    <% else %>
-      <div align="center" style="white-space:nowrap">
-        -
-      </div>
-    <% end %>
-  </div>
-</td>
-<td class="alt1"><%= child.number_of_topics %></td>
-<td class="alt2"><%= child.number_of_post %></td>
-  </tr>
+  <td class="alt1Active" colspan="2" align="left" id="f115">
+    <table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td><%= image_tag "forum/icons/forum_old.gif" %></td>
+      <td>&nbsp;</td>
+      <td>
+        <div><strong><%= link_to h(child.title), forum_path(child.id) %></strong></div>
+        <div class="smallfont"><%=h child.description %></div>
+      </td>
+    </tr>
+    </table>
+  </td>
+  <td class="alt2">
+    <div class="smallfont" align="left">
+      <% if child.topic_count? %>
+        <div>
+          <span style="white-space:nowrap">
+            <strong><%= link_to "#{child.last_topic_title}", topic_path(child.last_topic_id) %></strong>
+          </span>
+        </div>
+        <div style="white-space:nowrap">
+          by <%= link_to child.last_post_user_id, user_path(child.last_post_user_id) %>
+        </div>
+        <div align="right" style="white-space:nowrap">
+          <%= time_tag child.last_post_at, :format =>'%m-%d-%y %l:%M %p' %>
+        </div>
+      <% else %>
+        <div align="center" style="white-space:nowrap">
+          -
+        </div>
+      <% end %>
+    </div>
+  </td>
+  <td class="alt1"><%= child.topic_count %></td>
+  <td class="alt2"><%= child.reply_count %></td>
+</tr>

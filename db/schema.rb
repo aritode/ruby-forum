@@ -23,9 +23,9 @@ ActiveRecord::Schema.define(:version => 20120823103528) do
     t.integer  "topic_count",       :default => 0
     t.integer  "reply_count",       :default => 0
     t.integer  "last_post_id"
-    t.integer  "last_post_at"
+    t.datetime "last_post_at"
     t.integer  "last_post_user_id"
-    t.integer  "last_topic_at"
+    t.datetime "last_topic_at"
     t.integer  "last_topic_id"
     t.string   "last_topic_title"
     t.datetime "created_at",                       :null => false

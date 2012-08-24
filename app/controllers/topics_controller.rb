@@ -86,10 +86,10 @@ class TopicsController < ApplicationController
     else
       @topic = Topic.new(
         :title          => params[:topic][:title], 
-        :last_poster_id => current_user.id,
-        :last_post_at   => Time.new,
         :forum_id       => params[:topic][:forum_id], 
-        :user_id        => current_user.id
+        :user_id        => current_user.id,
+        :last_poster_id => current_user.id,
+        :last_post_at   => Time.new
       )
 
       # save the topic and post object into the database
@@ -101,6 +101,15 @@ class TopicsController < ApplicationController
         )
 
         if @post.save
+          @forum = Forum.find(@topic.forum_id)
+          @forum.topic_count       = @forum.topic_count + 1
+          @forum.last_post_id      = @post.id
+          @forum.last_post_at      = Time.new
+          @forum.last_post_user_id = current_user.id
+          @forum.last_topic_id     = @topic.id
+          @forum.last_topic_title  = @topic.title
+          @forum.save
+
           redirect_to topic_path(@topic.id)
         end
       else
