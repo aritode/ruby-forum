@@ -22,7 +22,27 @@ class Forum < ActiveRecord::Base
   #
   # @parm String  A comma seperated list of forum ids to fetch from the database
   def fetch_forums_by_ids(ids)
-    return Forum.all(:conditions => ['id IN(?)', ids])
+    return Forum.all :conditions => ['id IN(?)', ids]
   end
 
+  # Returns the last topic a forum has (including sub-forums)
+  def last_topic
+    Topic.first(
+      :order      => 'last_post_at DESC', 
+      :conditions => ['forum_id IN(?)', self.child_ids << self.id])
+  end
+  
+  # Returns the total number of replies a forum has (including sub-forums).
+  def total_posts
+    Forum.calculate :sum, :post_count, 
+      :select     => :total_post, 
+      :conditions => ['id IN(?)', self.child_ids << self.id]
+  end
+
+  # Returns the total number of topics a forum has (including sub-forums).
+  def total_topics
+    Forum.calculate :sum, :topic_count, 
+      :select     => :topic_count, 
+      :conditions => ['id IN(?)', self.child_ids << self.id]
+  end
 end

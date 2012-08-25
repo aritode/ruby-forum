@@ -13,17 +13,17 @@
   </td>
   <td class="alt2">
     <div class="smallfont" align="left">
-      <% if child.topic_count? %>
+      <% if child.last_topic %>
         <div>
           <span style="white-space:nowrap">
-            <strong><%= link_to "#{child.last_topic_title}", topic_path(child.last_topic_id) %></strong>
+            <strong><%= link_to "#{child.last_topic.title}", "/topics/#{child.last_topic.id}" %></strong>
           </span>
         </div>
         <div style="white-space:nowrap">
-          by <%= link_to child.last_post_user_id, user_path(child.last_post_user_id) %>
+          by <%= link_to child.last_topic.user.username, "/users/#{child.last_topic.last_poster_id}" %>
         </div>
         <div align="right" style="white-space:nowrap">
-          <%= time_tag child.last_post_at, :format =>'%m-%d-%y %l:%M %p' %>
+          <%= time_tag child.last_topic.last_post_at, :format =>'%m-%d-%y %l:%M %p' %>
         </div>
       <% else %>
         <div align="center" style="white-space:nowrap">
