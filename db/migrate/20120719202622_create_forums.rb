@@ -1,13 +1,52 @@
 class CreateForums < ActiveRecord::Migration
-  def self.up
+  def change
     create_table :forums do |t|
-      t.string :name
-      t.text :description
+      # The title of the forum
+      t.string    :title
+      
+      # The forum's main description
+      t.text      :description
+
+      # The link the forum should redirect the user to
+      t.string    :link
+      
+      # The forum's hierarchical data (parent / child forum relationship)
+      t.string    :ancestry
+      
+      # The forum's settings and permissions stored as bitfields
+      t.integer   :options
+
+      # The order the forum should be shown within it's tree
+      t.integer   :display_order, :default => 0
+      
+      # The total number of topics a fourm contains (including child forums)
+      t.integer   :topic_count,   :default => 0
+      
+      # The total number of post a fourm contains (including child forums)
+      t.integer   :post_count,    :default => 0
+      
+      # The id of the last post the forum contains
+      t.integer   :last_post_id
+
+      # The date and time someone last posted in the forum
+      t.datetime  :last_post_at
+
+      # The id of the user to last make a post in the forum
+      t.integer   :last_post_user_id
+
+      # The date and time of the last topic posted in the forum
+      t.datetime  :last_topic_at
+
+      # The id of the last topic the forum contains
+      t.integer   :last_topic_id
+
+      # The title of the last topic made in the forum
+      t.string    :last_topic_title
+
+      # Rail's update_at and created_at columns
       t.timestamps
     end
-  end
-
-  def self.down
-    drop_table :forums
+    
+    add_index :forums, :ancestry
   end
 end

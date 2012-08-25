@@ -2,7 +2,7 @@ class Forum < ActiveRecord::Base
   include Bitfields
 
   attr_accessible :title, :description, :parent_id, :can_contain_topics, :is_active, :allow_posting, 
-                  :display_order, :ancestry, :options, :reply_count, :last_post_id, :last_post_at, 
+                  :display_order, :ancestry, :options, :post_count, :last_post_id, :last_post_at, 
                   :last_post_user_id, :last_topic_at, :last_topic_id, :last_topic_title
   
   has_many :topics, :dependent => :destroy

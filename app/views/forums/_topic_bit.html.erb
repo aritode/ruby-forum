@@ -5,12 +5,12 @@
     <div>
       <span style="float:right">
         <%= image_tag("/assets/forum/icons/moderated_small.gif") if !topic.visible? %>
-        <%= image_tag("/assets/forum/icons/sticky.gif") if topic.stickied? %>
+        <%= image_tag("/assets/forum/icons/sticky.gif") if topic.sticky? %>
         <%= image_tag("/assets/forum/icons/trashcan_small.gif") if topic.visible == 2 %>
       </span>
 
       <%= "Moderated:" if !topic.visible? %>
-      <%= "Sticky:" if topic.stickied? and !topic.redirect? and topic.visible? %>
+      <%= "Sticky:" if topic.sticky? and !topic.redirect? and topic.visible? %>
       <%= "Moved:"  if topic.redirect? and topic.visible? %>
 
       <% if topic.visible == 2 %>

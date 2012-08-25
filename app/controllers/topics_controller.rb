@@ -101,6 +101,13 @@ class TopicsController < ApplicationController
         )
 
         if @post.save
+          @user = User.find(current_user.id)
+          @user.update_attributes(
+            :post_count   => @user.post_count + 1,
+            :last_post_at => Time.now,
+            :last_post_id => @post.id
+          )
+
           @forum = Forum.find(@topic.forum_id)
           @forum.topic_count       = @forum.topic_count + 1
           @forum.last_post_id      = @post.id
@@ -146,7 +153,7 @@ class TopicsController < ApplicationController
       # stick and unstick topics
       when "stick", "unstick"
         params[:topic_ids].each do |k,v|
-          Topic.update(k, :stickied => params[:do] == 'stick' ? 1 : 0)
+          Topic.update(k, :sticky => params[:do] == 'stick' ? 1 : 0)
         end
         redirect_to forum_url(params[:forum_id])
 

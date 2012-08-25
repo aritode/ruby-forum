@@ -81,14 +81,14 @@ class PostsController < ApplicationController
 
         @user = User.find(current_user.id)
         @user.update_attributes(
-          :post_count  => @user.post_count + 1,
-          :lastpost_at => Time.now,
-          :lastpost_id => @post.id
+          :post_count   => @user.post_count + 1,
+          :last_post_at => Time.now,
+          :last_post_id => @post.id
         )
 
         @forum = Forum.find(@topic.forum_id)
         @forum.update_attributes(
-          :reply_count        => @forum.reply_count + 1,
+          :post_count         => @forum.post_count + 1,
           :last_post_id       => @post.id,
           :last_post_at       => Time.now,
           :last_post_user_id  => current_user.id,
