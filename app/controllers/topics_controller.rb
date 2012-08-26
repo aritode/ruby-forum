@@ -205,6 +205,7 @@ class TopicsController < ApplicationController
       @this_forum.topic_count       = @this_forum.topic_count - 1
       @this_forum.post_count        = @this_forum.post_count  - (@topic.posts.count - 1)
       
+      # check and see if we need to update the last_topic information
       if @this_forum.last_topic
         @this_forum.last_post_id      = @this_forum.last_topic.id
         @this_forum.last_post_at      = @this_forum.last_topic.last_post_at
