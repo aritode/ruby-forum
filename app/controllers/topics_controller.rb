@@ -178,11 +178,10 @@ class TopicsController < ApplicationController
   def move
     @this_forum = Forum.find(params[:move][:forum_id]);
     @dest_forum = Forum.find(params[:move][:destination_forum]);
-    #raise @this_forum.last_topic.inspect
     
     # loop through all the selected topics
     params[:move][:topic_ids].split(/, ?/).each do |topic_id|
-      # fetch the topic
+      # fetch the current topic
       @topic = Topic.find(topic_id);
 
       # if the user specifies, leave a dupe thread behind and use it as a redirect
