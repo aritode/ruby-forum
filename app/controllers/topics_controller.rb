@@ -176,31 +176,46 @@ class TopicsController < ApplicationController
   
   # Move one or more topics to a another forum with or without redirects
   def move
+    @this_forum = Forum.find(params[:move][:forum_id]);
+    @dest_forum = Forum.find(params[:move][:destination_forum]);
+    #raise @this_forum.last_topic.inspect
+    
     # loop through all the selected topics
     params[:move][:topic_ids].split(/, ?/).each do |topic_id|
+      # fetch the topic
+      @topic = Topic.find(topic_id);
 
-      # check if we're leaving a redirect
+      # if the user specifies, leave a dupe thread behind and use it as a redirect
       if params[:move][:redirect] != "none"
-
-        # check if the redirect expires
-        if params[:move][:redirect] == "expires"
-          expires_at = DateTime.new(
-            params[:move]["expires(1i)"].to_i, 
-            params[:move]["expires(2i)"].to_i, 
-            params[:move]["expires(3i)"].to_i
-          )
-        end
-
-        # create a new topic to pose as our redirect thread
-        expired          = Topic.find(topic_id).dup
-        expired.forum_id = params[:move][:forum_id]
-        expired.redirect = topic_id
-        expired.expires  = expires_at if expires_at
-        expired.save
+        trail          = @topic.dup
+        trail.redirect = @topic.id
+        trail.expires  = get_expired params[:move] if params[:move][:redirect] == "expires"
+        trail.forum_id = params[:move][:forum_id]
+        trail.save
       end
       
       # move the thread to the destination forum
-      Topic.update(topic_id, :forum_id => params[:move][:destination_forum])
+      @topic.forum_id  = @dest_forum.id
+      @topic.save
+
+      # update the destination forum stats & info
+      @dest_forum.topic_count = @dest_forum.topic_count + 1
+      @dest_forum.post_count  = @dest_forum.post_count  + (@topic.posts.count - 1)
+      @dest_forum.save
+      
+      @this_forum.topic_count       = @this_forum.topic_count - 1
+      @this_forum.post_count        = @this_forum.post_count  - (@topic.posts.count - 1)
+      
+      if @this_forum.last_topic
+        @this_forum.last_post_id      = @this_forum.last_topic.id
+        @this_forum.last_post_at      = @this_forum.last_topic.last_post_at
+        @this_forum.last_post_user_id = @this_forum.last_topic.last_poster_id
+        @this_forum.last_topic_id     = @this_forum.last_topic.id
+        @this_forum.last_topic_at     = @this_forum.last_topic.created_at
+        @this_forum.last_topic_title  = @this_forum.last_topic.title
+      end
+
+      @this_forum.save
     end
     
     redirect_to forum_url(params[:move][:forum_id])
@@ -307,4 +322,19 @@ class TopicsController < ApplicationController
 
     redirect_to forum_url(params[:merge][:forum_id])
   end
+
+private
+  
+  def get_expired datetime
+    DateTime.new(
+      datetime["expires(1i)"].to_i, 
+      datetime["expires(2i)"].to_i, 
+      datetime["expires(3i)"].to_i
+    )
+  end
+  
+  def method_name
+    
+  end
+
 end

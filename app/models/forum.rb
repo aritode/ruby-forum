@@ -29,7 +29,7 @@ class Forum < ActiveRecord::Base
   def last_topic
     Topic.first(
       :order      => 'last_post_at DESC', 
-      :conditions => ['forum_id IN(?)', self.child_ids << self.id])
+      :conditions => "forum_id in(#{(self.child_ids << self.id).join(",")}) and redirect = 0")
   end
   
   # Returns the total number of replies a forum has (including sub-forums).
