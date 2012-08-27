@@ -1,10 +1,11 @@
 class Forum < ActiveRecord::Base
   include Bitfields
 
-  attr_accessible :title, :description, :parent_id, :can_contain_topics, :is_active, :allow_posting, 
-                  :display_order, :ancestry, :options, :post_count, :last_post_id, :last_post_at, 
-                  :last_post_user_id, :last_topic_at, :last_topic_id, :last_topic_title
-  
+  attr_accessible :title, :description, :parent_id, :display_order, :ancestry, :options, :post_count, 
+                  :topic_count,
+                  # forum permissions
+                  :can_contain_topics, :is_active, :allow_posting
+                  
   has_many :topics, :dependent => :destroy
 
   # includes methods from the "ancestry" gem

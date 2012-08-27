@@ -89,13 +89,7 @@ class PostsController < ApplicationController
 
         @forum = Forum.find(@topic.forum_id)
         @forum.update_attributes(
-          :post_count         => @forum.post_count + 1,
-          :last_post_id       => @post.id,
-          :last_post_at       => Time.now,
-          :last_post_user_id  => current_user.id,
-          :last_topic_at      => Time.now,
-          :last_topic_id      => params[:post][:topic_id],
-          :last_topic_title   => @topic.title
+          :post_count => @forum.post_count + 1,
         )
 
         redirect_to topic_url @post.topic_id
