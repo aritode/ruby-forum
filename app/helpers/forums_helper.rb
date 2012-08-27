@@ -108,4 +108,41 @@ module ForumsHelper
     return options
   end
   
+  # Returns an image_tag with the topic's proper status icon, which depends on a number of conditions,
+  # like was the topic moved, is it closed, did the current user post in it, etc. All factors that 
+  # chage the status icon shown.
+  #
+  # @parm Topic   The topic object we're checking against
+  def build_status_icon topic
+    file = ""
+    
+    # show that user replied?
+    if logged_in?
+      topic.posts.each do |post|
+        if post.user_id == current_user.id
+          file = "_dot"
+        end
+      end
+    end
+    
+    # show hot folder?
+    if topic.replies >= 15 && topic.views >= 150
+      file << "_hot"
+    end
+    
+    # is the topic locked?
+    if !topic.open?
+      file << "_lock"
+    end
+    
+    # todo: add '_new' icon if the user hasn't viewed or read the thread. Requires the forum read 
+    # feature to be implemented first.
+    
+    # check if topic is a redirect
+    if topic.redirect?
+      file = "_moved"
+    end
+    
+    image_tag "/assets/forum/icons/thread#{file}.gif"
+  end
 end

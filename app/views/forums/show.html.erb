@@ -78,4 +78,30 @@
   <!-- /controls below thread list -->
   <% end %>
 
+  <br />
+
+  <!-- icon key -->
+  <table cellpadding="2" cellspacing="0" border="0">
+  <tr>
+    <td><%= image_tag("/assets/forum/icons/thread_new.gif", :title => "New posts")  %></td>
+    <td class="smallfont">New posts</td>
+    <td><%= image_tag("/assets/forum/icons/thread_hot_new.gif", :title => "More than 15 replies or 150 views")  %></td>
+    <td class="smallfont">Hot thread with new posts</td>
+  </tr>
+  <tr>
+    <td><%= image_tag("/assets/forum/icons/thread.gif", :title => "No new posts")  %></td>
+    <td class="smallfont">No new posts</td>
+    <td><%= image_tag("/assets/forum/icons/thread_hot.gif", :title => "More than 15 replies or 150 views")  %></td>
+    <td class="smallfont">Hot thread with no new posts</td>
+  </tr>
+  <tr>
+    <td><%= image_tag("/assets/forum/icons/thread_lock.gif", :title => "Closed Thread")  %></td>
+    <td class="smallfont">Thread is closed</td>
+    <td><%= image_tag("/assets/forum/icons/thread_dot.gif", :title => "Thread Contains a Message Written By You")  %></td>
+    <td class="smallfont">You have posted in this thread</td>
+  </tr>
+  </table>
+  <!-- / icon key -->
+
+
 <% end %>
