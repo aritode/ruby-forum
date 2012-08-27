@@ -45,7 +45,7 @@ module ForumsHelper
     link_to(text, :sort => sort, 
       :order      => params[:order]     == 'desc' ? 'asc' : 'desc', 
       :page       => params[:page]      ||= 1, 
-      :daysprune  => params[:daysprune] ||= 1
+      :daysprune  => params[:daysprune] ||= -1
     )
   end
   

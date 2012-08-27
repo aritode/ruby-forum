@@ -120,14 +120,15 @@
             ["Number of Replies", "replies"],
             ["Number of Views", "views"],
             ["Topic Starter", "username"]
-          ], 'last_post_at')%>
+          ], params[:sort] ? params[:sort] : 'last_post_at')%>
+          
         </td>
         <td class="smallfont" style="padding-right:6px">
           <div><%= label_tag :order, "Sort Order" %></div>
           <%= select_tag "order", options_for_select([
             ["Ascending", "asc"], 
             ["Descending", "desc"]
-          ], 'desc')%>
+          ], params[:order] ? params[:order] : 'desc')%>
         </td>
         <td class="smallfont">
           <div><%= label_tag :daysprune, "From The" %></div>
@@ -144,7 +145,8 @@
             ["Last 100 Days", "100"], 
             ["Last Year", "365"], 
             ["Beginning", "-1"]
-          ], '-1')%>
+          ], params[:daysprune] ? params[:daysprune] : '-1') %>
+          
         </td>
       </tr>
       <tr valign="bottom">

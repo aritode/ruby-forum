@@ -9,7 +9,7 @@ class ForumsController < ApplicationController
     size  = 25
     page  = params[:page]      || 1
     sort  = params[:sort]      || "last_post_at"
-    days  = params[:daysprune] || 0
+    days  = params[:daysprune] || "-1"
     order = params[:order]     || "desc"
     
     # fetch the topics
