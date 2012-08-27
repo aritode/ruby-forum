@@ -1,7 +1,6 @@
 class TopicsController < ApplicationController
   # Show the topic and all post associated with it
   def show
-    # grab the topic
     @topic = Topic.find(params[:id])
     
     # check if we need to redirect the user
@@ -300,6 +299,7 @@ class TopicsController < ApplicationController
   
 private
   
+  # converts the submitted datetime params into a DateTime object
   def get_expired datetime
     DateTime.new(
       datetime["expires(1i)"].to_i, 
