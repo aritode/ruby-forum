@@ -13,6 +13,9 @@ class CreatePosts < ActiveRecord::Migration
       # The id of the user who made the post
       t.integer  :user_id
 
+      # The date and time of the user who last posted in the topic
+      t.datetime :last_post_at
+
       # A post can be placed into "3" types of states.
       #
       #   0 = The topic needs to be approved by a staff member.

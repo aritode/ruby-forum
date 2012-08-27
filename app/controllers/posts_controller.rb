@@ -67,7 +67,8 @@ class PostsController < ApplicationController
       @post = Post.new(
         :content  => params[:post][:content], 
         :topic_id => params[:post][:topic_id], 
-        :user_id  => current_user.id
+        :user_id  => current_user.id,
+        :last_post_at   => Time.now
       )
 
       # save the post and update the users and forum stats

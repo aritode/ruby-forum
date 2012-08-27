@@ -60,12 +60,8 @@ class TopicsController < ApplicationController
     check_forum_permissions :can_contain_topics, params[:topic][:forum_id]
     check_forum_permissions :allow_posting     , params[:topic][:forum_id]
     check_user_permissions  :can_post_threads
-
-    # preview the post
-    #
-    # Note: the "render :action => new" doesn't actually run any of the code in the "new" action, so
-    # I'm forced to copy and paste the code from that action. This isn't ideal since it breaks the DRY
-    # principle. Need to research to see if there's a better way to show post previews.
+    
+    # check if previewing 
     if !params[:preview].nil?
       @topic  = Topic.new(:title => params[:topic][:title], :forum_id => params[:topic][:forum_id])
       @post   = Post.new(:content => params[:post][:content])
@@ -81,23 +77,22 @@ class TopicsController < ApplicationController
       end
 
       render :action => "new"
-
-    # not a preview, create a new topic
+      
+    # actual submission
     else
       @topic = Topic.new(
-        :title          => params[:topic][:title], 
-        :forum_id       => params[:topic][:forum_id], 
-        :user_id        => current_user.id,
-        :last_poster_id => current_user.id,
-        :last_post_at   => Time.new
+        :title        => params[:topic][:title], 
+        :forum_id     => params[:topic][:forum_id], 
+        :user_id      => current_user.id,
+        :last_post_at => Time.new
       )
 
-      # save the topic and post object into the database
       if @topic.save
         @post = Post.new(
           :content  => params[:post][:content], 
           :topic_id => @topic.id, 
-          :user_id  => current_user.id
+          :user_id  => current_user.id,
+          :last_post_at => Time.new
         )
 
         if @post.save
@@ -117,7 +112,10 @@ class TopicsController < ApplicationController
       else
         render :action => 'new'
       end
+      
     end
+    
+    
   end
 
   # Administrative options for managing topics
