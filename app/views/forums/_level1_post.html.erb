@@ -10,17 +10,17 @@
   </td>
   <td class="alt2">
     <div class="smallfont" align="left">
-      <% if child.last_topic %>
+      <% if child.last_post %>
         <div>
           <span style="white-space:nowrap">
-            <strong><%= link_to "#{child.last_topic.title}", "/topics/#{child.last_topic.id}" %></strong>
+            <strong><%= link_to "#{child.last_post.title}", "/topics/#{child.last_post.id}" %></strong>
           </span>
         </div>
         <div style="white-space:nowrap">
-          by <%= link_to child.last_topic.user.username, "/users/#{child.last_topic.last_poster_id}" %>
+          by <%= link_to child.last_post.user.username, "/users/#{child.last_post.last_poster_id}" %>
         </div>
         <div align="right" style="white-space:nowrap">
-          <%= time_tag child.last_topic.last_post_at, :format =>'%m-%d-%y %l:%M %p' %>
+          <%= time_tag child.last_post.last_post_at, :format =>'%m-%d-%y %l:%M %p' %>
         </div>
       <% else %>
         <div align="center" style="white-space:nowrap">

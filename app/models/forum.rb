@@ -26,8 +26,8 @@ class Forum < ActiveRecord::Base
     return Forum.all :conditions => ['id IN(?)', ids]
   end
 
-  # Returns the last topic a forum has (including sub-forums)
-  def last_topic
+  # Returns the last post a forum has (including sub-forums)
+  def last_post
     Topic.where(['forum_id in(?)', (self.child_ids << self.id)])
          .where(['redirect = ?', 0]) # don't include redirect topics
          .where(['visible <> ?', 2]) # don't include soft delete topics

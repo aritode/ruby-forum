@@ -342,7 +342,7 @@ private
     @this_forum.topic_count = @this_forum.topic_count - 1
     @this_forum.post_count  = @this_forum.post_count  - (@topic.posts.count - 1)
     
-    # save those forum changes so our last_topic calls will up-to-date 
+    # save the changes
     @this_forum.save
     @dest_forum.save
   end
