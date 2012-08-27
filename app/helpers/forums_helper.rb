@@ -126,7 +126,7 @@ module ForumsHelper
     end
     
     # show hot folder?
-    if topic.replies >= 15 && topic.views >= 150
+    if topic.replies >= 15 || topic.views >= 150
       file << "_hot"
     end
     
