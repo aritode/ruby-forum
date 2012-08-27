@@ -25,24 +25,6 @@ class CreateForums < ActiveRecord::Migration
       # The total number of post a fourm contains (including child forums)
       t.integer   :post_count,    :default => 0
       
-      # The id of the last post the forum contains
-      t.integer   :last_post_id
-
-      # The date and time someone last posted in the forum
-      t.datetime  :last_post_at
-
-      # The id of the user to last make a post in the forum
-      t.integer   :last_post_user_id
-
-      # The date and time of the last topic posted in the forum
-      t.datetime  :last_topic_at
-
-      # The id of the last topic the forum contains
-      t.integer   :last_topic_id
-
-      # The title of the last topic made in the forum
-      t.string    :last_topic_title
-
       # Rail's update_at and created_at columns
       t.timestamps
     end

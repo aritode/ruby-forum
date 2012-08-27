@@ -19,17 +19,11 @@ ActiveRecord::Schema.define(:version => 20120810071154) do
     t.string   "link"
     t.string   "ancestry"
     t.integer  "options"
-    t.integer  "display_order",     :default => 0
-    t.integer  "topic_count",       :default => 0
-    t.integer  "post_count",        :default => 0
-    t.integer  "last_post_id"
-    t.datetime "last_post_at"
-    t.integer  "last_post_user_id"
-    t.datetime "last_topic_at"
-    t.integer  "last_topic_id"
-    t.string   "last_topic_title"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.integer  "display_order", :default => 0
+    t.integer  "topic_count",   :default => 0
+    t.integer  "post_count",    :default => 0
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   add_index "forums", ["ancestry"], :name => "index_forums_on_ancestry"

@@ -82,7 +82,7 @@ class TopicsController < ApplicationController
 
       render :action => "new"
 
-    # not a preview, create a new topic object
+    # not a preview, create a new topic
     else
       @topic = Topic.new(
         :title          => params[:topic][:title], 
@@ -109,12 +109,7 @@ class TopicsController < ApplicationController
           )
 
           @forum = Forum.find(@topic.forum_id)
-          @forum.topic_count       = @forum.topic_count + 1
-          @forum.last_post_id      = @post.id
-          @forum.last_post_at      = Time.new
-          @forum.last_post_user_id = current_user.id
-          @forum.last_topic_id     = @topic.id
-          @forum.last_topic_title  = @topic.title
+          @forum.topic_count = @forum.topic_count + 1
           @forum.save
 
           redirect_to topic_path(@topic.id)
@@ -177,16 +172,6 @@ class TopicsController < ApplicationController
           @forum.topic_count = @forum.topic_count + 1;
           @forum.post_count  = @forum.post_count + @topic.replies;
           
-          # update last topic info
-          if @forum.last_topic
-            @forum.last_post_id      = @forum.last_topic.id
-            @forum.last_post_at      = @forum.last_topic.last_post_at
-            @forum.last_post_user_id = @forum.last_topic.last_poster_id
-            @forum.last_topic_id     = @forum.last_topic.id
-            @forum.last_topic_at     = @forum.last_topic.created_at
-            @forum.last_topic_title  = @forum.last_topic.title
-          end
-          
           @forum.save
         end
 
@@ -202,48 +187,19 @@ class TopicsController < ApplicationController
     end
   end
   
-  # Move one or more topics to a another forum with or without redirects
+  # Move one or more topics to a another forum with or without trailing redirects
   def move
-    @this_forum = Forum.find(params[:move][:forum_id]);
-    @dest_forum = Forum.find(params[:move][:destination_forum]);
-    
-    # loop through all the selected topics
     params[:move][:topic_ids].split(/, ?/).each do |topic_id|
-      # fetch the current topic
-      @topic = Topic.find(topic_id);
-
-      # if the user specifies, leave a dupe thread behind and use it as a redirect
+      # leave a dupe thread behind and use it as a redirect
       if params[:move][:redirect] != "none"
-        trail          = @topic.dup
-        trail.redirect = @topic.id
+        trail          = Topic.find(topic_id).dup
+        trail.redirect = topic_id
         trail.expires  = get_expired params[:move] if params[:move][:redirect] == "expires"
         trail.forum_id = params[:move][:forum_id]
         trail.save
       end
       
-      # move the thread to the destination forum
-      @topic.forum_id  = @dest_forum.id
-      @topic.save
-
-      # update the destination forum stats & info
-      @dest_forum.topic_count = @dest_forum.topic_count + 1
-      @dest_forum.post_count  = @dest_forum.post_count  + (@topic.posts.count - 1)
-      @dest_forum.save
-      
-      @this_forum.topic_count = @this_forum.topic_count - 1
-      @this_forum.post_count  = @this_forum.post_count  - (@topic.posts.count - 1)
-      
-      # check and see if we need to update the last_topic information
-      if @this_forum.last_topic
-        @this_forum.last_post_id      = @this_forum.last_topic.id
-        @this_forum.last_post_at      = @this_forum.last_topic.last_post_at
-        @this_forum.last_post_user_id = @this_forum.last_topic.last_poster_id
-        @this_forum.last_topic_id     = @this_forum.last_topic.id
-        @this_forum.last_topic_at     = @this_forum.last_topic.created_at
-        @this_forum.last_topic_title  = @this_forum.last_topic.title
-      end
-
-      @this_forum.save
+      move_topic topic_id, params[:move][:destination_forum]
     end
     
     redirect_to forum_url(params[:move][:forum_id])
@@ -275,17 +231,6 @@ class TopicsController < ApplicationController
         @forum = Forum.find(@topic.forum_id)
         @forum.topic_count = @forum.topic_count - 1;
         @forum.post_count  = @forum.post_count - @topic.replies;
-
-        # check and see if we need to update the last_topic information
-        if @forum.last_topic
-          @forum.last_post_id      = @forum.last_topic.id
-          @forum.last_post_at      = @forum.last_topic.last_post_at
-          @forum.last_post_user_id = @forum.last_topic.last_poster_id
-          @forum.last_topic_id     = @forum.last_topic.id
-          @forum.last_topic_at     = @forum.last_topic.created_at
-          @forum.last_topic_title  = @forum.last_topic.title
-        end
-
         @forum.save
         
         # switch between delete types
@@ -381,6 +326,27 @@ private
       datetime["expires(2i)"].to_i, 
       datetime["expires(3i)"].to_i
     )
+  end
+  
+  # moves a topic to a different forum and updates the forum stats & last topic info accordingly
+  def move_topic topic_id, forum_id
+    @topic      = Topic.find(topic_id)
+    @this_forum = Forum.find(@topic.forum_id)
+    @dest_forum = Forum.find(forum_id)
+    
+    # update the topic's forum_id
+    @topic.forum_id = forum_id
+    @topic.save
+    
+    # update the destination forum stats & info
+    @dest_forum.topic_count = @dest_forum.topic_count + 1
+    @dest_forum.post_count  = @dest_forum.post_count  + (@topic.posts.count - 1)
+    @this_forum.topic_count = @this_forum.topic_count - 1
+    @this_forum.post_count  = @this_forum.post_count  - (@topic.posts.count - 1)
+    
+    # save those forum changes so our last_topic calls will up-to-date 
+    @this_forum.save
+    @dest_forum.save
   end
   
 end
