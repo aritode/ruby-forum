@@ -156,7 +156,7 @@ class TopicsController < ApplicationController
           # fetch the topic
           @topic = Topic.find(topic_id)
           
-          # skip if this topc is already visible
+          # skip if this topic is already visible
           if @topic.visible == 1
             next
           end
@@ -205,9 +205,7 @@ class TopicsController < ApplicationController
   
   # Soft / hard delete one or more topics
   def delete
-    # loop through all the selected topics
     params[:delete][:topic_ids].split(/, ?/).each do |topic_id|
-      # fetch the current topic
       @topic = Topic.find(topic_id)
 
       # skip if this topic has already been deleted
@@ -215,7 +213,7 @@ class TopicsController < ApplicationController
         next
       end
 
-      # destroy the topic if it's a redirect
+      # just destroy the topic if it's a redirect
       if @topic.redirect?
         # before we delete it, update the redirect ids for all associated topics
         items = Topic.where(:redirect => @topic.id)
@@ -225,12 +223,12 @@ class TopicsController < ApplicationController
         end
         @topic.destroy
       else
-        # update forum stats
+        # update the forum stats while we still have the @topic object avaliable
         @forum = Forum.find(@topic.forum_id)
         @forum.topic_count = @forum.topic_count - 1;
         @forum.post_count  = @forum.post_count - @topic.replies;
         @forum.save
-        
+
         # switch between delete types
         case params[:delete][:type]
           # preform hard delete
