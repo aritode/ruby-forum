@@ -32,7 +32,7 @@
         <div style="padding:3px">
           <div class="fieldset">
             <div>
-              <%= f.radio_button :redirect, :none, {} %>
+              <%= f.radio_button :redirect, :none, :checked => true  %>
               <%= f.label :redirect_none, "Leave No Redirect" %>
             </div>
             <div>
@@ -40,13 +40,13 @@
               <%= f.label :redirect_perm, "Leave Permanent Redirect" %>
             </div>
             <div>
-              <%= f.radio_button :redirect, :expires, :checked => true %>
+              <%= f.radio_button :redirect, :expires %>
               <%= f.label :redirect_expires, "Leave Expiring Redirect" %>
             </div>
             
             <%= image_tag("/assets/forum/misc/tree_ltr.gif", :class => "inlineimg", :style => "position:relative; top:7px;")  %> Expires
             <%= f.date_select :expires, :order => [:month, :day, :year], :start_year => Time.now.year, :default => 5.days.from_now %>
-            (Current Date: <%= time_tag DateTime.now, :format =>'%B %d, %y' %>)
+            (Current Date: <%= time_tag DateTime.now, :format =>'%B %d, %Y' %>)
           </div>
         </div>
       </fieldset>

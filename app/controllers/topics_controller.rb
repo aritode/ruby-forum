@@ -248,72 +248,56 @@ class TopicsController < ApplicationController
     redirect_to forum_url(params[:delete][:forum_id])
   end
 
-  # Merge topics into each other
+  # Merge two or more topics into each other
   def merge
-    # fetch the destination topic
-    destination_topic = Topic.find(params[:merge][:destination_topic])
+    @dest_topic = Topic.find(params[:merge][:destination_topic])
 
     # loop through all the selected topics
     params[:merge][:topic_ids].split(/, ?/).each do |topic_id|
-
       # skip if this is the destination topic
-      if destination_topic.id == topic_id.to_i
+      if @dest_topic.id == topic_id.to_i
         next
       end
 
-      # fetch the current_topic
-      current_topic = Topic.find(topic_id)
+      @topic = Topic.find(topic_id)
+      @posts = Post.where(:topic_id => @topic.id)
+
+      # update all post their new topic destination
+      @posts.each do |item|
+        item.topic_id = @dest_topic.id
+        item.save
+      end
       
-      # update the destination stats
-      destination_topic.views   = destination_topic.views   + current_topic.views
-      destination_topic.replies = destination_topic.replies + current_topic.replies + 1
-      
-      # if we're adding redirects
+      # update the dest topic stats
+      @dest_topic.views           = @dest_topic.views + @topic.views
+      @dest_topic.replies         = @dest_topic.replies + @topic.replies + 1
+      @dest_topic.last_post_at    = @posts.last.last_post_at
+      @dest_topic.last_poster_id  = @posts.last.user_id
+      @dest_topic.save
+
+      # update current forum stats
+      @this_forum = Forum.find(params[:merge][:forum_id]);
+      @this_forum.topic_count = @this_forum.topic_count - 1
+      @this_forum.post_count  = @this_forum.post_count - @topic.replies + 1
+      @this_forum.save
+
+      # if we're leaving a redirect, use the current topic instead of creating a new one
       if params[:merge][:redirect] != "none"
-
-        # update all post associated with the current_topic
-        items = Post.where(:topic_id => current_topic.id)
-        items.each do |item|
-          item.topic_id = destination_topic.id
-          item.save
-        end
-        
-        # check if the redirect expires
-        if params[:merge][:redirect] == "expires"
-          expires_at = DateTime.new(
-            params[:merge]["expires(1i)"].to_i, 
-            params[:merge]["expires(2i)"].to_i, 
-            params[:merge]["expires(3i)"].to_i
-          )
-        end
-        
-        # use the current_topic as a redirect
-        Topic.update(current_topic.id, 
-          :redirect => destination_topic.id,
-          :expires  => expires_at ? expires_at : ""
-        )
-        
-      # else if we're adding any redirects
+        @topic.redirect = @dest_topic.id
+        @topic.expires  = get_expired params[:merge] if params[:merge][:redirect] == "expires"
+        @topic.save
       else
-        # update all post associated with the current topic to their new destination
-        items = Post.where(:topic_id => current_topic.id)
-        items.each do |item|
-          item.topic_id = destination_topic.id
-          item.save
-        end
-
-        # destroy the current topic
-        Topic.destroy(current_topic.id)
+        @topic.destroy
       end
     end
-    
-    # move destination_topic to the destination_forum
-    destination_topic.forum_id = params[:merge][:destination_forum]
-    destination_topic.save
 
+    # move destination topic to the destination forum
+    move_topic @dest_topic.id, params[:merge][:destination_forum]
+
+    # redirect the user back to the forums
     redirect_to forum_url(params[:merge][:forum_id])
   end
-
+  
 private
   
   def get_expired datetime
@@ -330,15 +314,21 @@ private
     @this_forum = Forum.find(@topic.forum_id)
     @dest_forum = Forum.find(forum_id)
     
+    # return false if already in dest forum
+    if @this_forum.id == @dest_forum.id
+      return false
+    end
+    
     # update the topic's forum_id
     @topic.forum_id = forum_id
     @topic.save
-    
-    # update the destination forum stats & info
+
+    # update the forum stats
     @dest_forum.topic_count = @dest_forum.topic_count + 1
-    @dest_forum.post_count  = @dest_forum.post_count  + (@topic.posts.count - 1)
+    @dest_forum.post_count  = @dest_forum.post_count + @topic.replies
+
     @this_forum.topic_count = @this_forum.topic_count - 1
-    @this_forum.post_count  = @this_forum.post_count  - (@topic.posts.count - 1)
+    @this_forum.post_count  = @this_forum.post_count  - @topic.replies
     
     # save the changes
     @this_forum.save

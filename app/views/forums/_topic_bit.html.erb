@@ -35,7 +35,7 @@
         <div class="smallfont" style="text-align:right; white-space:nowrap">
           <%= time_tag topic.last_post_at, :format =>'%m-%d-%y %l:%M %p' %> <br />
           by 
-          <%= link_to topic.user.username, user_path(topic.last_poster_id) %>
+          <%= link_to topic.user.username, users_path(topic.last_poster_id) %>
         </div>
       <% end %>
     </td>
