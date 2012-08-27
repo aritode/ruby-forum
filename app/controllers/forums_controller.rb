@@ -8,7 +8,7 @@ class ForumsController < ApplicationController
   def show
     size  = 25
     page  = params[:page]      || 1
-    sort  = params[:sort]      || "updated_at"
+    sort  = params[:sort]      || "last_post_at"
     days  = params[:daysprune] || 0
     order = params[:order]     || "desc"
     
@@ -17,6 +17,7 @@ class ForumsController < ApplicationController
                    .joins(:user)
                    .page(page)
                    .per(size)
+                   .order('sticky desc')
                    .order("#{sort} #{order}")
 
     @forum     = Forum.find(params[:id])
