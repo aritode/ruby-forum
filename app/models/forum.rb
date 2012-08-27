@@ -27,9 +27,10 @@ class Forum < ActiveRecord::Base
 
   # Returns the last topic a forum has (including sub-forums)
   def last_topic
-    Topic.first(
-      :order      => 'last_post_at DESC', 
-      :conditions => "forum_id in(#{(self.child_ids << self.id).join(",")}) and redirect = 0")
+    Topic.where(['forum_id in(?)', (self.child_ids << self.id)])
+         .where(['redirect = ?', 0]) # don't include redirect topics
+         .where(['visible <> ?', 2]) # don't include soft delete topics
+         .order("last_post_at DESC").first
   end
   
   # Returns the total number of replies a forum has (including sub-forums).

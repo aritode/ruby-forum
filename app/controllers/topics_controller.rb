@@ -159,9 +159,37 @@ class TopicsController < ApplicationController
 
       # undelete topics
       when "undelete"
-        params[:topic_ids].each do |k,v|
-          Topic.update(k, :visible => 1)
+        params[:topic_ids].each do |topic_id|
+          # fetch the topic
+          @topic = Topic.find(topic_id)
+          
+          # skip if this topc is already visible
+          if @topic.visible == 1
+            next
+          end
+          
+          # undelete the topic
+          @topic.visible = 1
+          @topic.save
+          
+          # update forum stats
+          @forum = Forum.find(@topic.forum_id)
+          @forum.topic_count = @forum.topic_count + 1;
+          @forum.post_count  = @forum.post_count + @topic.replies;
+          
+          # update last topic info
+          if @forum.last_topic
+            @forum.last_post_id      = @forum.last_topic.id
+            @forum.last_post_at      = @forum.last_topic.last_post_at
+            @forum.last_post_user_id = @forum.last_topic.last_poster_id
+            @forum.last_topic_id     = @forum.last_topic.id
+            @forum.last_topic_at     = @forum.last_topic.created_at
+            @forum.last_topic_title  = @forum.last_topic.title
+          end
+          
+          @forum.save
         end
+
         redirect_to forum_url(params[:forum_id])
 
       # move, merge and delete topics
@@ -202,8 +230,8 @@ class TopicsController < ApplicationController
       @dest_forum.post_count  = @dest_forum.post_count  + (@topic.posts.count - 1)
       @dest_forum.save
       
-      @this_forum.topic_count       = @this_forum.topic_count - 1
-      @this_forum.post_count        = @this_forum.post_count  - (@topic.posts.count - 1)
+      @this_forum.topic_count = @this_forum.topic_count - 1
+      @this_forum.post_count  = @this_forum.post_count  - (@topic.posts.count - 1)
       
       # check and see if we need to update the last_topic information
       if @this_forum.last_topic
@@ -225,35 +253,57 @@ class TopicsController < ApplicationController
   def delete
     # loop through all the selected topics
     params[:delete][:topic_ids].split(/, ?/).each do |topic_id|
-      
       # fetch the current topic
-      current_topic = Topic.find(topic_id)
+      @topic = Topic.find(topic_id)
 
-      # destroy current_topic if it's a redirect
-      if current_topic.redirect?
+      # skip if this topic has already been deleted
+      if @topic.visible == 2
+        next
+      end
+
+      # destroy the topic if it's a redirect
+      if @topic.redirect?
         # before we delete it, update the redirect ids for all associated topics
-        items = Topic.where(:redirect => current_topic.id)
+        items = Topic.where(:redirect => @topic.id)
         items.each do |item|
-          item.redirect = current_topic.redirect
+          item.redirect = @topic.redirect
           item.save
         end
-        current_topic.destroy
-
-      # preform hard delete
-      elsif params[:delete][:type] == 'hard'
-        # delete all redirect topics associated to this topic
-        items = Topic.where(:redirect => current_topic.id)
-        items.each do |item|
-          item.destroy
-        end
-        current_topic.destroy
-
-      # preform soft delete
+        @topic.destroy
       else
-        Topic.update(current_topic.id, :visible => 2)
+        # update forum stats
+        @forum = Forum.find(@topic.forum_id)
+        @forum.topic_count = @forum.topic_count - 1;
+        @forum.post_count  = @forum.post_count - @topic.replies;
+
+        # check and see if we need to update the last_topic information
+        if @forum.last_topic
+          @forum.last_post_id      = @forum.last_topic.id
+          @forum.last_post_at      = @forum.last_topic.last_post_at
+          @forum.last_post_user_id = @forum.last_topic.last_poster_id
+          @forum.last_topic_id     = @forum.last_topic.id
+          @forum.last_topic_at     = @forum.last_topic.created_at
+          @forum.last_topic_title  = @forum.last_topic.title
+        end
+
+        @forum.save
+        
+        # switch between delete types
+        case params[:delete][:type]
+          # preform hard delete
+          when "hard"
+            items = Topic.where(:redirect => @topic.id)
+            items.each do |item|
+              item.destroy
+            end
+            @topic.destroy
+          # preform soft delete
+          when "soft"
+            Topic.update(@topic.id, :visible => 2)
+        end
       end
     end
-    
+
     redirect_to forum_url(params[:delete][:forum_id])
   end
 
@@ -333,8 +383,4 @@ private
     )
   end
   
-  def method_name
-    
-  end
-
 end
