@@ -1,5 +1,5 @@
 class Post < ActiveRecord::Base
-  attr_accessible :content, :topic_id, :user_id, :last_post_at
+  attr_accessible :content, :topic_id, :user_id, :date
   belongs_to :topic
   belongs_to :user 
   

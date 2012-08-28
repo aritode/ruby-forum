@@ -91,7 +91,7 @@ class TopicsController < ApplicationController
           :content  => params[:post][:content], 
           :topic_id => @topic.id, 
           :user_id  => current_user.id,
-          :last_post_at => Time.new
+          :date     => Time.new
         )
 
         if @post.save
@@ -270,7 +270,7 @@ class TopicsController < ApplicationController
       # update the dest topic stats
       @dest_topic.views           = @dest_topic.views + @topic.views
       @dest_topic.replies         = @dest_topic.replies + @topic.replies + 1
-      @dest_topic.last_post_at    = @posts.last.last_post_at
+      @dest_topic.last_post_at    = @posts.last.date
       @dest_topic.last_poster_id  = @posts.last.user_id
       @dest_topic.save
 

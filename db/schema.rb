@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(:version => 20120810071154) do
     t.text     "content"
     t.integer  "topic_id"
     t.integer  "user_id"
-    t.datetime "last_post_at"
+    t.datetime "date"
     t.integer  "visible",        :default => 1
     t.integer  "show_signature", :default => 1
     t.datetime "created_at",                    :null => false
