@@ -14,7 +14,7 @@ class ForumsController < ApplicationController
     
     # fetch the topics
     @topics = Topic.where(:forum_id => params[:id])
-                   .joins(:user)
+                   .includes(:user, :posts)
                    .page(page)
                    .per(size)
                    .order('sticky desc')

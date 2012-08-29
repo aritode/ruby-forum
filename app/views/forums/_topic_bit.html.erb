@@ -33,9 +33,9 @@
         <div align="center">-</div>
       <% else %>
         <div class="smallfont" style="text-align:right; white-space:nowrap">
-          <%= time_tag topic.last_post_at, :format =>'%m-%d-%y %l:%M %p' %> <br />
+          <%= time_tag topic.posts.last.date, :format =>'%m-%d-%y %l:%M %p' %> <br />
           by 
-          <%= link_to topic.user.username, users_path(topic.last_poster_id) %>
+          <%= link_to topic.posts.last.user.username, users_path(topic.posts.last.user_id) %>
         </div>
       <% end %>
     </td>
