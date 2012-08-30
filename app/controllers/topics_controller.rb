@@ -103,7 +103,8 @@ class TopicsController < ApplicationController
           )
 
           @forum = Forum.find(@topic.forum_id)
-          @forum.topic_count = @forum.topic_count + 1
+          @forum.topic_count  = @forum.topic_count + 1
+          @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
           @forum.save
 
           redirect_to topic_path(@topic.id)
@@ -135,13 +136,6 @@ class TopicsController < ApplicationController
         end
         redirect_to forum_url(params[:forum_id])
 
-      # approve and unapprove topics
-      when "approve", "unapprove"
-        params[:topic_ids].each do |k,v|
-          Topic.update(k, :visible => params[:do] == 'approve' ? 1 : 0)
-        end
-        redirect_to forum_url(params[:forum_id])
-
       # stick and unstick topics
       when "stick", "unstick"
         params[:topic_ids].each do |k,v|
@@ -166,13 +160,61 @@ class TopicsController < ApplicationController
           
           # update forum stats
           @forum = Forum.find(@topic.forum_id)
-          @forum.topic_count = @forum.topic_count + 1;
-          @forum.post_count  = @forum.post_count + @topic.replies;
-          
+          @forum.topic_count  = @forum.topic_count + 1;
+          @forum.post_count   = @forum.post_count + @topic.replies;
+          @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
           @forum.save
         end
-
         redirect_to forum_url(params[:forum_id])
+
+      # unapprove topics
+      when "unapprove"
+        params[:topic_ids].each do |topic_id|
+          # fetch the topic
+          @topic = Topic.find(topic_id)
+          
+          # skip if this topic is already unapproved
+          if @topic.visible == 0
+            next
+          end
+          
+          # unapprove the topic
+          @topic.visible = 0
+          @topic.save
+          
+          # update forum stats
+          @forum = Forum.find(@topic.forum_id)
+          @forum.topic_count  = @forum.topic_count - 1;
+          @forum.post_count   = @forum.post_count - @topic.replies;
+          @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
+          @forum.save
+        end
+        redirect_to forum_url(params[:forum_id])
+
+      # approve topics
+      when "approve"
+        params[:topic_ids].each do |topic_id|
+          # fetch the topic
+          @topic = Topic.find(topic_id)
+          
+          # skip if this topic is already approved
+          if @topic.visible == 1
+            next
+          end
+          
+          # approve the topic
+          @topic.visible = 1
+          @topic.save
+          
+          # update forum stats
+          @forum = Forum.find(@topic.forum_id)
+          @forum.topic_count  = @forum.topic_count + 1;
+          @forum.post_count   = @forum.post_count + @topic.replies;
+          @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
+          @forum.save
+        end
+        redirect_to forum_url(params[:forum_id])
+
 
       # move, merge and delete topics
       when "move"
@@ -205,7 +247,10 @@ class TopicsController < ApplicationController
   # Soft / hard delete one or more topics
   def delete
     params[:delete][:topic_ids].split(/, ?/).each do |topic_id|
-      @topic = Topic.find(topic_id)
+      # fetch the topic and save the replies and forum_id for later use
+      @topic   = Topic.find(topic_id)
+      replies  = @topic.replies
+      forum_id = @topic.forum_id
 
       # skip if this topic has already been deleted
       if @topic.visible == 2
@@ -222,25 +267,26 @@ class TopicsController < ApplicationController
         end
         @topic.destroy
       else
-        # update the forum stats while we still have the @topic object avaliable
-        @forum = Forum.find(@topic.forum_id)
-        @forum.topic_count = @forum.topic_count - 1;
-        @forum.post_count  = @forum.post_count - @topic.replies;
-        @forum.save
-
         # switch between delete types
         case params[:delete][:type]
-          # preform hard delete
+          # preform a hard delete
           when "hard"
             items = Topic.where(:redirect => @topic.id)
             items.each do |item|
               item.destroy
             end
             @topic.destroy
-          # preform soft delete
+          # preform a soft delete
           when "soft"
             Topic.update(@topic.id, :visible => 2)
         end
+
+        # update the forum stats
+        @forum = Forum.find(forum_id)
+        @forum.topic_count  = @forum.topic_count - 1;
+        @forum.post_count   = @forum.post_count  - replies
+        @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
+        @forum.save
       end
     end
 
@@ -261,7 +307,7 @@ class TopicsController < ApplicationController
       @topic = Topic.find(topic_id)
       @posts = Post.where(:topic_id => @topic.id)
 
-      # update all post their new topic destination
+      # update all post to their new topic destination
       @posts.each do |item|
         item.topic_id = @dest_topic.id
         item.save
@@ -276,8 +322,9 @@ class TopicsController < ApplicationController
 
       # update current forum stats
       @this_forum = Forum.find(params[:merge][:forum_id]);
-      @this_forum.topic_count = @this_forum.topic_count - 1
-      @this_forum.post_count  = @this_forum.post_count - @topic.replies + 1
+      @this_forum.topic_count  = @this_forum.topic_count - 1
+      @this_forum.post_count   = @this_forum.post_count  + 1
+      @this_forum.last_post_id = @this_forum.recent_post.nil? ? 0 : @this_forum.recent_post.id
       @this_forum.save
 
       # if we're leaving a redirect, use the current topic instead of creating a new one
@@ -309,30 +356,32 @@ private
   end
   
   # moves a topic to a different forum and updates the forum stats & last topic info accordingly
-  def move_topic topic_id, forum_id
-    @topic      = Topic.find(topic_id)
-    @this_forum = Forum.find(@topic.forum_id)
-    @dest_forum = Forum.find(forum_id)
-    
+  def move_topic topic_id, dest_forum_id
+    @topic        = Topic.find(topic_id)
+    this_forum_id = @topic.forum_id # keep a record of the forum the topic used to reside in
+
     # return false if already in dest forum
-    if @this_forum.id == @dest_forum.id
+    if this_forum_id == dest_forum_id.to_i
       return false
     end
     
     # update the topic's forum_id
-    @topic.forum_id = forum_id
+    @topic.forum_id = dest_forum_id
     @topic.save
 
-    # update the forum stats
-    @dest_forum.topic_count = @dest_forum.topic_count + 1
-    @dest_forum.post_count  = @dest_forum.post_count + @topic.replies
+    # update the current & destination forum stats if the topic is visible
+    if @topic.visible == 1
+      @this_forum = Forum.find(this_forum_id)
+      @this_forum.topic_count  = @this_forum.topic_count - 1
+      @this_forum.post_count   = @this_forum.post_count  - @topic.replies
+      @this_forum.last_post_id = @this_forum.recent_post.nil? ? 0 : @this_forum.recent_post.id
+      @this_forum.save
 
-    @this_forum.topic_count = @this_forum.topic_count - 1
-    @this_forum.post_count  = @this_forum.post_count  - @topic.replies
-    
-    # save the changes
-    @this_forum.save
-    @dest_forum.save
+      @dest_forum = Forum.find(dest_forum_id)
+      @dest_forum.topic_count  = @dest_forum.topic_count + 1
+      @dest_forum.post_count   = @dest_forum.post_count + @topic.replies
+      @dest_forum.last_post_id = @dest_forum.recent_post.nil? ? 0 : @dest_forum.recent_post.id
+      @dest_forum.save
+    end
   end
-  
 end

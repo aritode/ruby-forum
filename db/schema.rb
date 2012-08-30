@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(:version => 20120810071154) do
     t.integer  "display_order", :default => 0
     t.integer  "topic_count",   :default => 0
     t.integer  "post_count",    :default => 0
+    t.integer  "last_post_id",  :default => 0
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
   end

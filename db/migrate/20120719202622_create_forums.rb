@@ -24,6 +24,9 @@ class CreateForums < ActiveRecord::Migration
       
       # The total number of post a fourm contains (including child forums)
       t.integer   :post_count,    :default => 0
+
+      # The id of the last post that was posted in the forum
+      t.integer   :last_post_id,  :default => 0
       
       # Rail's update_at and created_at columns
       t.timestamps

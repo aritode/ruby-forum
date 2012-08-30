@@ -1,0 +1,23 @@
+<div class="smallfont" align="left">
+    <% if forum.last_post_id? %>
+      <div>
+        <span style="white-space:nowrap">
+          <strong>
+            <%= link_to "#{forum.last_post.topic.title}", topic_path(forum.last_post.topic) %>
+          </strong>
+        </span>
+      </div>
+      <div style="white-space:nowrap">
+        by <%= link_to forum.last_post.user.username, users_path(forum.last_post.user.id) %>
+      </div>
+      <div align="right" style="white-space:nowrap">
+        <span class="time"><%= time_tag forum.last_post.date, :format =>'%m-%d-%y %l:%M %p' %></span>
+        <%= link_to image_tag("/assets/forum/buttons/lastpost.gif"), "#{topic_path(forum.last_post.topic)}##{forum.last_post.id}" %>
+      </div>
+    <% else %>
+      <div align="center" style="white-space:nowrap">
+        -
+      </div>
+    <% end %>
+  </div>
+</div>

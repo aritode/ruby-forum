@@ -1,12 +1,15 @@
 class ForumsController < ApplicationController
   # Render the forums home page
   def index
-    @forums = Forum.all(:order => "ancestry ASC, display_order ASC")
+    @forums = Forum.all(
+      :include => [:last_post],
+      :order   => "ancestry ASC, display_order ASC"
+    )
   end
 
   # Show a forum with all it's topics
   def show
-    size  = 25
+    size  = 6
     page  = params[:page]      || 1
     sort  = params[:sort]      || "last_post_at"
     days  = params[:daysprune] || "-1"

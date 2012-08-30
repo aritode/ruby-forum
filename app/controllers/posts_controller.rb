@@ -88,9 +88,9 @@ class PostsController < ApplicationController
         )
 
         @forum = Forum.find(@topic.forum_id)
-        @forum.update_attributes(
-          :post_count => @forum.post_count + 1,
-        )
+        @forum.post_count   = @forum.post_count + 1
+        @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
+        @forum.save
 
         redirect_to topic_url @post.topic_id
       else

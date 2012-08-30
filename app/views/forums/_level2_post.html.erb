@@ -12,25 +12,7 @@
     </table>
   </td>
   <td class="alt2">
-    <div class="smallfont" align="left">
-      <% if child.last_post %>
-        <div>
-          <span style="white-space:nowrap">
-            <strong><%= link_to "#{child.last_post.title}", "/topics/#{child.last_post.id}" %></strong>
-          </span>
-        </div>
-        <div style="white-space:nowrap">
-          by <%= link_to child.last_post.user.username, "/users/#{child.last_post.last_poster_id}" %>
-        </div>
-        <div align="right" style="white-space:nowrap">
-          <%= time_tag child.last_post.last_post_at, :format =>'%m-%d-%y %l:%M %p' %>
-        </div>
-      <% else %>
-        <div align="center" style="white-space:nowrap">
-          -
-        </div>
-      <% end %>
-    </div>
+    <%= render :partial => 'last_post', :locals => {:forum => child} %>
   </td>
   <td class="alt1"><%= child.topic_count %></td>
   <td class="alt2"><%= child.post_count %></td>
