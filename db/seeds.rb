@@ -23,6 +23,17 @@ Forum.create(:title => "Marketing & Sales",                      :ancestry => "5
 Forum.create(:title => "Technology",                             :ancestry => "5",   :options => 7, :display_order => 3)
 puts "Forum data loaded"
 
+# Topic.delete_all
+# ActiveRecord::Base.connection.execute("ALTER TABLE topics AUTO_INCREMENT = 1")
+# Topic.create(:title => "Test Topic 1", :user_id => 1, :forum_id => 2, :replies => 1, :last_poster_id => 2, :last_post_at => "2012-08-30 07:18:46")
+# puts "Topic data loaded"
+
+# Post.delete_all
+# ActiveRecord::Base.connection.execute("ALTER TABLE posts AUTO_INCREMENT = 1")
+# Post.create(:topic_id => 1, :content => "This is a topic 1!", :user_id => 1, :date => "2012-08-30 07:18:23")
+# Post.create(:topic_id => 1, :content => "This is a reply 1!", :user_id => 2, :date => "2012-08-30 07:25:46")
+# puts "Post data loaded"
+
 ######################################################################################################
 # Usergroup
 ######################################################################################################
