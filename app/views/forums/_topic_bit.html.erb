@@ -9,6 +9,10 @@
         <%= image_tag("/assets/forum/icons/trashcan_small.gif") if topic.visible == 2 %>
       </span>
 
+      <% if @has_new_post %>
+        <%= link_to image_tag("/assets/forum/buttons/firstnew.gif", :class => "inlineimg"), firstnew_post_path(topic.redirect? ? topic.redirect : topic.id) %>
+      <% end %>
+
       <%= "Moderated:" if !topic.visible? %>
       <%= "Sticky:" if topic.sticky? and !topic.redirect? and topic.visible? %>
       <%= "Moved:"  if topic.redirect? and topic.visible? %>
@@ -16,11 +20,17 @@
       <% if topic.visible == 2 %>
         <em><%= h(topic.title) %></em>
       <% else %>
-        <strong><%= link_to h(topic.title), topic_path(topic.redirect? ? topic.redirect : topic.id) %></strong>
+        <% if @has_new_post %>
+          <strong><%= link_to h(topic.title), topic_path(topic.redirect? ? topic.redirect : topic.id) %></strong>
+        <% else %>
+          <%= link_to h(topic.title), topic_path(topic.redirect? ? topic.redirect : topic.id) %>
+        <% end %>
       <% end %>
     </div>
     <div class="smallfont">
-      <%= link_to topic.user.username, "/users/#{topic.user_id}" %>
+      <span style="cursor: pointer; " onclick="window.open('<%= user_path(topic.user_id) %>', '_self')">
+        <%= topic.user.username %>
+      </span>
     </div>
   </td>
   <% if topic.visible == 2 %>

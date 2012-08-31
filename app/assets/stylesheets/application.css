@@ -274,3 +274,6 @@ a.shade:active, a.shade:hover { color: #FF4400; text-decoration: underline; }
 .fieldset { margin-bottom: 6px; }
 .fieldset, .fieldset td, .fieldset p, .fieldset li { font-size: 11px; }
 
+.inlineimg {
+  vertical-align:middle;
+}
