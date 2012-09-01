@@ -1,4 +1,7 @@
 class TopicsController < ApplicationController
+  
+  @@post_per_page = 10
+  
   # Show the topic and all post associated with it
   def show
     @topic = Topic.find(params[:id])
@@ -9,7 +12,7 @@ class TopicsController < ApplicationController
     end
     
     # get all the post
-    @posts    = Post.where(:topic_id => @topic.id).page(params[:page]).per(10)
+    @posts    = Post.where(:topic_id => @topic.id).page(params[:page]).per(@@post_per_page)
     @postbits = []
     
     # loop through the post and check permissions, visibility, etc.
@@ -347,20 +350,28 @@ class TopicsController < ApplicationController
   end
   
   # Redirect the user to the first new post in the topic
-  # todo: add the correct page number in the redirect
   def firstnew
     if logged_in?
-      @topic     = Topic.find(params[:id])
-      last_read  = @topic.topic_reads.by_user(current_user.id).first.date
-      first_post = @topic.posts.where(["date > ?", last_read]).first
+      @topic            = Topic.find(params[:id])
+      last_read_date    = @topic.topic_reads.by_user(current_user.id).first.date
+      first_unread_post = @topic.posts.where(["date > ?", last_read_date]).first
+      page              = 1
       
-      if first_post
-        redirect_to "#{topic_path(@topic.id)}#post#{first_post.id}" 
-        return false
+      # figure out which page the first new post is on
+      if first_unread_post
+        if (@topic.replies + 1) > @@post_per_page
+          @topic.posts.to_enum.with_index(1) do |post, i|
+            break if post.id == first_unread_post.id
+            page = page + 1 if i == 10
+            i = i + (10 - i % 10) if (i % 10)
+          end
+        end
+        
+        topic_path = "#{topic_path(@topic.id)}?page=#{page}#post#{first_unread_post.id}"
       end
     end
-    
-    redirect_to topic_path(@topic.id)
+
+    redirect_to topic_path ? topic_path : topic_path(@topic.id)
   end
   
 private
