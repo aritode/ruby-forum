@@ -1,5 +1,6 @@
 class TopicsController < ApplicationController
   
+  ## temp variable
   @@post_per_page = 10
   
   # Show the topic and all post associated with it
@@ -362,8 +363,7 @@ class TopicsController < ApplicationController
         if (@topic.replies + 1) > @@post_per_page
           @topic.posts.to_enum.with_index(1) do |post, i|
             break if post.id == first_unread_post.id
-            page = page + 1 if i == 10
-            i = i + (10 - i % 10) if (i % 10)
+            page = page + 1 if (i % @@post_per_page) == 0
           end
         end
         
@@ -374,16 +374,21 @@ class TopicsController < ApplicationController
     redirect_to topic_path ? topic_path : topic_path(@topic.id)
   end
   
-private
-  # converts the submitted datetime params into a DateTime object
-  def get_expired datetime
-    DateTime.new(
-      datetime["expires(1i)"].to_i, 
-      datetime["expires(2i)"].to_i, 
-      datetime["expires(3i)"].to_i
-    )
+  # Redirect the the user to the last post in the topic
+  def lastpost
+    @topic    = Topic.find(params[:id])
+    last_post = @topic.posts.last
+    page      = 1
+
+    @topic.posts.to_enum.with_index(1) do |post, i|
+      break if post.id == last_post.id
+      page = page + 1 if (i % @@post_per_page) == 0
+    end
+    
+    redirect_to "#{topic_path(@topic.id)}?page=#{page}#post#{last_post.id}"
   end
   
+private
   # moves a topic to a different forum and updates the forum stats & last topic info accordingly
   def move_topic topic_id, dest_forum_id
     @topic        = Topic.find(topic_id)

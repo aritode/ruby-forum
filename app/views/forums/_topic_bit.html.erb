@@ -46,6 +46,7 @@
           <%= time_tag topic.posts.last.date, :format =>'%m-%d-%y %l:%M %p' %> <br />
           by 
           <%= link_to topic.posts.last.user.username, users_path(topic.posts.last.user_id) %>
+          <%= link_to image_tag("/assets/forum/buttons/lastpost.gif", :class => "inlineimg"), topics_lastpost_path(topic) %>
         </div>
       <% end %>
     </td>

@@ -1,4 +1,7 @@
 class PostsController < ApplicationController
+  ## temp variable
+  @@post_per_page = 10
+
   # Shows the post content on it's own page
   def show
     @post  = Post.find(params[:id])
@@ -92,7 +95,16 @@ class PostsController < ApplicationController
         @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
         @forum.save
 
-        redirect_to topic_url @post.topic_id
+        # figure out which page this post is on
+        page      = 1
+        last_post = @topic.posts.last
+
+        @topic.posts.to_enum.with_index(1) do |post, i|
+          break if post.id == last_post.id
+          page = page + 1 if (i % @@post_per_page) == 0
+        end
+
+        redirect_to "#{topic_path(@topic.id)}?page=#{page}#post#{last_post.id}"
       else
         render :action => 'new'
       end

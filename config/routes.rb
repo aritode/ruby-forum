@@ -14,6 +14,7 @@ Forums::Application.routes.draw do
   
   # Topics
   resources :topics
+  match 'topics/:id/lastpost'   => 'topics#lastpost', :as => :topics_lastpost
   match 'topics/:id/firstnew'   => 'topics#firstnew', :as => :firstnew_post
   match 'topics/manage'         => 'topics#manage',   :as => :manage_topics, :via => [:post]
   match 'topics/manage/move'    => 'topics#move',     :as => :move_topics,   :via => [:post]
