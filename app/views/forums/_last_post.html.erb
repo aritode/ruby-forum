@@ -12,7 +12,7 @@
       </div>
       <div align="right" style="white-space:nowrap">
         <span class="time"><%= time_tag forum.last_post.date, :format =>'%m-%d-%y %l:%M %p' %></span>
-        <%= link_to image_tag("/assets/forum/buttons/lastpost.gif"), topics_lastpost_path(forum.last_post.topic) %>
+        <%= link_to image_tag("/assets/forum/buttons/lastpost.gif", :class => "inlineimg"), topics_lastpost_path(forum.last_post.topic) %>
       </div>
     <% else %>
       <div align="center" style="white-space:nowrap">
