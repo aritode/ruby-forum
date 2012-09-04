@@ -65,5 +65,9 @@
       <% end %>
     </td>
   <% end %>
-  <td class="alt1" align="center"><input type="checkbox" name="topic_ids[]" value="<%= topic.id %>" id="tlist_<%= topic.id %>" class="inline_mod" /></td>
+  <% if logged_in? %>
+    <td class="alt1" align="center">
+      <input type="checkbox" name="topic_ids[]" value="<%= topic.id %>" id="tlist_<%= topic.id %>" class="inline_mod" />
+    </td>
+  <% end %>
 </tr>

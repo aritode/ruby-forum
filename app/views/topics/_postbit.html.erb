@@ -2,11 +2,12 @@
 <table class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
 <tr>
     <td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1; border-right: 0px" >
-      
-      <% if @last_read >= post.created_at %>
-        <%= image_tag "/assets/forum/icons/post_old.gif", :class => "inlineimg" %>
-      <% else %>
-        <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg" %>
+      <% if @last_read %>
+        <% if @last_read >= post.created_at %>
+          <%= image_tag "/assets/forum/icons/post_old.gif", :class => "inlineimg" %>
+        <% else %>
+          <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg" %>
+        <% end %>
       <% end %>
       
       <%= time_tag post.created_at, :format =>'%m-%d-%Y, %l:%M %p' %>
@@ -38,10 +39,11 @@
     &nbsp;
   </td>
   <td class="alt1" align="right" style="border: 1px solid #D1D1E1; border-left: 0px; border-top: 0px">
-    <%= link_to image_tag("/assets/forum/buttons/edit.gif"), edit_post_path(post) %>
-    <%= link_to image_tag("/assets/forum/buttons/quote.gif"), new_post_path(:topic_id => @topic.id, :quote => post.id) %>
-    
-    <%= link_to "x", post, :confirm => 'Are you sute?', :method => :delete %>
+    <% if logged_in? %>
+      <%= link_to image_tag("/assets/forum/buttons/edit.gif"), edit_post_path(post) %>
+      <%= link_to image_tag("/assets/forum/buttons/quote.gif"), new_post_path(:topic_id => @topic.id, :quote => post.id) %>
+      <%= link_to "x", post, :confirm => 'Are you sure?', :method => :delete %>
+    <% end %>
   </td>
 </tr>
 </table>

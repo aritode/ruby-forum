@@ -10,7 +10,9 @@
   <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:3px">
   <tr valign="bottom">
     <td>
-      <%= link_to image_tag("/assets/forum/buttons/newthread.gif") , new_topic_path(:forum_id => @forum.id) %>
+      <% if logged_in? %>
+        <%= link_to image_tag("/assets/forum/buttons/newthread.gif") , new_topic_path(:forum_id => @forum.id) %>
+      <% end %>
     </td>
     <td align="right">
       <%= paginate @topics, :theme => "forums", :window => 3 %>
@@ -28,7 +30,9 @@
     <td class="thead" width="150" align="center" nowrap="nowrap"><%= build_sort_link("Last Post", 'last_post_at') %></td>
     <td class="thead" align="center" nowrap="nowrap"><%= build_sort_link("Replies", 'replies') %></td>
     <td class="thead" align="center" nowrap="nowrap"><%= build_sort_link("Views", 'views') %></td>
-    <td class="thead" align="center" nowrap="nowrap">&nbsp;</td>
+    <% if logged_in? %>
+      <td class="thead" align="center" nowrap="nowrap">&nbsp;</td>
+    <% end %>
   </tr>
 
   <% if !@topicbits.empty? %>
@@ -49,31 +53,35 @@
   <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:3px">
   <tr valign="top">
     <td>
-      <%= link_to image_tag("/assets/forum/buttons/newthread.gif") , new_topic_path(:forum_id => @forum.id) %>
+      <% if logged_in? %>
+        <%= link_to image_tag("/assets/forum/buttons/newthread.gif") , new_topic_path(:forum_id => @forum.id) %>
+      <% end %>
     </td>
     <td align="right">
       <%= paginate @topics, :theme => "forums", :window => 3 %>
       <%= raw "<br />" if paginate @topics %>
 
-      <!-- thread moderation -->
-      <div class="smallfont" style="text-align:left; white-space:nowrap; float:right">
-        <%= select_tag "do", options_for_select([
-          ["Delete Topics", "delete"], 
-          ["Undelete Topics", "undelete"], 
-          ["Open Topics", "open"], 
-          ["Close Topics", "close"], 
-          ["Approve Topics", "approve"], 
-          ["Unapprove Topics", "unapprove"], 
-          ["Stick Topics", "stick"], 
-          ["Unstick Topics", "unstick"], 
-          ["Move Topics", "move"], 
-          ["Merge Topics", "merge"]
-        ], 'last_post_at')%>
+      <% if logged_in? %>
+        <!-- thread moderation -->
+        <div class="smallfont" style="text-align:left; white-space:nowrap; float:right">
+          <%= select_tag "do", options_for_select([
+            ["Delete Topics", "delete"], 
+            ["Undelete Topics", "undelete"], 
+            ["Open Topics", "open"], 
+            ["Close Topics", "close"], 
+            ["Approve Topics", "approve"], 
+            ["Unapprove Topics", "unapprove"], 
+            ["Stick Topics", "stick"], 
+            ["Unstick Topics", "unstick"], 
+            ["Move Topics", "move"], 
+            ["Merge Topics", "merge"]
+          ], 'last_post_at')%>
 
-        <input type="hidden" name="forum_id" value="<%= @forum.id %>" />
-        <%= submit_tag "Go", :class => :button %>
-      </div>
-      <!-- /thread moderation -->
+          <input type="hidden" name="forum_id" value="<%= @forum.id %>" />
+          <%= submit_tag "Go", :class => :button %>
+        </div>
+        <!-- /thread moderation -->
+      <% end %>
     </td>
   </tr>
   </table>

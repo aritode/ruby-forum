@@ -6,7 +6,7 @@ class TopicsController < ApplicationController
   # Show the topic and all post associated with it
   def show
     @topic = Topic.find(params[:id])
-
+    
     # check if we need to redirect the user
     if @topic.redirect?
       redirect_to topic_url(@topic.redirect)
@@ -35,6 +35,8 @@ class TopicsController < ApplicationController
     if logged_in?
       @last_read = @topic.topic_reads.by_user(current_user.id).first.date
       mark_topic_as_read
+    else
+      #@last_read = Time.now
     end
 
     # update the views count
@@ -360,7 +362,7 @@ class TopicsController < ApplicationController
       first_unread_post = @topic.posts.where(["date > ?", last_read_date]).first
       page              = 1
       
-      # figure out which page the first new post is on
+      # figure out which page the first unread post is on
       if first_unread_post
         if (@topic.replies + 1) > @@post_per_page
           @topic.posts.to_enum.with_index(1) do |post, i|
