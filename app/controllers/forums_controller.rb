@@ -28,6 +28,13 @@ class ForumsController < ApplicationController
 
     # loop through the topics and check permissions, visibility, etc.
     @topics.each_with_index do |topic, i|
+      # check if there are new post
+      if logged_in?
+        if (topic.posts.last.date > topic.topic_reads.by_user(current_user.id).first.date)
+          @has_new_post = true
+        end
+      end
+      
       @topicbits[i] = topic
     end
 

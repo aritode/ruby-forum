@@ -1,15 +1,19 @@
 class TopicsController < ApplicationController
+  
+  ## temp variable
+  @@post_per_page = 10
+  
   # Show the topic and all post associated with it
   def show
     @topic = Topic.find(params[:id])
-    
+
     # check if we need to redirect the user
     if @topic.redirect?
       redirect_to topic_url(@topic.redirect)
     end
     
     # get all the post
-    @posts    = Post.where(:topic_id => @topic.id).page(params[:page]).per(15)
+    @posts    = Post.where(:topic_id => @topic.id).page(params[:page]).per(@@post_per_page)
     @postbits = []
     
     # loop through the post and check permissions, visibility, etc.
@@ -18,7 +22,7 @@ class TopicsController < ApplicationController
       @postbits[i] = post
       @postbits[i][:post_count] = (i + 1)
     end
-
+    
     # breadcrumbs
     add_breadcrumb "Forum", root_path
     if !@topic.forum.ancestors.empty?
@@ -28,6 +32,11 @@ class TopicsController < ApplicationController
       add_breadcrumb @topic.forum.title, forum_path(@topic.forum)
     end
     
+    if logged_in?
+      @last_read = @topic.topic_reads.by_user(current_user.id).first.date
+      mark_topic_as_read
+    end
+
     # update the views count
     @topic.update_attribute('views', @topic.views + 1)
   end
@@ -60,7 +69,7 @@ class TopicsController < ApplicationController
     check_forum_permissions :allow_posting     , params[:topic][:forum_id]
     check_user_permissions  :can_post_threads
     
-    # check if previewing 
+    # previewing...
     if !params[:preview].nil?
       @topic  = Topic.new(:title => params[:topic][:title], :forum_id => params[:topic][:forum_id])
       @post   = Post.new(:content => params[:post][:content])
@@ -215,7 +224,6 @@ class TopicsController < ApplicationController
         end
         redirect_to forum_url(params[:forum_id])
 
-
       # move, merge and delete topics
       when "move"
         render :action => :move
@@ -344,17 +352,45 @@ class TopicsController < ApplicationController
     redirect_to forum_url(params[:merge][:forum_id])
   end
   
-private
-  
-  # converts the submitted datetime params into a DateTime object
-  def get_expired datetime
-    DateTime.new(
-      datetime["expires(1i)"].to_i, 
-      datetime["expires(2i)"].to_i, 
-      datetime["expires(3i)"].to_i
-    )
+  # Redirect the user to the first new post in the topic
+  def firstnew
+    if logged_in?
+      @topic            = Topic.find(params[:id])
+      last_read_date    = @topic.topic_reads.by_user(current_user.id).first.date
+      first_unread_post = @topic.posts.where(["date > ?", last_read_date]).first
+      page              = 1
+      
+      # figure out which page the first new post is on
+      if first_unread_post
+        if (@topic.replies + 1) > @@post_per_page
+          @topic.posts.to_enum.with_index(1) do |post, i|
+            break if post.id == first_unread_post.id
+            page = page + 1 if (i % @@post_per_page) == 0
+          end
+        end
+        
+        topic_path = "#{topic_path(@topic.id)}?page=#{page}#post#{first_unread_post.id}"
+      end
+    end
+
+    redirect_to topic_path ? topic_path : topic_path(@topic.id)
   end
   
+  # Redirect the the user to the last post in the topic
+  def lastpost
+    @topic    = Topic.find(params[:id])
+    last_post = @topic.posts.last
+    page      = 1
+
+    @topic.posts.to_enum.with_index(1) do |post, i|
+      break if post.id == last_post.id
+      page = page + 1 if (i % @@post_per_page) == 0
+    end
+    
+    redirect_to "#{topic_path(@topic.id)}?page=#{page}#post#{last_post.id}"
+  end
+  
+private
   # moves a topic to a different forum and updates the forum stats & last topic info accordingly
   def move_topic topic_id, dest_forum_id
     @topic        = Topic.find(topic_id)
@@ -382,6 +418,38 @@ private
       @dest_forum.post_count   = @dest_forum.post_count + @topic.replies
       @dest_forum.last_post_id = @dest_forum.recent_post.nil? ? 0 : @dest_forum.recent_post.id
       @dest_forum.save
+    end
+  end
+
+  # This function will check if the topic's last post is older than the configured timeout setting 
+  # (typically 3 days). If the last post made is older than said days, the topic will automatically be
+  # considered as read. 
+  #
+  # If topic has post made earlier than three days, then we store the date of the last post on the 
+  # current page in the "topic_reads" table to keep track of users who read said post. Every time the
+  # user loads a page of post, the last post date will be saved and those post will be marked as 
+  # "read" too. This will allow us to show users new post in topics that they haven't seen yet.
+  def mark_topic_as_read
+    # check if the very last post of the topic is older than the configured timeout setting, if it is
+    # just skip the process entirely
+    if !((@topic.posts.last.date + 3.days) < Time.now)
+      # check if the last post on the current page is older than 3 days
+      if !((@posts.last.date + 3.days) < Time.now)
+        # check if this is the user's first time reading these post, mark them as read if true
+        if @topic.topic_reads.by_user(current_user.id).empty?
+          TopicRead.new(:topic_id => @topic.id, 
+                        :user_id  => current_user.id, 
+                        :date     => @posts.last.date).save
+        # The user has been here before
+        else
+          # check if the last post date is newer then what we have saved, if so, update the read date
+          if (@posts.last.date > @topic.topic_reads.by_user(current_user.id).first.date)
+            @topic_read      = TopicRead.find_by_topic_id_and_user_id(@topic.id, current_user.id)
+            @topic_read.date = @posts.last.date
+            @topic_read.save
+          end
+        end
+      end
     end
   end
 end

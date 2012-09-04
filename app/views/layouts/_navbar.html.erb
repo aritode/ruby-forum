@@ -32,7 +32,7 @@
     <% if current_user %>
       <div class="smallfont">
         <div><strong>Welcome, <%= link_to current_user.username, users_path %></strong></div>
-        <div>You last visited: n/a</div>
+        <div>You last visited: <%= time_tag current_user.last_visit_at, :format =>'%m-%d-%y %l:%M %p' %></div>
         <div><%= link_to "Private Messages" %>: Unread 0, Total 0.</div>
       </div>
     <% else %>

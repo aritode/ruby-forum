@@ -29,6 +29,9 @@ class CreateUsers < ActiveRecord::Migration
       # The total number of post the user has made
       t.integer   :post_count,       :default => 0
 
+      # The date and time the user last visit the site
+      t.datetime  :last_visit_at
+
       # The date and time the user last posted
       t.datetime  :last_post_at
 
