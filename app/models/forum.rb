@@ -38,7 +38,7 @@ class Forum < ActiveRecord::Base
   def recent_post
     topic = Topic.where(['forum_id in(?)', (self.child_ids << self.id)])
                  .where(['redirect = ?', 0]) # don't include redirect topics
-                 .where(['visible <> ?', 2]) # don't include soft delete topics
+                 .where(['visible <> ?', 2]) # don't include soft deleted topics
                  .where(['visible <> ?', 0]) # don't include unapproved topics
                  .order("last_post_at DESC")
                  .first

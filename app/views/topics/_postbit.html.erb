@@ -2,11 +2,18 @@
 <table class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
 <tr>
     <td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1; border-right: 0px" >
+      
+      <% if @last_read >= post.created_at %>
+        <%= image_tag "/assets/forum/icons/post_old.gif", :class => "inlineimg" %>
+      <% else %>
+        <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg" %>
+      <% end %>
+      
       <%= time_tag post.created_at, :format =>'%m-%d-%Y, %l:%M %p' %>
     </td>
     <td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1; border-left: 0px" align="right">
       <% if params[:controller] != 'posts'%>
-        <%= link_to "##{post.post_count}", post_path(post) %>
+        #<%= link_to "#{post.post_count}", post_path(post) %>
       <% end %>
     </td>
 </tr>

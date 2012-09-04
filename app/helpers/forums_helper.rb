@@ -37,7 +37,7 @@ module ForumsHelper
     params[:controller] == 'forums' && params[:action] == 'index'
   end
   
-  # Constructs a link with a list of sorting paramters for the threads list
+  # Constructs a link with a list of sorting paramters for the topics list
   #
   # @parm String   The linked text
   # @parm String   The name of the sort field to sort by (e.g. lastpost, views, etc)
@@ -134,9 +134,13 @@ module ForumsHelper
     if !topic.open?
       file << "_lock"
     end
-    
-    # todo: add '_new' icon if the user hasn't viewed or read the thread. Requires the forum read 
-    # feature to be implemented first.
+
+    # are there unread post?
+    if logged_in?
+      if (topic.posts.last.date > topic.topic_reads.by_user(current_user.id).first.date)
+        file << "_new"
+      end
+    end
     
     # check if topic is a redirect
     if topic.redirect?

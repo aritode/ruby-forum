@@ -32,7 +32,10 @@ class TopicsController < ApplicationController
       add_breadcrumb @topic.forum.title, forum_path(@topic.forum)
     end
     
-    mark_topic_as_read
+    if logged_in?
+      @last_read = @topic.topic_reads.by_user(current_user.id).first.date
+      mark_topic_as_read
+    end
 
     # update the views count
     @topic.update_attribute('views', @topic.views + 1)
@@ -220,7 +223,6 @@ class TopicsController < ApplicationController
           @forum.save
         end
         redirect_to forum_url(params[:forum_id])
-
 
       # move, merge and delete topics
       when "move"
@@ -428,7 +430,6 @@ private
   # user loads a page of post, the last post date will be saved and those post will be marked as 
   # "read" too. This will allow us to show users new post in topics that they haven't seen yet.
   def mark_topic_as_read
-    return false if !logged_in?
     # check if the very last post of the topic is older than the configured timeout setting, if it is
     # just skip the process entirely
     if !((@topic.posts.last.date + 3.days) < Time.now)
