@@ -115,6 +115,13 @@ class PostsController < ApplicationController
   def edit
     @post  = Post.find(params[:id])
     @topic = Topic.find(@post.topic_id) # find the topic we're posting in
+    page   = 1
+
+    # figure out which page this post is on
+    @topic.posts.to_enum.with_index(1) do |post, i|
+      break if post.id == @post.id
+      page = page + 1 if (i % @@post_per_page) == 0
+    end
 
     # breadcrumbs
     add_breadcrumb "Forum", root_path
@@ -124,9 +131,8 @@ class PostsController < ApplicationController
       end
       add_breadcrumb @topic.forum.title, forum_path(@topic.forum_id)
       add_breadcrumb @topic.title, topic_path(@topic)
-      add_breadcrumb @post.content.truncate(35), topic_path(@topic)
+      add_breadcrumb @post.content.truncate(35), "#{topic_path(@topic.id)}?page=#{page}#post#{@post.id}"
     end
-
   end
 
   # Saves all post edits to the database

@@ -24,7 +24,7 @@
 <tr>
   <td class="tcat">
     <span class="smallfont" style="float:right"><strong>Topic</strong>: <%= link_to @topic.title, topic_path(@topic) %></span>
-    Reply to Thread
+    <%= params[:action] == 'edit' ? "Edit Post" : "Reply to Thread" %>
   </td>
 </tr>
 <tr>
@@ -56,7 +56,7 @@
 
     <div style="margin-top:6px">
       <%= f.hidden_field :topic_id, :value => @topic.id %>
-      <%= f.submit "Submit Reply", :class => "button" %>
+      <%= f.submit "Submit", :class => "button" %>
       <%= f.submit "Preview Post", :class => "button", :name => "preview" %>
     </div>
   </td>
