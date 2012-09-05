@@ -49,7 +49,7 @@ module ForumsHelper
     )
   end
   
-  # Repeats a character x amount of times to give forums their proper depth position in the tree.
+  # Repeats a character n amount of times to give forums their proper depth position in the tree.
   #
   # @parm Integer The number of times to repeat the character
   # @parm String  The actual character to use
@@ -135,18 +135,71 @@ module ForumsHelper
       file << "_lock"
     end
 
-    # are there unread post?
-    if logged_in?
-      if (topic.posts.last.date > topic.topic_reads.by_user(current_user.id).first.date)
-        file << "_new"
-      end
-    end
-    
     # check if topic is a redirect
     if topic.redirect?
       file = "_moved"
     end
+
+    # check for unread post
+    if check_for_new_post topic
+      file << "_new"
+    end
     
     image_tag "/assets/forum/icons/thread#{file}.gif"
   end
+
+  # Returns the appropate status icon for a forum depending on if there are unread post or not. If 
+  # all post in said forum have been read, we show the forum_old icon. If there are unread post in the 
+  # forum, we show the forum_new icon.
+  def fetch_forum_lightbulb forum
+    # check if this forum has any post
+    # if !forum.last_post.blank?
+    #   if logged_in?
+    #     # fetch the last read topic if there is one
+    #     if last_read = forum.last_post.topic.topic_reads.by_user(current_user.id).first
+    #       last_visit = last_read.date
+    #     else
+    #       # if the user hasn't read any topics is said forum, fall back on their last visit date
+    #       last_visit = current_user.last_visit_at
+    #     end
+    #   else
+    #     # all post made in the last 3 days are considered read to guest
+    #     last_visit = (Time.now - 3.days)
+    #   end
+    # 
+    #   if (last_visit >= forum.last_post.date)
+    #     image_tag "/assets/forum/icons/forum_old.gif"
+    #   else
+    #     image_tag "/assets/forum/icons/forum_new.gif"
+    #   end
+    # else
+    #   image_tag "/assets/forum/icons/forum_old.gif"
+    # end
+    image_tag "/assets/forum/icons/forum_old.gif"
+  end  
+  # Returns true if a topic has any unread post.
+  def check_for_new_post topic
+    # if this topic is a redirect, then use the orginal topic id
+    topic = Topic.find(topic.redirect) if topic.redirect?
+
+    if logged_in?
+      # check if the user has read this topic before
+      if last_read = topic.topic_reads.by_user(current_user.id).first
+        if (topic.posts.last.date > last_read.date)
+          return true
+        end
+      # if the user hasn't read the topic, then use their last active date
+      else
+        if (topic.posts.last.date > current_user.last_visit_at)
+          return true
+        end
+      end
+    # if user is a guest, topics younger than 3 days are considered unread1
+    else
+      if (topic.posts.last.date > Time.now - 3.days)
+        return true
+      end
+    end
+  end
+  
 end

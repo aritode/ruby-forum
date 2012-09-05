@@ -1,8 +1,8 @@
 <tr align="center">
   <td class="alt2">
-    <%= image_tag "/assets/forum/icons/forum_old.gif" %>
+    <%= fetch_forum_lightbulb child %>
   </td>
-  <td class="alt1Active" align="left" id="f11">
+  <td class="alt1Active" align="left">
     <div>
       <strong><%= link_to h(child.title), forum_path(child.id) %></strong>
     </div>
