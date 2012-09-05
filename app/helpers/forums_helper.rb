@@ -1,8 +1,8 @@
 module ForumsHelper
   # Builds an array of forum data based on the ids and collection info passed
   #
-  # @parm Array   The array of forum ids to build
-  # @parm Array   An Array of all the forums present in the database (avoids querying the db)
+  # @param Array   The array of forum ids to build
+  # @param Array   An Array of all the forums present in the database (avoids querying the db)
   def build_child_info(ids, collection)
     forums = []
     for forum in collection
@@ -15,8 +15,8 @@ module ForumsHelper
 
   # Recursive function to render all child forums for a parent forum in the forums index & show page.
   #
-  # @parm Hash    The nested hash of child forums
-  # @parm String  The HTML that will be rendered when finished
+  # @param Hash    The nested hash of child forums
+  # @param String  The HTML that will be rendered when finished
   def render_child_forums(forum, html = "")
     forum.each do |key, val|
       break if key.depth >= 2 # break iteration after max_depth is reach
@@ -39,8 +39,8 @@ module ForumsHelper
   
   # Constructs a link with a list of sorting paramters for the topics list
   #
-  # @parm String   The linked text
-  # @parm String   The name of the sort field to sort by (e.g. lastpost, views, etc)
+  # @param String   The linked text
+  # @param String   The name of the sort field to sort by (e.g. lastpost, views, etc)
   def build_sort_link(text, sort)
     link_to(text, :sort => sort, 
       :order      => params[:order]     == 'desc' ? 'asc' : 'desc', 
@@ -51,8 +51,8 @@ module ForumsHelper
   
   # Repeats a character n amount of times to give forums their proper depth position in the tree.
   #
-  # @parm Integer The number of times to repeat the character
-  # @parm String  The actual character to use
+  # @param Integer The number of times to repeat the character
+  # @param String  The actual character to use
   def depth_char(depth, depth_char = "--")
     char = ""
     depth.times do |d|
@@ -63,8 +63,8 @@ module ForumsHelper
 
   # Recursive function to render all child forums for a parent forum in the forums manager index.
   #
-  # @parm Hash    The nested hash of child forums
-  # @parm String  The HTML that will be rendered when finished
+  # @param Hash    The nested hash of child forums
+  # @param String  The HTML that will be rendered when finished
   def render_admincp_child_forums(hash, html = "")
     hash.each do |key, val|
       html << render(:partial => 'forum', :locals => {:forum => key})
@@ -79,9 +79,9 @@ module ForumsHelper
   # Returns a <select> list of forums, complete with display order, parenting and depth information
   # for when you need to select parent forums via the "Add New Forum" feature.
   #
-  # @parm Array   An Array of all the forums present in the database
-  # @parm Fixnum  The forum id that should be marked as selected
-  # @parm Array   Any addtional options you would like to include in the <select> list
+  # @param Array   An Array of all the forums present in the database
+  # @param Fixnum  The forum id that should be marked as selected
+  # @param Array   Any addtional options you would like to include in the <select> list
   def build_forum_chooser_options(forums, selected = nil, options = [])
     for forum in forums
       if forum.is_root? && !forum.can_contain_topics.nil?
@@ -95,8 +95,8 @@ module ForumsHelper
 
   # Recursive function to build a parent forum's children for <select> elements.
   #
-  # @parm Hash    The nested hash of child forums
-  # @parm Array   Array of select options previously built
+  # @param Hash    The nested hash of child forums
+  # @param Array   Array of select options previously built
   def build_child_chooser_options(forums, options)
     forums.each do |key, val|
       options.push(["#{depth_char(key.depth)} #{key.title}", key.id])
@@ -112,7 +112,7 @@ module ForumsHelper
   # like was the topic moved, is it closed, did the current user post in it, etc. All factors that 
   # chage the status icon shown.
   #
-  # @parm Topic   The topic object we're checking against
+  # @param Topic   The topic object we're checking against
   def build_status_icon topic
     file = ""
     
@@ -151,33 +151,35 @@ module ForumsHelper
   # Returns the appropate status icon for a forum depending on if there are unread post or not. If 
   # all post in said forum have been read, we show the forum_old icon. If there are unread post in the 
   # forum, we show the forum_new icon.
+  #
+  # @param Forum  The forum object to check
   def fetch_forum_lightbulb forum
-    # check if this forum has any post
-    # if !forum.last_post.blank?
-    #   if logged_in?
-    #     # fetch the last read topic if there is one
-    #     if last_read = forum.last_post.topic.topic_reads.by_user(current_user.id).first
-    #       last_visit = last_read.date
-    #     else
-    #       # if the user hasn't read any topics is said forum, fall back on their last visit date
-    #       last_visit = current_user.last_visit_at
-    #     end
-    #   else
-    #     # all post made in the last 3 days are considered read to guest
-    #     last_visit = (Time.now - 3.days)
-    #   end
-    # 
-    #   if (last_visit >= forum.last_post.date)
-    #     image_tag "/assets/forum/icons/forum_old.gif"
-    #   else
-    #     image_tag "/assets/forum/icons/forum_new.gif"
-    #   end
-    # else
-    #   image_tag "/assets/forum/icons/forum_old.gif"
-    # end
-    image_tag "/assets/forum/icons/forum_old.gif"
-  end  
+    # check this forum for unread post
+    if !forum.last_post.blank?
+      forum.topics.each do |topic|
+        if check_for_new_post topic
+          return image_tag "/assets/forum/icons/forum_new.gif"
+        end
+      end
+    end
+
+    # check child forums for unread post
+    if forum.has_children?
+      forum.children.each do |child|
+        child.topics.each do |topic|
+          if check_for_new_post topic
+            return image_tag "/assets/forum/icons/forum_new.gif"
+          end
+        end
+      end
+    end
+
+    return image_tag "/assets/forum/icons/forum_old.gif"
+  end
+
   # Returns true if a topic has any unread post.
+  #
+  # @param Topic   The topic object to check for unread post
   def check_for_new_post topic
     # if this topic is a redirect, then use the orginal topic id
     topic = Topic.find(topic.redirect) if topic.redirect?
@@ -201,5 +203,4 @@ module ForumsHelper
       end
     end
   end
-  
 end
