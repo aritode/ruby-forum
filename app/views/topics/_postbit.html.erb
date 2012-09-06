@@ -1,7 +1,8 @@
-<a name="post<%= post.id %>"></a>
-<table class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+<table id="post<%= post.id %>" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
 <tr>
     <td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1; border-right: 0px" >
+      <a name="post<%= post.id %>"><%= image_tag "/assets/forum/icons/post_old.gif", :class => "inlineimg" %></a>
+      
       <% if @last_read %>
         <% if @last_read >= post.created_at %>
           <%= image_tag "/assets/forum/icons/post_old.gif", :class => "inlineimg" %>

@@ -13,14 +13,15 @@ class TopicsController < ApplicationController
     end
     
     # get all the post
-    @posts    = Post.where(:topic_id => @topic.id).page(params[:page]).per(@@post_per_page)
-    @postbits = []
+    @posts        = Post.where(:topic_id => @topic.id).page(params[:page]).per(@@post_per_page)
+    @postbits     = []
+    params[:page] = params[:page] ? params[:page] : 1
     
     # loop through the post and check permissions, visibility, etc.
     @posts.each_with_index do |post, i|
       # permissions code goes here
       @postbits[i] = post
-      @postbits[i][:post_count] = 99999 # (i + 1) + (params[:page].to_i / @@post_per_page)
+      @postbits[i][:post_count] = @@post_per_page * params[:page].to_i + i - @@post_per_page + 1
       
     end
     
