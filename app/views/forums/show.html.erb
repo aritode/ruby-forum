@@ -11,7 +11,7 @@
   <tr valign="bottom">
     <td>
       <% if logged_in? %>
-        <%= link_to image_tag("/assets/forum/buttons/newthread.gif") , new_topic_path(:forum_id => @forum.id) %>
+        <%= link_to image_tag("/assets/forum/buttons/newthread.gif", :title => "Create new topic"), new_topic_path(:forum_id => @forum.id) %>
       <% end %>
     </td>
     <td align="right">
@@ -54,7 +54,7 @@
   <tr valign="top">
     <td>
       <% if logged_in? %>
-        <%= link_to image_tag("/assets/forum/buttons/newthread.gif") , new_topic_path(:forum_id => @forum.id) %>
+        <%= link_to image_tag("/assets/forum/buttons/newthread.gif", :title => "Create new topic"), new_topic_path(:forum_id => @forum.id) %>
       <% end %>
     </td>
     <td align="right">

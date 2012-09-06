@@ -4,13 +4,14 @@
   <td class="alt1">
     <div>
       <span style="float:right">
-        <%= image_tag("/assets/forum/icons/moderated_small.gif") if !topic.visible? %>
-        <%= image_tag("/assets/forum/icons/sticky.gif") if topic.sticky? %>
-        <%= image_tag("/assets/forum/icons/trashcan_small.gif") if topic.visible == 2 %>
+        <%= image_tag("/assets/forum/icons/moderated_small.gif", :title => "Topic needs approval") if !topic.visible? %>
+        <%= image_tag("/assets/forum/icons/sticky.gif", :title => "Sticky Thread") if topic.sticky? %>
+        <%= image_tag("/assets/forum/icons/trashcan_small.gif", :title => "Topic is deleted") if topic.visible == 2 %>
+        <%= image_tag("/assets/forum/icons/expires.gif", :title => "Expires in #{time_ago_in_words(topic.expires)}") if topic.expires %>
       </span>
 
       <% if check_for_new_post topic %>
-        <%= link_to image_tag("/assets/forum/buttons/firstnew.gif", :class => "inlineimg"), firstnew_post_path(topic.redirect? ? topic.redirect : topic.id) %>
+        <%= link_to image_tag("/assets/forum/buttons/firstnew.gif", :class => "inlineimg", :title => "Go to first new post"), firstnew_post_path(topic.redirect? ? topic.redirect : topic.id) %>
       <% end %>
 
       <%= "Moderated:" if !topic.visible? %>
@@ -46,7 +47,7 @@
           <%= time_tag topic.posts.last.date, :format =>'%m-%d-%y %l:%M %p' %> <br />
           by 
           <%= link_to topic.posts.last.user.username, users_path(topic.posts.last.user_id) %>
-          <%= link_to image_tag("/assets/forum/buttons/lastpost.gif", :class => "inlineimg"), topics_lastpost_path(topic) %>
+          <%= link_to image_tag("/assets/forum/buttons/lastpost.gif", :class => "inlineimg", :title => "Go to last post"), topics_lastpost_path(topic) %>
         </div>
       <% end %>
     </td>
