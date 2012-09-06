@@ -13,6 +13,9 @@ class CreatePosts < ActiveRecord::Migration
       # The id of the user who made the post
       t.integer  :user_id
 
+      # The id of the topic being used for staff members to discuss this post
+      t.integer  :report_id, :default => 0
+      
       # The date and time of the post
       t.datetime :date
 
@@ -25,7 +28,7 @@ class CreatePosts < ActiveRecord::Migration
 
       # The poster can choose to display their signature if they want
       t.integer  :show_signature, :default => 1
-      
+
       # Rail's update_at and created_at columns
       t.timestamps
     end

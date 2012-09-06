@@ -277,3 +277,9 @@ a.shade:active, a.shade:hover { color: #FF4400; text-decoration: underline; }
 .inlineimg {
   vertical-align:middle;
 }
+
+blockquote {
+  background:#ededed;
+  border:1px inset;
+  padding:4px;
+}

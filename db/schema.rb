@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(:version => 20120830164643) do
     t.text     "content"
     t.integer  "topic_id"
     t.integer  "user_id"
+    t.integer  "report_id",      :default => 0
     t.datetime "date"
     t.integer  "visible",        :default => 1
     t.integer  "show_signature", :default => 1
@@ -53,17 +54,16 @@ ActiveRecord::Schema.define(:version => 20120830164643) do
     t.string   "title"
     t.integer  "user_id"
     t.integer  "forum_id"
-    t.integer  "visible",        :default => 1
-    t.integer  "open",           :default => 1
-    t.integer  "sticky",         :default => 0
-    t.integer  "views",          :default => 0
-    t.integer  "replies",        :default => 0
-    t.integer  "redirect",       :default => 0
+    t.integer  "visible",      :default => 1
+    t.integer  "open",         :default => 1
+    t.integer  "sticky",       :default => 0
+    t.integer  "views",        :default => 0
+    t.integer  "replies",      :default => 0
+    t.integer  "redirect",     :default => 0
     t.datetime "expires"
-    t.integer  "last_poster_id"
     t.datetime "last_post_at"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
   end
 
   create_table "usergroups", :force => true do |t|

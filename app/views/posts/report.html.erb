@@ -1,0 +1,43 @@
+<% title "Report Post" %>
+
+<%= form_for :report, :url => report_post_path(@post) do |f| %>
+<input type="hidden" name="s" value="" />
+<input type="hidden" name="securitytoken" value="1346953693-7a59579ff10bac56db7f820433b213a0eb005835" />
+
+<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+<tr>
+  <td class="tcat">
+    <span class="smallfont" style="float:right"><strong>Forum</strong>: <%= link_to @topic.forum.title, forum_path(@topic.forum) %></span>
+    Report Post
+  </td>
+</tr>
+<tr>
+  <td class="panelsurround" align="center">
+    <div class="panel">
+      <div style="width:640px" align="left">
+        <!-- user is logged in -->
+        <div class="smallfont" style="float:right">
+          Logged in as <%= link_to current_user.username, user_path(current_user), :target => "_blank" %>
+        </div>
+
+        <!-- report field -->
+        <div class="fieldset">
+          <div class="smallfont">Message:</div>
+          <%= f.text_area :reason, :cols => 60, :rows => 6 %>
+        </div>
+        <!-- / report field -->
+
+        <div class="fieldset">
+          <strong>Note</strong>: This is ONLY to be used to report spam, advertising messages, and problematic (harassment, fighting, or rude) posts.
+        </div>
+
+      </div>
+    </div>
+
+    <div style="margin-top:6px">
+      <%= f.submit "Send Report", :class => "button" %>
+    </div>
+  </td>
+</tr>
+</table>
+<% end %>
