@@ -35,7 +35,8 @@ class TopicsController < ApplicationController
     end
     
     if logged_in?
-      mark_topic_as_read @topic
+      @last_read = @topic.topic_reads.by_user(current_user.id).first
+      mark_topic_as_read @topic, @posts.last.date
     end
 
     # update the views count
@@ -117,7 +118,7 @@ class TopicsController < ApplicationController
           @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
           @forum.save
 
-          mark_topic_as_read @topic
+          mark_topic_as_read @topic, @post.date
 
           redirect_to topic_path(@topic.id)
         end
@@ -450,24 +451,24 @@ private
   # current page in the "topic_reads" table to keep track of users who read said post. Every time the
   # user loads a page of post, the last post date will be saved and those post will be marked as 
   # "read" too. This will allow us to show users new post in topics that they haven't seen yet.
-  def mark_topic_as_read topic
+  def mark_topic_as_read topic, datetime
     last_post = topic.posts.last
     last_read = topic.topic_reads.by_user(current_user.id)
 
     # skip if last post is older than 3 days
     if !((last_post.date + 3.days) < Time.now)
       # check if the last post on the current page is older than 3 days
-      if !((last_post.date + 3.days) < Time.now)
+      if !((datetime + 3.days) < Time.now)
         # first time reading these post, create a new row marking them as read
         if last_read.empty?
           TopicRead.new(:topic_id => topic.id, 
                         :user_id  => current_user.id, 
-                        :date     => last_post.date).save
+                        :date     => datetime).save
         else
           # check if the last post date is newer then what we have saved, if so, update the read date
-          if (last_post.date > last_read.first.date)
+          if (datetime > last_read.first.date)
             @topic_read      = TopicRead.find_by_topic_id_and_user_id(@topic.id, current_user.id)
-            @topic_read.date = last_post.date
+            @topic_read.date = datetime
             @topic_read.save
           end
         end
