@@ -189,14 +189,14 @@ class PostsController < ApplicationController
     @topic = Topic.find(@post.topic_id)
     page   = 1
 
-    # build the post_url of the post being reported
-    post_url = "%s?page=%d#post%d" % [topic_url(@topic.id), page, @post.id]
-
     # figure out which page the post is on
     @topic.posts.to_enum.with_index(1) do |post, i|
       break if @post.id == @post.id
       page = page + 1 if (i % @@post_per_page) == 0
     end
+
+    # build the post_url of the post being reported
+    post_url = "%s?page=%d#post%d" % [topic_url(@topic.id), page, @post.id]
 
     # render the report form
     if params[:report].blank?
