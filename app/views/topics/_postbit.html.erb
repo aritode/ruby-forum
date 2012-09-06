@@ -1,17 +1,16 @@
+<a name="post<%= post.id %>"></a>
 <table id="post<%= post.id %>" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
 <tr>
     <td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1; border-right: 0px" >
-      <a name="post<%= post.id %>">
       <% if !@last_read.blank? %>
         <% if @last_read.date >= post.created_at %>
-          <%= image_tag "/assets/forum/icons/post_old.gif", :class => "inlineimg" %>
+          <%= image_tag "/assets/forum/icons/post_old.gif", :class => "inlineimg", :title => "This is an old post" %>
         <% else %>
-          <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg" %>
+          <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg", :title => "This is a new post" %>
         <% end %>
       <% else %>
-        <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg" %>
+        <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg", :title => "This is a new post" %>
       <% end %>
-      </a>
       <%= time_tag post.created_at, :format =>'%m-%d-%Y, %l:%M %p' %>
     </td>
     <td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1; border-left: 0px" align="right">
