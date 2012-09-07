@@ -1,5 +1,8 @@
 <a name="post<%= post.id %>"></a>
-<table id="post<%= post.id %>" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+<% if post.visible == 2 %>
+  <%= render :partial => 'delete_postbit', :locals => {:post => post} %>
+<% else %>
+  <table id="post<%= post.id %>" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
 <tr>
     <td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1; border-right: 0px" >
       <% if !@last_read.blank? %>
@@ -17,6 +20,8 @@
       <% if params[:controller] != 'posts'%>
         #<%= link_to "#{post.post_count}", post_path(post) %>
       <% end %>
+      
+      <input type="checkbox" name="post_ids[]" value="<%= post.id %>" id="plist_<%= post.id %>" style="vertical-align:middle; padding:0px; margin:0px 0px 0px 5px" />
     </td>
 </tr>
 <tr valign="top">
@@ -41,10 +46,17 @@
   </td>
   <td class="alt1" align="right" style="border: 1px solid #D1D1E1; border-left: 0px; border-top: 0px">
     <% if logged_in? %>
-      <%= link_to image_tag("/assets/forum/buttons/edit.gif"), edit_post_path(post) %>
-      <%= link_to image_tag("/assets/forum/buttons/quote.gif"), new_post_path(:topic_id => @topic.id, :quote => post.id) %>
+      <% if post.topic.visible == 2 && post.post_count == 1 %>
+        <%= image_tag "/assets/forum/icons/trashcan.gif", :title => "This topic was deleted" %>
+      <% else %>
+        <%= link_to image_tag("/assets/forum/buttons/edit.gif"), edit_post_path(post) %>
+        <%= link_to image_tag("/assets/forum/buttons/quote.gif"), new_post_path(:topic_id => @topic.id, :quote => post.id) %>
+        <%= image_tag "/assets/forum/icons/moderated.gif", :title => "Moderated Post" if post.visible == 0 %>
+        <%= image_tag "/assets/forum/icons/moderated.gif", :title => "Moderated Topic" if post.topic.visible == 0 && post.post_count == 1 %>
+      <% end %>
     <% end %>
   </td>
 </tr>
 </table>
+<% end %>
 <br />

@@ -1,0 +1,38 @@
+<table id="post5586" class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+<tr title="Post 5586">
+  <td class="thead" style="font-weight:normal" >
+
+    <div style="float:right">
+      <%= link_to "View Post", post_path(post) %>
+      <input type="checkbox" name="post_ids[]" value="<%= post.id %>" id="plist_<%= post.id %>" style="vertical-align:middle; padding:0px; margin:0px 0px 0px 5px" />
+    </div>
+
+    <% if !@last_read.blank? %>
+      <% if @last_read.date >= post.created_at %>
+        <%= image_tag "/assets/forum/icons/post_old.gif", :class => "inlineimg", :title => "This is an old post" %>
+      <% else %>
+        <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg", :title => "This is a new post" %>
+      <% end %>
+    <% else %>
+      <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg", :title => "This is a new post" %>
+    <% end %>
+    <%= time_tag post.created_at, :format =>'%m-%d-%Y, %l:%M %p' %>
+
+  </td>
+</tr>
+<tr>
+  <td class="alt2">
+    <div class="smallfont" style="float:right">
+      <%= link_to "Manage", nil %>
+    </div>
+    <%= link_to post.user.username, user_url(post.user) %>
+  </td>
+</tr>
+<tr>
+  <td class="alt1">
+    <div class="smallfont">
+      This message has been deleted by <%= link_to "%post.log.user.username%", nil %>.
+    </div>
+  </td>
+</tr>
+</table>
