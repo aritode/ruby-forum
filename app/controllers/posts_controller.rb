@@ -45,11 +45,7 @@ class PostsController < ApplicationController
 
   # Saves a new post into the database
   def create
-    # preview the post
-    #
-    # Note: the "render :action => new" doesn't actually run any of the code in the "new" action, so
-    # I'm forced to copy and paste the code from that action. This isn't ideal since it breaks the DRY
-    # principle. Need to research to see if there's a better way to show post previews.
+    # preview...
     if !params[:preview].nil?
       @post  = Post.new
       @topic = Topic.find(params[:post][:topic_id])
@@ -165,8 +161,7 @@ class PostsController < ApplicationController
       if @post.update_attributes(params[:post])
         @topic = Topic.find(@post.topic_id)
         @topic.update_attributes(
-          :last_poster_id => current_user.id, 
-          :last_post_at   => Time.now
+          :last_post_at => Time.now
         )
         redirect_to topic_path(@post.topic_id)
       else
@@ -267,12 +262,6 @@ class PostsController < ApplicationController
 
   # Administrative options for managing posts
   def manage
-    #raise params.inspect
-
-    # @post_ids = params[:post_ids].join(",") if params[:post_ids].kind_of?(Array);
-    # @forums    = Forum.all(:order => "ancestry ASC, display_order ASC")
-    # @topics    = Topic.where(:id => @topic_ids.split(","))
-    
     # root breadcrumb
     add_breadcrumb "Home", root_path
     
@@ -342,9 +331,14 @@ class PostsController < ApplicationController
         end
         redirect_to topic_url(params[:topic_id])
 
-      # merge and delete post
+      # merge posts
       when "merge"
+        @posts   = Post.find(params[:post_ids])
+        @users   = User.find(@posts.map {|u| u.user_id})
+        @content = @posts.map { |p| "%s" % p.content }
         render :action => :merge
+
+      # delete
       when "delete"
         render :action => :delete
     end
@@ -401,4 +395,45 @@ class PostsController < ApplicationController
     redirect_to topic_url(params[:delete][:topic_id])
   end
 
+  # Merges two or more post together
+  def merge
+    # update the destination post with it's new values
+    dest_post         = Post.find(params[:merge][:post_id])
+    dest_post.user_id = params[:merge][:user_id]
+    dest_post.content = params[:merge][:content]
+    dest_post.title   = params[:merge][:title] if !params[:merge][:title].blank?
+    dest_post.save
+        
+    total_destroyed = 0
+
+    # delete all the other post
+    params[:merge][:post_ids].split(/, ?/).each do |post_id|
+      # skip if destination post
+      next if dest_post.id == post_id.to_i
+
+      # update stats & destroy the post
+      post  = Post.find(post_id)
+      post.user.post_count = post.user.post_count - 1
+      post.user.save
+      post.destroy
+
+      # keep track of the number of deleted post
+      total_destroyed = total_destroyed + 1
+    end
+
+    # update topic stats
+    topic         = dest_post.topic
+    topic.user_id = params[:merge][:user_id] if dest_post.id == topic.posts.first.id
+    topic.replies = topic.replies - total_destroyed
+    topic.save
+    
+    # update forum stats
+    forum              = dest_post.topic.forum
+    forum.post_count   = forum.post_count - 1
+    forum.last_post_id = forum.recent_post.nil? ? 0 : forum.recent_post.id
+    forum.save
+
+    redirect_to topic_url(params[:merge][:topic_id])
+  end
+  
 end

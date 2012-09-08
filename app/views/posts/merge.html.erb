@@ -1,0 +1,65 @@
+<% title "Merge Posts" %>
+
+<% content_for :head do %>
+  <%= tinymce %>
+<% end %>
+
+<%= form_for :merge, :url => merge_posts_path do |f| %>
+<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+<tr>
+  <td class="tcat">Merge Posts</td>
+</tr>
+<tr>
+  <td class="panelsurround" align="center">
+    <div class="panel">
+      <div style="width:640px" align="left">
+        <fieldset class="fieldset">
+          <legend>Options</legend>
+          <div style="padding:3px">
+            <!-- Date field -->
+            <div class="fieldset">
+              <div>Destination Post</div>
+              <%= f.select :post_id, @posts.map {|p| ["(%d) %s by %s" % [p.id, p.date.strftime("%m-%d-%y %l:%M %p"), p.user.username], p.id]} %>
+              <!-- <option value="5586" class="" >(2) 09-04-2012 03:15 AM by ken</option> -->
+            </div>
+            <!-- / Date field -->
+
+            <!-- User name field -->
+            <div class="fieldset">
+              <div>Post Creator</div>
+              <%= f.select :user_id, options_from_collection_for_select(@users, "id", "username") %>
+            </div>
+            <!-- / user name field -->
+
+            <!-- subject field -->
+            <div class="fieldset">
+              <div>Post Title</div>
+              <%= f.text_field :title, :class => "bginput", :size => 50, :maxlength => "85" %>
+            </div>
+            <!-- / subject field -->
+
+            <!-- edit reason field -->
+            <div class="fieldset">
+              <div>Reason for Merge</div>
+              <%= f.text_field :reason, :class => "bginput", :size => 50, :maxlength => "85" %>
+            </div>
+            <!-- / edit reason field -->
+          </div>
+        </fieldset>
+        
+        <div class="smallfont">Message</div>
+        <%= f.text_area :content, :value => @content.join("\n\n\n"), :class => "tinymce", :rows => "10", :cols => "60", :style => "width:640px; height:250px" %>
+        
+      </div>
+    </div>
+
+    <div style="margin-top:6px">
+      <%= f.hidden_field :topic_id, :value => params[:topic_id] %>
+      <%= f.hidden_field :post_ids, :value => params[:post_ids].join(",") %>
+      <%= f.submit "Merge Posts", :class => "button" %>
+    </div>
+    
+  </td>
+</tr>
+</table>
+<% end %>
