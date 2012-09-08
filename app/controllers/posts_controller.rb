@@ -397,8 +397,16 @@ class PostsController < ApplicationController
 
   # Merges two or more post together
   def merge
+    # get the post we're merging into
+    dest_post = Post.find(params[:merge][:post_id])
+
+    # if the user_id of the dest post changes, update their post counts
+    if dest_post.user_id != params[:merge][:user_id]
+      User.increment_counter :post_count, params[:merge][:user_id]
+      User.decrement_counter :post_count, dest_post.user_id
+    end
+    
     # update the destination post with it's new values
-    dest_post         = Post.find(params[:merge][:post_id])
     dest_post.user_id = params[:merge][:user_id]
     dest_post.content = params[:merge][:content]
     dest_post.title   = params[:merge][:title] if !params[:merge][:title].blank?
@@ -429,7 +437,7 @@ class PostsController < ApplicationController
     
     # update forum stats
     forum              = dest_post.topic.forum
-    forum.post_count   = forum.post_count - 1
+    forum.post_count   = forum.post_count - total_destroyed
     forum.last_post_id = forum.recent_post.nil? ? 0 : forum.recent_post.id
     forum.save
 
