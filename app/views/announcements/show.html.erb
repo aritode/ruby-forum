@@ -1,0 +1,32 @@
+<% title "Announcement" %>
+
+<p>
+  <strong>Title:</strong>
+  <%= @announcement.title %>
+</p>
+<p>
+  <strong>User:</strong>
+  <%= @announcement.user_id %>
+</p>
+<p>
+  <strong>Forum:</strong>
+  <%= @announcement.forum_id %>
+</p>
+<p>
+  <strong>Content:</strong>
+  <%= @announcement.content %>
+</p>
+<p>
+  <strong>Views:</strong>
+  <%= @announcement.views %>
+</p>
+<p>
+  <strong>Expires At:</strong>
+  <%= @announcement.expires_at %>
+</p>
+
+<p>
+  <%= link_to "Edit", edit_announcement_path(@announcement) %> |
+  <%= link_to "Destroy", @announcement, :confirm => 'Are you sure?', :method => :delete %> |
+  <%= link_to "View All", announcements_path %>
+</p>

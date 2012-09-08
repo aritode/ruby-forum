@@ -1,0 +1,15 @@
+one:
+  title: MyString
+  user_id: 1
+  forum_id: 1
+  content: MyText
+  views: 1
+  expires_at: 2012-09-08 03:49:26
+
+two:
+  title: MyString
+  user_id: 1
+  forum_id: 1
+  content: MyText
+  views: 1
+  expires_at: 2012-09-08 03:49:26

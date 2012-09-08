@@ -1,0 +1,32 @@
+<%= form_for @announcement do |f| %>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </p>
+  <p>
+    <%= f.label :user_id %><br />
+    <%= f.number_field :user_id %>
+  </p>
+  <p>
+    <%= f.label :forum_id %><br />
+    <%= f.number_field :forum_id %>
+  </p>
+  <p>
+    <%= f.label :content %><br />
+    <%= f.text_area :content %>
+  </p>
+  <p>
+    <%= f.label :views %><br />
+    <%= f.number_field :views %>
+  </p>
+  <p>
+    <%= f.label :starts_at %><br />
+    <%= f.datetime_select :starts_at %>
+  </p>
+  <p>
+    <%= f.label :expires_at %><br />
+    <%= f.datetime_select :expires_at %>
+  </p>
+  <p><%= f.submit %></p>
+<% end %>

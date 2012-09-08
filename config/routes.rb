@@ -1,5 +1,7 @@
 Forums::Application.routes.draw do
 
+  resources :announcements
+
   root :to => 'forums#index'
 
   # post
