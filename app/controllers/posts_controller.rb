@@ -45,11 +45,7 @@ class PostsController < ApplicationController
 
   # Saves a new post into the database
   def create
-    # preview the post
-    #
-    # Note: the "render :action => new" doesn't actually run any of the code in the "new" action, so
-    # I'm forced to copy and paste the code from that action. This isn't ideal since it breaks the DRY
-    # principle. Need to research to see if there's a better way to show post previews.
+    # preview...
     if !params[:preview].nil?
       @post  = Post.new
       @topic = Topic.find(params[:post][:topic_id])
@@ -165,8 +161,7 @@ class PostsController < ApplicationController
       if @post.update_attributes(params[:post])
         @topic = Topic.find(@post.topic_id)
         @topic.update_attributes(
-          :last_poster_id => current_user.id, 
-          :last_post_at   => Time.now
+          :last_post_at => Time.now
         )
         redirect_to topic_path(@post.topic_id)
       else
@@ -264,4 +259,189 @@ class PostsController < ApplicationController
       end
     end
   end
+
+  # Administrative options for managing posts
+  def manage
+    # root breadcrumb
+    add_breadcrumb "Home", root_path
+    
+    # switch between actions
+    case params[:do]
+      # approve or undelete posts
+      when "approve", "undelete"
+        params[:post_ids].each do |post_id|
+          # fetch the post
+          post = Post.find(post_id)
+          
+          # first post?
+          if post.id == post.topic.posts.first.id
+            # skip if this topic is already visible
+            next if post.topic.visible == 1
+
+            post.topic.forum.topic_count = post.topic.forum.topic_count + 1
+            post.topic.forum.post_count  = post.topic.forum.post_count  + post.topic.replies
+            post.topic.visible           = 1
+          else
+            # skip if this post is already visible
+            next if post.visible == 1
+
+            post.topic.forum.post_count = post.topic.forum.post_count + 1
+            post.topic.replies          = post.topic.replies          + 1
+            post.visible                = 1
+          end
+
+          # save everything
+          post.save
+          post.topic.save
+          post.topic.forum.last_post_id = post.topic.forum.recent_post.nil? ? 0 :
+                                          post.topic.forum.recent_post.id
+          post.topic.forum.save
+        end
+        redirect_to topic_url(params[:topic_id])
+
+      # unapprove posts
+      when "unapprove"
+        params[:post_ids].each do |post_id|
+          # fetch the post
+          post = Post.find(post_id)
+          
+          # first post?
+          if post.id == post.topic.posts.first.id
+            # skip if this topic is already unapproved
+            next if post.topic.visible == 0
+            
+            post.topic.forum.topic_count = post.topic.forum.topic_count - 1
+            post.topic.forum.post_count  = post.topic.forum.post_count  - post.topic.replies
+            post.topic.visible           = 0
+          else
+            # skip if this post is already visible
+            next if post.topic.visible == 0
+
+            post.topic.forum.post_count = post.topic.forum.post_count - 1
+            post.topic.replies          = post.topic.replies          - 1
+            post.visible                = 0
+          end
+
+          # save everything
+          post.save
+          post.topic.save
+          post.topic.forum.last_post_id = post.topic.forum.recent_post.nil? ? 0 :
+                                          post.topic.forum.recent_post.id
+          post.topic.forum.save
+        end
+        redirect_to topic_url(params[:topic_id])
+
+      # merge posts
+      when "merge"
+        @posts   = Post.find(params[:post_ids])
+        @users   = User.find(@posts.map {|u| u.user_id})
+        @content = @posts.map { |p| "%s" % p.content }
+        render :action => :merge
+
+      # delete
+      when "delete"
+        render :action => :delete
+    end
+  end
+
+  # Soft / hard delete one or more topics
+  def delete
+    # loop through all the post_ids
+    params[:delete][:post_ids].split(/, ?/).each do |post_id|
+      # fetch the current post
+      post  = Post.find(post_id)
+      topic = post.topic
+      forum = post.topic.forum
+      
+      # skip if this post if it's already been deleted
+      next if post.visible == 2
+
+      # switch between deletion types
+      case params[:delete][:type]
+        # preform hard deletion
+        when "hard"
+          # first post?
+          if post.id == post.topic.posts.first.id
+            forum.topic_count = forum.topic_count - 1
+            forum.post_count  = forum.post_count  - post.topic.replies
+            topic.destroy
+          else
+            forum.post_count = forum.post_count - 1
+            topic.replies    = topic.replies    - 1
+            post.destroy
+          end
+        # preform soft deletion
+        when "soft"
+          # first post?
+          if post.id == post.topic.posts.first.id
+            forum.topic_count = forum.topic_count - 1
+            forum.post_count  = forum.post_count  - post.topic.replies
+            Topic.update(post.topic.id, :visible => 2)
+          else
+            forum.post_count = forum.post_count - 1
+            topic.replies    = topic.replies    - 1
+            Post.update(post.id, :visible => 2)
+          end
+      end
+
+      # save the new topic stats
+      topic.save
+      
+      # update last post info and save the new forum stats
+      forum.last_post_id = forum.recent_post.nil? ? 0 : forum.recent_post.id
+      forum.save
+    end
+    
+    redirect_to topic_url(params[:delete][:topic_id])
+  end
+
+  # Merges two or more post together
+  def merge
+    # get the post we're merging into
+    dest_post = Post.find(params[:merge][:post_id])
+
+    # if the user_id of the dest post changes, update their post counts
+    if dest_post.user_id != params[:merge][:user_id]
+      User.increment_counter :post_count, params[:merge][:user_id]
+      User.decrement_counter :post_count, dest_post.user_id
+    end
+    
+    # update the destination post with it's new values
+    dest_post.user_id = params[:merge][:user_id]
+    dest_post.content = params[:merge][:content]
+    dest_post.title   = params[:merge][:title] if !params[:merge][:title].blank?
+    dest_post.save
+        
+    total_destroyed = 0
+
+    # delete all the other post
+    params[:merge][:post_ids].split(/, ?/).each do |post_id|
+      # skip if destination post
+      next if dest_post.id == post_id.to_i
+
+      # update stats & destroy the post
+      post  = Post.find(post_id)
+      post.user.post_count = post.user.post_count - 1
+      post.user.save
+      post.destroy
+
+      # keep track of the number of deleted post
+      total_destroyed = total_destroyed + 1
+    end
+
+    # update topic stats
+    topic         = dest_post.topic
+    topic.user_id = params[:merge][:user_id] if dest_post.id == topic.posts.first.id
+    topic.replies = topic.replies - total_destroyed
+    topic.save
+    
+    # update forum stats
+    forum              = dest_post.topic.forum
+    forum.post_count   = forum.post_count - total_destroyed
+    forum.last_post_id = forum.recent_post.nil? ? 0 : forum.recent_post.id
+    forum.save
+
+    redirect_to topic_url(params[:merge][:topic_id])
+  end
+  
 end

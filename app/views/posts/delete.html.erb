@@ -1,0 +1,44 @@
+<% title "Delete Posts" %>
+
+<%= form_for :delete, :url => delete_posts_path do |f| %>
+<%= f.hidden_field :post_ids, :value => params[:post_ids].join(",")%>
+<%= f.hidden_field :topic_id, :value => params[:topic_id] %>
+<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+<tr>
+  <td class="tcat">Delete Posts</td>
+</tr>
+<tr>
+  <td class="panelsurround" align="center">
+  <div class="panel">
+    <div style="width:640px" align="left">
+      <fieldset class="fieldset">
+        <legend>Deletion Options</legend>
+        <div style="padding:3px">
+          <div class="fieldset">How would you like to delete?</div>
+          <div class="fieldset">
+            <div>
+              <%= f.radio_button :type, :soft, :checked => true %>
+              <%= f.label :type_soft, "Soft Delete" %>
+            </div>
+            <div>
+              <%= f.radio_button :type, :hard %>
+              <%= f.label :type_hard, "Hard Delete (Physically remove posts from the database)" %>
+            </div>
+          </div>
+        </div>
+        <div class="fieldset">
+          <div><%= f.label :type_soft, "Reason for Deletion:" %></div>
+          <div><%= f.text_field :reason, :size => 50, :maxlength => 255, :class => "bginput" %></div>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <div style="margin-top:6px">
+    <%= f.submit "Delete Posts", :class => "btn btn-blue" %>
+    <%= f.submit "Reset Fields", :class => "btn", :type => "reset" %>
+  </div>
+  </td>
+</tr>
+</table>
+<% end %>

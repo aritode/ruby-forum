@@ -4,9 +4,11 @@ Forums::Application.routes.draw do
 
   # post
   resources :posts
-  match 'posts/:id/quote'  => 'posts#quote',  :as => :quote_post
-  match 'posts/:id/report' => 'posts#report', :as => :report_post
-  #match 'post/new(?topic_id=:topic_id)(quote_post=:post_id)' => "posts#new", :as => :new_post
+  match 'posts/:id/quote'      => 'posts#quote',  :as => :quote_post
+  match 'posts/:id/report'     => 'posts#report', :as => :report_post
+  match 'posts/manage'         => 'posts#manage', :as => :manage_posts, :via => [:post]
+  match 'posts/manage/merge'   => 'posts#merge',  :as => :merge_posts,  :via => [:post]
+  match 'posts/manage/delete'  => 'posts#delete', :as => :delete_posts, :via => [:post]
     
   ## forums
   #match 'forums'      => 'forums#index' , :as => :forum
