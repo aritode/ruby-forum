@@ -12,6 +12,7 @@
     <td>
       <% if logged_in? %>
         <%= link_to image_tag("/assets/forum/buttons/newthread.gif", :title => "Create new topic"), new_topic_path(:forum_id => @forum.id) %>
+        <%= link_to "New Announcement", new_announcement_path(:forum_id => @forum.id) %>
       <% end %>
     </td>
     <td align="right">
@@ -21,9 +22,15 @@
   </table>
   <!-- /controls above thread list -->
 
-  <!-- Topics list  -->
   <%= form_for :topics, :url => manage_topics_path do |f| %>
   <table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+
+  <!-- announcements list -->
+  <% @announcements.each do |a| %>
+    <%= render :partial => 'announcement', :locals => {:announcement => a} %>
+  <% end %>
+  <!-- /announcements list -->
+
   <tr>
     <td class="thead" colspan="2">&nbsp;</td>
     <td class="thead" width="100%"><%= build_sort_link("Thread", 'title') %> / <%= build_sort_link("Thread Starter", 'username') %></td>
@@ -35,6 +42,7 @@
     <% end %>
   </tr>
 
+  <!-- Topics list  -->
   <% if !@topicbits.empty? %>
     <% for topic in @topicbits %>
     <%= render :partial => 'topic_bit', :locals => {:topic => topic} %>
@@ -46,8 +54,8 @@
       </td>
     </tr>
   <% end %>
-  </table>
   <!-- /Topics list  -->
+  </table>
 
   <!-- controls below thread list -->
   <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:3px">

@@ -8,7 +8,8 @@ class User < ActiveRecord::Base
 
   has_many :posts, :dependent => :nullify
   has_many :topics, :dependent => :nullify
-
+  has_many :announcements
+  
   has_one :usergroup, :primary_key => :usergroup_id, :foreign_key => :id
   
   validates_presence_of :username

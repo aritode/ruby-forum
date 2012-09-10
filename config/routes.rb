@@ -1,7 +1,5 @@
 Forums::Application.routes.draw do
 
-  resources :announcements
-
   root :to => 'forums#index'
 
   # post
@@ -12,9 +10,12 @@ Forums::Application.routes.draw do
   match 'posts/manage/merge'   => 'posts#merge',  :as => :merge_posts,  :via => [:post]
   match 'posts/manage/delete'  => 'posts#delete', :as => :delete_posts, :via => [:post]
     
-  ## forums
+  # forums
   #match 'forums'      => 'forums#index' , :as => :forum
   match 'forums/:id'  => 'forums#show'  , :as => :forum
+  
+  # announcements
+  resources :announcements
   
   # Topics
   resources :topics
@@ -24,7 +25,6 @@ Forums::Application.routes.draw do
   match 'topics/manage/move'    => 'topics#move',     :as => :move_topics,   :via => [:post]
   match 'topics/manage/merge'   => 'topics#merge',    :as => :merge_topics,  :via => [:post]
   match 'topics/manage/delete'  => 'topics#delete',   :as => :delete_topics, :via => [:post]
-
 
   resources :sessions
   resources :users
@@ -64,8 +64,4 @@ Forums::Application.routes.draw do
     
   end
   
-  
-  
 end
-
-

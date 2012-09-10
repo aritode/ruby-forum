@@ -9,7 +9,7 @@ class Forum < ActiveRecord::Base
   # a forum contains many topics
   has_many :topics, :dependent => :destroy
   
-  # a forum contains many announcements
+  # a forum can have many announcements
   has_many :announcements, :dependent => :destroy
   
   # each forum has one "last post" object that we render on the forum's index and show page
