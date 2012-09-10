@@ -31,6 +31,11 @@ class ForumsController < ApplicationController
       @topicbits[i] = topic
     end
 
+    # announcements
+    @announcements = @forum.announcements.where(['starts_at <= ?', Time.now])
+                                         .where(['expires_at >= ?', Time.now])
+                                         .order('starts_at desc')
+
     # start breadcrumbs
     add_breadcrumb "Home", root_path
     if !@forum.ancestors.empty?  

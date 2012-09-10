@@ -11,7 +11,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120830164643) do
+ActiveRecord::Schema.define(:version => 20120908074926) do
+
+  create_table "announcements", :force => true do |t|
+    t.string   "title"
+    t.integer  "user_id"
+    t.integer  "forum_id"
+    t.text     "content"
+    t.integer  "views",      :default => 0
+    t.datetime "starts_at"
+    t.datetime "expires_at"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
 
   create_table "forums", :force => true do |t|
     t.string   "title"

@@ -1,0 +1,20 @@
+<tr>
+  <td class="alt1">
+    <%= image_tag("/assets/forum/icons/announcement_new.gif", :title => "Announcement") %>
+  </td>
+  <td class="alt2" colspan="6">
+    <div>
+      <span class="smallfont" style="float:right">
+        Views: <strong><%= announcement.views %></strong>
+        <%= link_to image_tag("/assets/forum/buttons/lastpost.gif", :class => "inlineimg"), announcement_path(announcement) %>
+      </span>
+      <strong>Announcement</strong>: <%= link_to announcement.title, announcement_path(announcement) %></a>
+    </div>
+    <div>
+      <span class="smallfont" style="float:right"><%= time_tag announcement.starts_at, :format =>'%m-%d-%y' %></span>
+      <span class="smallfont" style="cursor: pointer; " onclick="window.open('<%= user_path(announcement.user_id) %>', '_self')">
+          <%= announcement.user.username %>
+      </span>
+    </div>
+  </td>
+</tr>

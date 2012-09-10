@@ -1,0 +1,56 @@
+<% content_for :head do %>
+  <%= tinymce %>
+<% end %>
+
+<%= form_for @announcement do |f| %>
+<%= f.error_messages %>
+<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+<tr>
+  <td class="tcat">Edit Announcement</td>
+</tr>
+<tr>
+  <td class="panelsurround" align="center">
+    <div class="panel">
+      <div style="width:640px" align="left">
+        <div class="fieldset">
+          <div>Forum</div>
+          <div><%= f.select :forum_id, build_forum_chooser_options(@forums, params[:forum_id] ? params[:forum_id] : @announcement.forum_id) %></div>
+        </div>
+
+        <div class="fieldset">
+          <div>Title</div>
+          <%= f.text_field :title, :class => "bginput", :size => 50, :maxlength => "85" %>
+        </div>
+
+        <div class="smallfont">Message</div>
+        <%= f.text_area :content, :class => "tinymce", :rows => "10", :cols => "60", :style => "width:640px; height:250px" %>
+        
+        <br />
+
+        <fieldset class="fieldset">
+          <legend>Start Date / End Date</legend>
+          <div style="padding:3px">
+            <div class="fieldset">
+              <div>Start Date</div>
+              <%= f.datetime_select :starts_at, :order => [:month, :day, :year], :default => Time.now %>
+              
+            </div>
+            <div class="fieldset">
+              <div>End Date</div>
+              <%= f.datetime_select :expires_at, :order => [:month, :day, :year], :default => 1.month.from_now %>
+            </div>
+          </div>
+        </fieldset>
+        
+      </div>
+    </div>
+
+    <div style="margin-top:6px">
+      <%= f.submit "Save Changes", :class => "button" %>
+      <%= f.hidden_field :user_id, :value => current_user.id %>
+    </div>
+    
+  </td>
+</tr>
+</table>
+<% end %>

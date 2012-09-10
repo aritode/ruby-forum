@@ -1,0 +1,38 @@
+<% title @announcement.title %>
+
+<table id="post2" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+<tr>
+  <td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1" colspan="2">
+  <%= image_tag "/assets/forum/icons/post_old.gif", :class => "inlineimg", :title => "This is an old announcement" %>
+    <%= time_tag @announcement.starts_at,  :format => "%m-%d-%Y" %> until 
+    <%= time_tag @announcement.expires_at, :format => "%m-%d-%Y" %>
+  </td>
+</tr>
+<tr valign="top">
+  <td class="alt2" width="175" style="border: 1px solid #D1D1E1; border-top: 0px; border-bottom: 0px">
+    <%= link_to @announcement.user.username, user_url(@announcement.user), :class => "bigusername" %>
+    <div class="smallfont"><%= @announcement.user.title %></div>
+
+    <div class="smallfont">
+      <div>&nbsp;</div>
+      <div>Join Date: <%= time_tag @announcement.user.created_at, :format => "%b %Y" %></div>
+      <div>Posts: <%= number_with_delimiter(@announcement.user.post_count) %></div>
+    </div>
+  </td>
+
+  <td class="alt1" id="td_post_2" style="border-right: 1px solid #D1D1E1">
+    <div class="smallfont"><strong><%= @announcement.title %></strong></div>
+    <hr size="1" style="color:#D1D1E1; background-color:#D1D1E1" />
+    <div><%= raw bbcode2text(@announcement.content) %></div>
+  </td>
+</tr>
+<tr>
+  <td class="alt2" style="border: 1px solid #D1D1E1; border-top: 0px">
+    &nbsp;
+  </td>
+  <td class="alt1" align="right" style="border: 1px solid #D1D1E1; border-left: 0px; border-top: 0px">
+    <%= link_to image_tag("/assets/forum/buttons/edit.gif"), edit_announcement_path(@announcement) %>
+    <%= link_to image_tag("/assets/forum/buttons/delete.gif"), @announcement, :confirm => 'Are you sure?', :method => :delete %>
+  </td>
+</tr>
+</table>
