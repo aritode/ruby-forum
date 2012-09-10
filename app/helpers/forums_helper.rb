@@ -190,13 +190,13 @@ module ForumsHelper
         if (topic.posts.last.date > last_read.date)
           return true
         end
-      # if the user hasn't read the topic, then use their last active date
+      # if the user hasn't read the topic, use the configured markread time setting
       else
-        if (topic.posts.last.date > current_user.last_visit_at)
+        if (topic.posts.last.date > Time.now - 3.days)
           return true
         end
       end
-    # if user is a guest, topics younger than 3 days are considered unread1
+    # if user is a guest, topics younger than 3 days are considered unread
     else
       if (topic.posts.last.date > Time.now - 3.days)
         return true
