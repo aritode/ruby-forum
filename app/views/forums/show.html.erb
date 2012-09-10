@@ -12,7 +12,7 @@
     <td>
       <% if logged_in? %>
         <%= link_to image_tag("/assets/forum/buttons/newthread.gif", :title => "Create new topic"), new_topic_path(:forum_id => @forum.id) %>
-        <%= link_to "New Announcement", new_announcement_path(:forum_id => @forum.id) %>
+        <%= link_to image_tag("/assets/forum/buttons/new_announcement.png", :title => "Create new announcement"), new_announcement_path(:forum_id => @forum.id) %>
       <% end %>
     </td>
     <td align="right">
