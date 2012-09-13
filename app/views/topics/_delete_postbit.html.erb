@@ -8,7 +8,7 @@
     </div>
 
     <% if !@last_read.blank? %>
-      <% if @last_read.date >= post.created_at %>
+      <% if @last_read.created_at >= post.created_at %>
         <%= image_tag "/assets/forum/icons/post_old.gif", :class => "inlineimg", :title => "This is an old post" %>
       <% else %>
         <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg", :title => "This is a new post" %>

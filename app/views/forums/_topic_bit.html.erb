@@ -44,7 +44,7 @@
         <div align="center">-</div>
       <% else %>
         <div class="smallfont" style="text-align:right; white-space:nowrap">
-          <%= time_tag topic.posts.last.date, :format =>'%m-%d-%y %l:%M %p' %> <br />
+          <%= time_tag topic.posts.last.created_at, :format =>'%m-%d-%y %l:%M %p' %> <br />
           by 
           <%= link_to topic.posts.last.user.username, users_path(topic.posts.last.user_id) %>
           <%= link_to image_tag("/assets/forum/buttons/lastpost.gif", :class => "inlineimg", :title => "Go to last post"), topics_lastpost_path(topic) %>

@@ -45,65 +45,26 @@ class PostsController < ApplicationController
 
   # Saves a new post into the database
   def create
-    # preview...
+    @user  = User.find(current_user.id)
+    @post  = @user.posts.build(params[:post])
+    @topic = @post.topic
+    
+    # preview?
     if !params[:preview].nil?
-      @post  = Post.new
-      @topic = Topic.find(params[:post][:topic_id])
-      @post.content = params[:post][:content]
-      
       # breadcrumbs
-      add_breadcrumb "Forum", root_path
+      add_breadcrumb "Home", :root_path
       if !@topic.forum.ancestors.empty?
         for ancestor in @topic.forum.ancestors
           add_breadcrumb ancestor.title, forum_path(ancestor)
         end
-        add_breadcrumb @topic.forum.title, forum_path(@topic.forum_id)
+        add_breadcrumb @topic.forum.title, forum_path(@topic.forum.id)
         add_breadcrumb @topic.title, topic_path(@topic)
       end
-
       render :action => "new"
-
-    # not a preview, create a new post object
+    # save post
     else
-      @post = Post.new(
-        :content  => params[:post][:content], 
-        :topic_id => params[:post][:topic_id], 
-        :user_id  => current_user.id,
-        :date     => Time.now
-      )
-
-      # save the post and update the users and forum stats
       if @post.save
-        @topic = Topic.find(@post.topic_id)
-        @topic.update_attributes(
-          :last_post_at => Time.now,
-          :replies      => @topic.replies + 1
-        )
-
-        @user = User.find(current_user.id)
-        @user.update_attributes(
-          :post_count   => @user.post_count + 1,
-          :last_post_at => Time.now,
-          :last_post_id => @post.id
-        )
-
-        @forum = Forum.find(@topic.forum_id)
-        @forum.post_count   = @forum.post_count + 1
-        @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
-        @forum.save
-
-        # figure out which page this post is on
-        page      = 1
-        last_post = @topic.posts.last
-
-        @topic.posts.to_enum.with_index(1) do |post, i|
-          break if post.id == last_post.id
-          page = page + 1 if (i % @@post_per_page) == 0
-        end
-
-        redirect_to "#{topic_path(@topic.id)}?page=#{page}#post#{last_post.id}"
-      else
-        render :action => 'new'
+        redirect_to topic_path(@post.topic_id)
       end
     end
   end

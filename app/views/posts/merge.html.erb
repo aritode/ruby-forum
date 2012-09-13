@@ -19,7 +19,7 @@
             <!-- Date field -->
             <div class="fieldset">
               <div>Destination Post</div>
-              <%= f.select :post_id, @posts.map {|p| ["(%d) %s by %s" % [p.id, p.date.strftime("%m-%d-%y %l:%M %p"), p.user.username], p.id]} %>
+              <%= f.select :post_id, @posts.map {|p| ["(%d) %s by %s" % [p.id, p.created_at.strftime("%m-%d-%y %l:%M %p"), p.user.username], p.id]} %>
               <!-- <option value="5586" class="" >(2) 09-04-2012 03:15 AM by ken</option> -->
             </div>
             <!-- / Date field -->

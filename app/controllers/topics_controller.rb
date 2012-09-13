@@ -36,7 +36,7 @@ class TopicsController < ApplicationController
     
     if logged_in?
       @last_read = @topic.topic_reads.by_user(current_user.id).first
-      mark_topic_as_read @topic, @posts.last.date
+      mark_topic_as_read @topic, @posts.last.created_at
     end
 
     # update the views count
@@ -66,69 +66,30 @@ class TopicsController < ApplicationController
 
   # Saves a new topic into the database
   def create
-    # check posting permissions
-    check_forum_permissions :can_contain_topics, params[:topic][:forum_id]
-    check_forum_permissions :allow_posting     , params[:topic][:forum_id]
-    check_user_permissions  :can_post_threads
+    @user  = User.find(current_user.id)
+    @topic = @user.topics.build(params[:topic])
+    @post  = @topic.posts.build(
+      :content => params[:post][:content], 
+      :user_id => @user.id
+    )
     
-    # previewing...
+    # preview?
     if !params[:preview].nil?
-      @topic  = Topic.new(:title => params[:topic][:title], :forum_id => params[:topic][:forum_id])
-      @post   = Post.new(:content => params[:post][:content])
-      @forum  = Forum.find(@topic.forum_id)
-
       # breadcrumbs
-      add_breadcrumb "Home", root_path
-      if !@forum.ancestors.empty?
-        for ancestor in @forum.ancestors
+      add_breadcrumb "Home", :root_path
+      if !@topic.forum.ancestors.empty?
+        for ancestor in @topic.forum.ancestors
           add_breadcrumb ancestor.title, forum_path(ancestor)
         end
-        add_breadcrumb @forum.title, forum_path(@forum.id)
+        add_breadcrumb @topic.forum.title, forum_path(@topic.forum.id)
       end
-
       render :action => "new"
-      
-    # actual submission
+    # save topic
     else
-      @topic = Topic.new(
-        :title        => params[:topic][:title], 
-        :forum_id     => params[:topic][:forum_id], 
-        :user_id      => current_user.id,
-        :last_post_at => Time.new
-      )
-
       if @topic.save
-        @post = Post.new(
-          :content  => params[:post][:content], 
-          :topic_id => @topic.id, 
-          :user_id  => current_user.id,
-          :date     => Time.new
-        )
-
-        if @post.save
-          @user = User.find(current_user.id)
-          @user.update_attributes(
-            :post_count   => @user.post_count + 1,
-            :last_post_at => Time.now,
-            :last_post_id => @post.id
-          )
-
-          @forum = Forum.find(@topic.forum_id)
-          @forum.topic_count  = @forum.topic_count + 1
-          @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
-          @forum.save
-
-          mark_topic_as_read @topic, @post.date
-
-          redirect_to topic_path(@topic.id)
-        end
-      else
-        render :action => 'new'
+        redirect_to topic_path(@topic.id)
       end
-      
     end
-    
-    
   end
 
   # Administrative options for managing topics
@@ -328,7 +289,7 @@ class TopicsController < ApplicationController
       # update the dest topic stats
       @dest_topic.views           = @dest_topic.views + @topic.views
       @dest_topic.replies         = @dest_topic.replies + @topic.replies + 1
-      @dest_topic.last_post_at    = @posts.last.date
+      @dest_topic.last_post_at    = @posts.last.created_at
       @dest_topic.last_poster_id  = @posts.last.user_id
       @dest_topic.save
 
@@ -361,7 +322,7 @@ class TopicsController < ApplicationController
     if logged_in?
       @topic       = Topic.find(params[:id])
       last_read    = @topic.topic_reads.by_user(current_user.id)
-      first_unread = @topic.posts.where(["date > ?", last_read.first.date]).first if !last_read.empty?
+      first_unread = @topic.posts.where(["date > ?", last_read.first.created_at]).first if !last_read.empty?
       page         = 1
 
       # figure out which page the first unread post is on
@@ -456,19 +417,17 @@ private
     last_read = topic.topic_reads.by_user(current_user.id)
 
     # skip if last post is older than 3 days
-    if !((last_post.date + 3.days) < Time.now)
+    if !((last_post.created_at + 3.days) < Time.now)
       # check if the last post on the current page is older than 3 days
       if !((datetime + 3.days) < Time.now)
         # first time reading these post, create a new row marking them as read
         if last_read.empty?
-          TopicRead.new(:topic_id => topic.id, 
-                        :user_id  => current_user.id, 
-                        :date     => datetime).save
+          TopicRead.new(:topic_id => topic.id, :user_id  => current_user.id).save
         else
           # check if the last post date is newer then what we have saved, if so, update the read date
-          if (datetime > last_read.first.date)
-            @topic_read      = TopicRead.find_by_topic_id_and_user_id(@topic.id, current_user.id)
-            @topic_read.date = datetime
+          if (datetime > last_read.first.created_at)
+            @topic_read = TopicRead.find_by_topic_id_and_user_id(@topic.id, current_user.id)
+            @topic_read.created_at = datetime
             @topic_read.save
           end
         end

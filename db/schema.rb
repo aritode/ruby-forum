@@ -47,7 +47,6 @@ ActiveRecord::Schema.define(:version => 20120908074926) do
     t.integer  "topic_id"
     t.integer  "user_id"
     t.integer  "report_id",      :default => 0
-    t.datetime "date"
     t.integer  "visible",        :default => 1
     t.integer  "show_signature", :default => 1
     t.datetime "created_at",                    :null => false
@@ -57,7 +56,6 @@ ActiveRecord::Schema.define(:version => 20120908074926) do
   create_table "topic_reads", :force => true do |t|
     t.integer  "topic_id"
     t.integer  "user_id"
-    t.datetime "date"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end

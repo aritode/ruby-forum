@@ -187,18 +187,18 @@ module ForumsHelper
     if logged_in?
       # check if the user has read this topic before
       if last_read = topic.topic_reads.by_user(current_user.id).first
-        if (topic.posts.last.date > last_read.date)
+        if (topic.posts.last.created_at > last_read.created_at)
           return true
         end
       # if the user hasn't read the topic, use the configured markread time setting
       else
-        if (topic.posts.last.date > Time.now - 3.days)
+        if (topic.posts.last.created_at > Time.now - 3.days)
           return true
         end
       end
     # if user is a guest, topics younger than 3 days are considered unread
     else
-      if (topic.posts.last.date > Time.now - 3.days)
+      if (topic.posts.last.created_at > Time.now - 3.days)
         return true
       end
     end

@@ -16,9 +16,6 @@ class CreatePosts < ActiveRecord::Migration
       # The id of the topic being used for staff members to discuss this post
       t.integer  :report_id, :default => 0
       
-      # The date and time of the post
-      t.datetime :date
-
       # A post can be placed into "3" types of states.
       #
       #   0 = The post needs to be approved by a staff member.

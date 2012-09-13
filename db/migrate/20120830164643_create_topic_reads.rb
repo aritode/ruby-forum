@@ -7,9 +7,6 @@ class CreateTopicReads < ActiveRecord::Migration
       # The id of the user who read the topic
       t.integer  :user_id
 
-      # The date and time the user read the topic
-      t.datetime :date
-
       # Rail's update_at and created_at columns
       t.timestamps
     end
