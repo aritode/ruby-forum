@@ -3,6 +3,8 @@ class Post < ActiveRecord::Base
 
   belongs_to :topic
   belongs_to :user 
+  
+  has_one :report_topic, :class_name => 'Topic', :primary_key => :report_id, :foreign_key => :id
 
   validates_presence_of :content
   

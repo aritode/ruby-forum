@@ -278,8 +278,30 @@ a.shade:active, a.shade:hover { color: #FF4400; text-decoration: underline; }
   vertical-align:middle;
 }
 
+/* Quote posts style */
 blockquote {
   background:#ededed;
   border:1px inset;
   padding:4px;
+}
+
+/* The reported post alert in the post bit */
+.reported_post_alert {
+	color: #FF0000;
+	font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+
+.reported_post_alert a:link {
+	color: #FF0000;
+	text-decoration:none;
+}
+
+.reported_post_alert a:visited {
+	color: #FF0000;
+	text-decoration:none;
+}
+
+.reported_post_alert a:hover {
+	color: #FF0000;
+	text-decoration:underline;
 }

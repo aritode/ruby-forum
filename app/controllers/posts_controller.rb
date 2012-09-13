@@ -7,7 +7,7 @@ class PostsController < ApplicationController
   # Shows the post content on it's own page
   def show
     @post  = Post.find(params[:id])
-    @topic = Topic.find(@post.topic_id)
+    @topic = @post.topic
 
     # breadcrumbs
     add_breadcrumb "Forum", root_path
@@ -69,10 +69,10 @@ class PostsController < ApplicationController
     end
   end
 
-  # The form to edit posts
+  # Edit post form
   def edit
     @post  = Post.find(params[:id])
-    @topic = Topic.find(@post.topic_id) # find the topic we're posting in
+    @topic = @post.topic
     page   = 1
 
     # figure out which page this post is on
@@ -82,6 +82,9 @@ class PostsController < ApplicationController
     end
 
     # breadcrumbs
+    post_paged_url = "%s?page=%d#post%d" % [topic_path(@topic.id), page, @post.id]
+    post_content   = @post.content.truncate(35)
+    
     add_breadcrumb "Forum", root_path
     if !@topic.forum.ancestors.empty?
       for ancestor in @topic.forum.ancestors
@@ -89,60 +92,44 @@ class PostsController < ApplicationController
       end
       add_breadcrumb @topic.forum.title, forum_path(@topic.forum_id)
       add_breadcrumb @topic.title, topic_path(@topic)
-      add_breadcrumb @post.content.truncate(35), "#{topic_path(@topic.id)}?page=#{page}#post#{@post.id}"
+      add_breadcrumb post_content, post_paged_url
     end
   end
 
   # Saves all post edits to the database
   def update
-    # preview the post
-    #
-    # Note: the "render :action => new" doesn't actually run any of the code in the "new" action, so
-    # I'm forced to copy and paste the code from that action. This isn't ideal since it breaks the DRY
-    # principle. Need to research to see if there's a better way to show post previews.
+    @post  = Post.find(params[:id])
+    @user  = @post.user
+    @topic = @post.topic
+
+    # form values
+    @post.title   = params[:post][:title]
+    @post.content = params[:post][:content]
+
+    # preview?
     if !params[:preview].nil?
-      @post  = Post.new
-      @topic = Topic.find(params[:post][:topic_id])
-      @post.content = params[:post][:content]
-      
       # breadcrumbs
-      add_breadcrumb "Forum", root_path
+      add_breadcrumb "Home", :root_path
       if !@topic.forum.ancestors.empty?
         for ancestor in @topic.forum.ancestors
           add_breadcrumb ancestor.title, forum_path(ancestor)
         end
-        add_breadcrumb @topic.forum.title, forum_path(@topic.forum_id)
+        add_breadcrumb @topic.forum.title, forum_path(@topic.forum.id)
         add_breadcrumb @topic.title, topic_path(@topic)
       end
-
       render :action => "new"
-    # not a preview, update the post
+    # save post
     else
-      @post = Post.find(params[:id])
-      if @post.update_attributes(params[:post])
-        @topic = Topic.find(@post.topic_id)
-        @topic.update_attributes(
-          :last_post_at => Time.now
-        )
+      if @post.save
         redirect_to topic_path(@post.topic_id)
-      else
-        render :action => 'edit'
       end
     end
-  end
-
-  # Removes posts from the database
-  def destroy
-    @post = Post.find(params[:id])
-    @post.destroy
-    @flash[:notice] = "Successfully destroyed post."
-    redirect_to forums_path
   end
 
   # Reports a post by creating a new topic is the designated staff forum
   def report
     @post  = Post.find(params[:id])
-    @topic = Topic.find(@post.topic_id)
+    @topic = @post.topic
     page   = 1
 
     # figure out which page the post is on
@@ -154,7 +141,7 @@ class PostsController < ApplicationController
     # build the post_url of the post being reported
     post_url = "%s?page=%d#post%d" % [topic_url(@topic.id), page, @post.id]
 
-    # render the report form
+    # report form
     if params[:report].blank?
       # breadcrumbs
       add_breadcrumb "Forum", root_path
@@ -166,53 +153,28 @@ class PostsController < ApplicationController
         add_breadcrumb @topic.title, topic_path(@topic)
         add_breadcrumb @post.content.truncate(35), post_url
       end
-      
     # send the report
     else
-      # this post has been reported before, build that topic
+      # has this post been reported before?
       if @post.report_id?
-        report_topic         = Topic.find(@post.report_id)
-        report_topic.replies = report_topic.replies + 1
-      # this is a new report, create a new topic
+        report_topic = Topic.find(@post.report_id)
       else
-        report_topic          = Topic.new
-        report_topic.title    = "Reported Post by %s" % current_user.username
-        report_topic.user_id  = current_user.id
-        report_topic.forum_id = @@report_forum_id
+        report_user  = User.find(current_user.id)
+        report_topic = report_user.topics.build(
+          :title    => "Reported Post by %s" % current_user.username,
+          :forum_id => @@report_forum_id
+        )
       end
+
+      # build the post
+      report_post = report_topic.posts.build(
+        :title   => report_topic.title, 
+        :content => build_report_message, 
+        :user_id => report_user.id
+      )
       
-      # update the last post time to now
-      report_topic.last_post_at = Time.now
-
-      # save the report topic
       if report_topic.save
-        # build the report content for the new post
-        message  = "[url=%s]%s[/url] has reported a post.\n\n"
-        message << "Reason:[quote]%s[/quote]\n"
-        message << "Post: [url=%s]%s[/url]\n"
-        message << "Forum: [url=%s]%s[/url]\n\n"
-        message << "Posted by: [url=%s]%s[/url]\n"
-        message << "Original Content: [quote]%s[/quote]\n"
-        message  = message % [user_url(current_user), current_user.username, params[:report][:reason],
-                              post_url, @topic.title, forum_url(@topic.forum), (@topic.forum.title),
-                              user_url(@post.user), @post.user.username, @post.content]
-
-        # create the new post 
-        report_post = Post.new(
-          :content   => message, 
-          :topic_id  => report_topic.id? ? report_topic.id : @post.report_id, 
-          :user_id   => current_user.id,
-          :date      => Time.new,
-        ).save
-
-        # update the forum stats
-        forum = Forum.find(report_topic.forum_id)
-        forum.topic_count  = forum.topic_count + 1 if !@post.report_id?
-        forum.post_count   = forum.post_count  + 1 if  @post.report_id?
-        forum.last_post_id = forum.recent_post.nil? ? 0 : forum.recent_post.id
-        forum.save
-
-        # mark the reported post as reported
+        # the reported post has_one report_topic
         @post.report_id = report_topic.id
         @post.save
 
@@ -305,7 +267,7 @@ class PostsController < ApplicationController
     end
   end
 
-  # Soft / hard delete one or more topics
+  # Soft / hard delete one or more posts
   def delete
     # loop through all the post_ids
     params[:delete][:post_ids].split(/, ?/).each do |post_id|
@@ -405,4 +367,18 @@ class PostsController < ApplicationController
     redirect_to topic_url(params[:merge][:topic_id])
   end
   
+private
+  
+  def build_report_message
+    message  = "[url=%s]%s[/url] has reported a post.\n\n"
+    message << "Reason:[quote]%s[/quote]\n"
+    message << "Post: [url=%s]%s[/url]\n"
+    message << "Forum: [url=%s]%s[/url]\n\n"
+    message << "Posted by: [url=%s]%s[/url]\n"
+    message << "Original Content: [quote]%s[/quote]\n"
+    message  = message % [user_url(current_user), current_user.username, params[:report][:reason],
+                          post_url, @topic.title, forum_url(@topic.forum), (@topic.forum.title),
+                          user_url(@post.user), @post.user.username, @post.content]
+  end
+
 end
