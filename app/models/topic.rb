@@ -19,4 +19,15 @@ class Topic < ActiveRecord::Base
       )
     end
   end
+
+  # update the forum stats after destroying the object
+  after_destroy do |t|
+    if t.redirect == 0 # redirect topics don't count towards stats
+      t.forum.update_attributes(
+        :topic_count  => t.forum.topic_count - 1,
+        :last_post_id => t.forum.recent_post.nil? ? 0 : t.forum.recent_post.id
+      )
+    end
+  end
+
 end

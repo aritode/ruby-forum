@@ -6,10 +6,7 @@ class Forum < ActiveRecord::Base
                   # forum permissions
                   :can_contain_topics, :is_active, :allow_posting
                   
-  # a forum contains many topics
   has_many :topics, :dependent => :destroy
-  
-  # a forum can have many announcements
   has_many :announcements, :dependent => :destroy
   
   # each forum has one "last post" object that we render on the forum's index and show page
@@ -18,16 +15,15 @@ class Forum < ActiveRecord::Base
   # includes methods from the "ancestry" gem
   acts_as_tree
 
-  # validators for adding and editing forum data
   validates_presence_of :title
 
-  # define the forums options here using bitfields
+  # define forum options using bitfields
   bitfield :options, 
     1 => :can_contain_topics,
     2 => :is_active, 
     4 => :allow_posting
 
-  # Returns an array of forums based on the ids passed to it
+  # Returns an array of forums based on the ids passed to it. This method will be refactored soon.
   #
   # @parm String  A comma seperated list of forum ids to fetch from the database
   def fetch_forums_by_ids(ids)

@@ -195,30 +195,15 @@ class PostsController < ApplicationController
         params[:post_ids].each do |post_id|
           # fetch the post
           post = Post.find(post_id)
-          
-          # first post?
+
+          # if this is the first post, update the topic visible field instead
           if post.id == post.topic.posts.first.id
-            # skip if this topic is already visible
-            next if post.topic.visible == 1
-
-            post.topic.forum.topic_count = post.topic.forum.topic_count + 1
-            post.topic.forum.post_count  = post.topic.forum.post_count  + post.topic.replies
-            post.topic.visible           = 1
+            Topic.update(post.topic.id, :visible => 1)
           else
-            # skip if this post is already visible
-            next if post.visible == 1
-
-            post.topic.forum.post_count = post.topic.forum.post_count + 1
-            post.topic.replies          = post.topic.replies          + 1
-            post.visible                = 1
+            if post.visible != 1
+              Post.update(post.id, :visible => 1)
+            end
           end
-
-          # save everything
-          post.save
-          post.topic.save
-          post.topic.forum.last_post_id = post.topic.forum.recent_post.nil? ? 0 :
-                                          post.topic.forum.recent_post.id
-          post.topic.forum.save
         end
         redirect_to topic_url(params[:topic_id])
 
@@ -227,30 +212,16 @@ class PostsController < ApplicationController
         params[:post_ids].each do |post_id|
           # fetch the post
           post = Post.find(post_id)
-          
-          # first post?
+
+          # if this is the first post, update the topic visible field instead
           if post.id == post.topic.posts.first.id
-            # skip if this topic is already unapproved
-            next if post.topic.visible == 0
-            
-            post.topic.forum.topic_count = post.topic.forum.topic_count - 1
-            post.topic.forum.post_count  = post.topic.forum.post_count  - post.topic.replies
-            post.topic.visible           = 0
+            Topic.update(post.topic.id, :visible => 0)
           else
-            # skip if this post is already visible
-            next if post.topic.visible == 0
-
-            post.topic.forum.post_count = post.topic.forum.post_count - 1
-            post.topic.replies          = post.topic.replies          - 1
-            post.visible                = 0
+            if post.visible != 0
+              Post.update(post.id, :visible => 0)
+            end
           end
-
-          # save everything
-          post.save
-          post.topic.save
-          post.topic.forum.last_post_id = post.topic.forum.recent_post.nil? ? 0 :
-                                          post.topic.forum.recent_post.id
-          post.topic.forum.save
+          
         end
         redirect_to topic_url(params[:topic_id])
 
@@ -271,48 +242,31 @@ class PostsController < ApplicationController
   def delete
     # loop through all the post_ids
     params[:delete][:post_ids].split(/, ?/).each do |post_id|
-      # fetch the current post
+      # get the post
       post  = Post.find(post_id)
-      topic = post.topic
-      forum = post.topic.forum
       
-      # skip if this post if it's already been deleted
+      # skip if this post has already been deleted
       next if post.visible == 2
 
       # switch between deletion types
       case params[:delete][:type]
         # preform hard deletion
         when "hard"
-          # first post?
+          # destroy the whole topic if this post is the first post
           if post.id == post.topic.posts.first.id
-            forum.topic_count = forum.topic_count - 1
-            forum.post_count  = forum.post_count  - post.topic.replies
-            topic.destroy
+            post.topic.destroy
           else
-            forum.post_count = forum.post_count - 1
-            topic.replies    = topic.replies    - 1
             post.destroy
           end
         # preform soft deletion
         when "soft"
           # first post?
           if post.id == post.topic.posts.first.id
-            forum.topic_count = forum.topic_count - 1
-            forum.post_count  = forum.post_count  - post.topic.replies
             Topic.update(post.topic.id, :visible => 2)
           else
-            forum.post_count = forum.post_count - 1
-            topic.replies    = topic.replies    - 1
             Post.update(post.id, :visible => 2)
           end
       end
-
-      # save the new topic stats
-      topic.save
-      
-      # update last post info and save the new forum stats
-      forum.last_post_id = forum.recent_post.nil? ? 0 : forum.recent_post.id
-      forum.save
     end
     
     redirect_to topic_url(params[:delete][:topic_id])
