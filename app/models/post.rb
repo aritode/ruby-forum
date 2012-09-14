@@ -41,8 +41,8 @@ class Post < ActiveRecord::Base
     end
   end
   
-  # update stats and last post info when a post is destroyed
-  after_destroy do |p|
+  # update stats and last post info when before a post is destroyed
+  before_destroy do |p|
     decrement_posts_stats
   end
   

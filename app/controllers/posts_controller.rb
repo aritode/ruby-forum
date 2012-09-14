@@ -239,6 +239,9 @@ class PostsController < ApplicationController
 
   # Soft / hard delete one or more posts
   def delete
+    # fetch the current topic
+    topic = Topic.find(params[:delete][:topic_id])
+
     # loop through all the post_ids
     params[:delete][:post_ids].split(/, ?/).each do |post_id|
       # get the post
@@ -253,7 +256,7 @@ class PostsController < ApplicationController
         when "hard"
           # destroy the whole topic if this post is the first post
           if post.id == post.topic.posts.first.id
-            post.topic.destroy
+            break if post.topic.destroy
           else
             post.destroy
           end
@@ -267,8 +270,9 @@ class PostsController < ApplicationController
           end
       end
     end
-    
-    redirect_to topic_url(params[:delete][:topic_id])
+
+    redirect_to forum_url(topic.forum_id) if params[:delete][:type] == "hard"
+    redirect_to topic_url(params[:delete][:topic_id]) if params[:delete][:type] == "soft"
   end
 
   # Merges two or more post together

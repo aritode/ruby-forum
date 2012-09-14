@@ -37,5 +37,7 @@ class Topic < ActiveRecord::Base
         :last_post_id => t.forum.recent_post.nil? ? 0 : t.forum.recent_post.id
       )
     end
+
+    User.decrement_counter :post_count, t.user_id
   end
 end
