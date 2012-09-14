@@ -20,6 +20,15 @@ class Topic < ActiveRecord::Base
     end
   end
 
+  # update counters when certain actions have been preformed
+  after_update do |t|
+    # if the user_id changes, update their post counts
+    if t.user_id_changed?
+      User.increment_counter :post_count, t.user_id
+      User.decrement_counter :post_count, t.user_id_was
+    end
+  end
+  
   # update the forum stats after destroying the object
   after_destroy do |t|
     if t.redirect == 0 # redirect topics don't count towards stats
@@ -29,5 +38,4 @@ class Topic < ActiveRecord::Base
       )
     end
   end
-
 end

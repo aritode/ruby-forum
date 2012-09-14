@@ -16,11 +16,12 @@ class CreatePosts < ActiveRecord::Migration
       # The id of the topic being used for staff members to discuss this post
       t.integer  :report_id, :default => 0
       
-      # A post can be placed into "3" types of states.
+      # A post can be placed into "4" types of states.
       #
       #   0 = The post needs to be approved by a staff member.
       #   1 = Everyone with permissions to see the post can see it.
       #   2 = Post was soft deleted by a staff member (only admins can physically remove post).
+      #   3 = Post was merged into another post and is now queued for deletion
       t.integer  :visible,        :default => 1
 
       # The poster can choose to display their signature if they want

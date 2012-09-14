@@ -1,5 +1,4 @@
 class PostsController < ApplicationController
-  
   ## temp variable
   @@post_per_page   = 10
   @@report_forum_id = 10
@@ -274,55 +273,27 @@ class PostsController < ApplicationController
 
   # Merges two or more post together
   def merge
-    # get the post we're merging into
+    # get the destination post that we're merging into
     dest_post = Post.find(params[:merge][:post_id])
-
-    # if the user_id of the dest post changes, update their post counts
-    if dest_post.user_id != params[:merge][:user_id]
-      User.increment_counter :post_count, params[:merge][:user_id]
-      User.decrement_counter :post_count, dest_post.user_id
-    end
     
     # update the destination post with it's new values
     dest_post.user_id = params[:merge][:user_id]
     dest_post.content = params[:merge][:content]
-    dest_post.title   = params[:merge][:title] if !params[:merge][:title].blank?
     dest_post.save
         
-    total_destroyed = 0
-
     # delete all the other post
     params[:merge][:post_ids].split(/, ?/).each do |post_id|
-      # skip if destination post
-      next if dest_post.id == post_id.to_i
-
-      # update stats & destroy the post
-      post  = Post.find(post_id)
-      post.user.post_count = post.user.post_count - 1
-      post.user.save
-      post.destroy
-
-      # keep track of the number of deleted post
-      total_destroyed = total_destroyed + 1
+      if dest_post.id != post_id.to_i
+        Post.find(post_id).update_attribute(:visible, 3)
+        Post.find(post_id).destroy
+      end
     end
-
-    # update topic stats
-    topic         = dest_post.topic
-    topic.user_id = params[:merge][:user_id] if dest_post.id == topic.posts.first.id
-    topic.replies = topic.replies - total_destroyed
-    topic.save
-    
-    # update forum stats
-    forum              = dest_post.topic.forum
-    forum.post_count   = forum.post_count - total_destroyed
-    forum.last_post_id = forum.recent_post.nil? ? 0 : forum.recent_post.id
-    forum.save
 
     redirect_to topic_url(params[:merge][:topic_id])
   end
   
 private
-  
+  # builds the post content for the report message 
   def build_report_message
     message  = "[url=%s]%s[/url] has reported a post.\n\n"
     message << "Reason:[quote]%s[/quote]\n"
@@ -334,5 +305,4 @@ private
                           post_url, @topic.title, forum_url(@topic.forum), (@topic.forum.title),
                           user_url(@post.user), @post.user.username, @post.content]
   end
-
 end

@@ -33,6 +33,12 @@ class Post < ActiveRecord::Base
     if (p.visible_was == 2 and p.visible == 1) or (p.visible_was == 0 and p.visible == 1)
       increment_posts_stats
     end
+    
+    # if the user_id changes, update their post counts
+    if p.user_id_changed?
+      User.increment_counter :post_count, p.user_id
+      User.decrement_counter :post_count, p.user_id_was
+    end
   end
   
   # update stats and last post info when a post is destroyed
@@ -57,8 +63,8 @@ private
 
   # quickly decrement all post stats
   def decrement_posts_stats
-    # the first post don't count towards counters, so we skip it
-    if self.topic.posts.length > 1
+    # first post don't count towards counters, but allow merged post (visible = 3)
+    if (self.topic.posts.length > 1) or (self.visible == 3)
       self.topic.forum.update_attributes(
         :post_count   => self.topic.forum.post_count - 1,
         :last_post_id => self.topic.forum.recent_post.nil? ? 0 : self.topic.forum.recent_post.id
