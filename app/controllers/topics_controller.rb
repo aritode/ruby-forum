@@ -120,24 +120,14 @@ class TopicsController < ApplicationController
       # undelete topics
       when "undelete"
         params[:topic_ids].each do |topic_id|
-          # fetch the topic
           @topic = Topic.find(topic_id)
           
           # skip if this topic is already visible
-          if @topic.visible == 1
-            next
-          end
+          next if @topic.visible == 1
           
           # undelete the topic
           @topic.visible = 1
           @topic.save
-          
-          # update forum stats
-          @forum = Forum.find(@topic.forum_id)
-          @forum.topic_count  = @forum.topic_count + 1;
-          @forum.post_count   = @forum.post_count + @topic.replies;
-          @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
-          @forum.save
         end
         redirect_to forum_url(params[:forum_id])
 
@@ -200,15 +190,10 @@ class TopicsController < ApplicationController
   # Soft / hard delete one or more topics
   def delete
     params[:delete][:topic_ids].split(/, ?/).each do |topic_id|
-      # fetch the topic and save the replies and forum_id for later use
-      @topic   = Topic.find(topic_id)
-      replies  = @topic.replies
-      forum_id = @topic.forum_id
+      @topic = Topic.find(topic_id)
 
       # skip if this topic has already been deleted
-      if @topic.visible == 2
-        next
-      end
+      next if @topic.visible == 2
 
       # just destroy the topic if it's a redirect
       if @topic.redirect?
@@ -224,6 +209,7 @@ class TopicsController < ApplicationController
         case params[:delete][:type]
           # preform a hard delete
           when "hard"
+            # delete all redirects
             items = Topic.where(:redirect => @topic.id)
             items.each do |item|
               item.destroy
@@ -233,13 +219,6 @@ class TopicsController < ApplicationController
           when "soft"
             Topic.update(@topic.id, :visible => 2)
         end
-
-        # update the forum stats
-        @forum = Forum.find(forum_id)
-        @forum.topic_count  = @forum.topic_count - 1;
-        @forum.post_count   = @forum.post_count  - replies
-        @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
-        @forum.save
       end
     end
 
