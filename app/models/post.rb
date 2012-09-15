@@ -34,13 +34,13 @@ class Post < ActiveRecord::Base
       increment_posts_stats
     end
     
-    # does the post have a new author?
+    # if the post gets a new author?
     if p.user_id_changed?
       User.increment_counter :post_count, p.user_id
       User.decrement_counter :post_count, p.user_id_was
     end
 
-    # was the post merged into another topic?
+    # if the post merged into another topic
     if p.topic_id_changed?
       # grab the old topic
       old_topic = Topic.find(p.topic_id_was)

@@ -20,20 +20,20 @@ class Topic < ActiveRecord::Base
     end
   end
 
-  # update counters when certain actions have been preformed
+  # updates counters when certain actions have been preformed
   after_update do |t|
-    # if the user_id changes, update their post counts
+    # if the topic get's a new author
     if t.user_id_changed?
       User.increment_counter :post_count, t.user_id
       User.decrement_counter :post_count, t.user_id_was
     end
     
-    # if the topic changes to a redirect decrement the forum's topic_count
+    # if the topic changes to a redirect topic
     if t.redirect_changed?
       Forum.decrement_counter :topic_count, t.forum_id
     end
     
-    # if the forum_id changes, update counters
+    # if the topic was moved to a new forum
     if t.forum_id_changed?
       # only update if the topic is visible
       if t.visible == 1
@@ -106,8 +106,8 @@ class Topic < ActiveRecord::Base
         :topic_count  => t.forum.topic_count - 1,
         :last_post_id => t.forum.recent_post.nil? ? 0 : t.forum.recent_post.id
       )
-    end
 
-    User.decrement_counter :post_count, t.user_id
+      User.decrement_counter :post_count, t.user_id
+    end
   end
 end

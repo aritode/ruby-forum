@@ -1,5 +1,4 @@
 class TopicsController < ApplicationController
-  
   ## temp variable
   @@post_per_page = 10
   
@@ -299,7 +298,6 @@ class TopicsController < ApplicationController
   end
   
 private
-
   # converts the submitted datetime params into a DateTime object
   def get_expired datetime
     DateTime.new(
@@ -353,5 +351,4 @@ private
       end
     end
   end
-
 end
