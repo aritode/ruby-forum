@@ -28,6 +28,11 @@ class Topic < ActiveRecord::Base
       User.decrement_counter :post_count, t.user_id_was
     end
     
+    # if the topic changes to a redirect decrement the forum's topic_count
+    if t.redirect_changed?
+      Forum.decrement_counter :topic_count, t.forum_id
+    end
+    
     # if the forum_id changes, update counters
     if t.forum_id_changed?
       # only update if the topic is visible

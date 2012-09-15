@@ -232,9 +232,7 @@ class TopicsController < ApplicationController
     # loop through all the selected topics
     params[:merge][:topic_ids].split(/, ?/).each do |topic_id|
       # skip if this is the destination topic
-      if @dest_topic.id == topic_id.to_i
-        next
-      end
+      next if @dest_topic.id == topic_id.to_i
 
       @topic = Topic.find(topic_id)
       @posts = Post.where(:topic_id => @topic.id)
@@ -245,20 +243,6 @@ class TopicsController < ApplicationController
         item.save
       end
       
-      # update the dest topic stats
-      @dest_topic.views           = @dest_topic.views + @topic.views
-      @dest_topic.replies         = @dest_topic.replies + @topic.replies + 1
-      @dest_topic.last_post_at    = @posts.last.created_at
-      @dest_topic.last_poster_id  = @posts.last.user_id
-      @dest_topic.save
-
-      # update current forum stats
-      @this_forum = Forum.find(params[:merge][:forum_id]);
-      @this_forum.topic_count  = @this_forum.topic_count - 1
-      @this_forum.post_count   = @this_forum.post_count  + 1
-      @this_forum.last_post_id = @this_forum.recent_post.nil? ? 0 : @this_forum.recent_post.id
-      @this_forum.save
-
       # if we're leaving a redirect, use the current topic instead of creating a new one
       if params[:merge][:redirect] != "none"
         @topic.redirect = @dest_topic.id

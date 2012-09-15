@@ -34,10 +34,30 @@ class Post < ActiveRecord::Base
       increment_posts_stats
     end
     
-    # if the user_id changes, update their post counts
+    # does the post have a new author?
     if p.user_id_changed?
       User.increment_counter :post_count, p.user_id
       User.decrement_counter :post_count, p.user_id_was
+    end
+
+    # was the post merged into another topic?
+    if p.topic_id_changed?
+      # grab the old topic
+      old_topic = Topic.find(p.topic_id_was)
+
+      # if this post was the first post of the old topic, add update the forum's post_count
+      if old_topic.posts.length == 0
+        Forum.increment_counter :post_count, old_topic.forum_id
+      # if it wasn't the first post, decrement 1 from the old topics replies
+      else
+        Topic.decrement_counter :replies, p.topic_id_was
+      end
+      
+      # the old post gets destroyed, and subsequently decrementing the user's post, so we update it
+      User.increment_counter :post_count, p.user_id
+
+      # increase the destination topics reply count
+      Topic.increment_counter :replies, p.topic_id
     end
     
     rebuild_recent_post
