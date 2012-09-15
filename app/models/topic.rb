@@ -63,7 +63,36 @@ class Topic < ActiveRecord::Base
       end
       
     end
-    
+
+    # if soft-deleting or unappoving
+    if (t.visible_was == 1 and t.visible == 2) or (t.visible_was == 1 and t.visible == 0)
+      # update forum stats
+      t.forum.update_attributes(
+        :topic_count  => t.forum.topic_count - 1,
+        :post_count   => t.forum.topic_count - t.replies,
+        :last_post_id => t.forum.recent_post.nil? ? 0 : t.forum.recent_post.id
+      )
+
+      # update all the users post count
+      for post in t.posts.each
+        User.decrement_counter :post_count, post.user_id
+      end
+    end
+
+    # if undeleting or approving
+    if (t.visible_was == 2 and t.visible == 1) or (t.visible_was == 0 and t.visible == 1)
+      # update forum stats
+      t.forum.update_attributes(
+        :topic_count  => t.forum.topic_count + 1,
+        :post_count   => t.forum.topic_count + t.replies,
+        :last_post_id => t.forum.recent_post.nil? ? 0 : t.forum.recent_post.id
+      )
+
+      # update all the users post count
+      for post in t.posts.each
+        User.increment_counter :post_count, post.user_id
+      end
+    end
   end
   
   # update the forum stats after destroying the object

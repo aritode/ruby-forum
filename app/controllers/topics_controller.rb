@@ -144,48 +144,28 @@ class TopicsController < ApplicationController
       # unapprove topics
       when "unapprove"
         params[:topic_ids].each do |topic_id|
-          # fetch the topic
           @topic = Topic.find(topic_id)
-          
+
           # skip if this topic is already unapproved
-          if @topic.visible == 0
-            next
-          end
-          
-          # unapprove the topic
+          next if @topic.visible == 0
+
+          # update the visible field
           @topic.visible = 0
           @topic.save
-          
-          # update forum stats
-          @forum = Forum.find(@topic.forum_id)
-          @forum.topic_count  = @forum.topic_count - 1;
-          @forum.post_count   = @forum.post_count - @topic.replies;
-          @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
-          @forum.save
         end
         redirect_to forum_url(params[:forum_id])
 
       # approve topics
       when "approve"
         params[:topic_ids].each do |topic_id|
-          # fetch the topic
           @topic = Topic.find(topic_id)
-          
+
           # skip if this topic is already approved
-          if @topic.visible == 1
-            next
-          end
-          
-          # approve the topic
+          next if @topic.visible == 1
+
+          # update the visible field
           @topic.visible = 1
           @topic.save
-          
-          # update forum stats
-          @forum = Forum.find(@topic.forum_id)
-          @forum.topic_count  = @forum.topic_count + 1;
-          @forum.post_count   = @forum.post_count + @topic.replies;
-          @forum.last_post_id = @forum.recent_post.nil? ? 0 : @forum.recent_post.id
-          @forum.save
         end
         redirect_to forum_url(params[:forum_id])
 
