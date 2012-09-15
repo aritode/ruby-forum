@@ -61,7 +61,6 @@ class Topic < ActiveRecord::Base
           end
         end
       end
-      
     end
 
     # if soft-deleting or unappoving
@@ -69,7 +68,7 @@ class Topic < ActiveRecord::Base
       # update forum stats
       t.forum.update_attributes(
         :topic_count  => t.forum.topic_count - 1,
-        :post_count   => t.forum.topic_count - t.replies,
+        :post_count   => t.forum.post_count  - t.replies,
         :last_post_id => t.forum.recent_post.nil? ? 0 : t.forum.recent_post.id
       )
 
@@ -84,7 +83,7 @@ class Topic < ActiveRecord::Base
       # update forum stats
       t.forum.update_attributes(
         :topic_count  => t.forum.topic_count + 1,
-        :post_count   => t.forum.topic_count + t.replies,
+        :post_count   => t.forum.post_count  + t.replies,
         :last_post_id => t.forum.recent_post.nil? ? 0 : t.forum.recent_post.id
       )
 
