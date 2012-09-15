@@ -21,7 +21,6 @@ class CreatePosts < ActiveRecord::Migration
       #   0 = The post needs to be approved by a staff member.
       #   1 = Everyone with permissions to see the post can see it.
       #   2 = Post was soft deleted by a staff member (only admins can physically remove post).
-      #   3 = Post was merged into another post and is now queued for deletion
       t.integer  :visible,        :default => 1
 
       # The poster can choose to display their signature if they want

@@ -288,7 +288,6 @@ class PostsController < ApplicationController
     # delete all the other post
     params[:merge][:post_ids].split(/, ?/).each do |post_id|
       if dest_post.id != post_id.to_i
-        Post.find(post_id).update_attribute(:visible, 3)
         Post.find(post_id).destroy
       end
     end

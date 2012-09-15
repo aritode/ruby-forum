@@ -50,7 +50,7 @@ class Post < ActiveRecord::Base
 private
   # quickly increment all post stats
   def increment_posts_stats
-    # the first post don't count towards counters, so we skip it
+    # the first post don't count towards counters
     if self.topic.posts.length > 1
       self.topic.forum.update_attribute(:post_count, self.topic.forum.post_count + 1)
       self.topic.update_attribute(:replies, self.topic.replies + 1)
@@ -60,7 +60,7 @@ private
 
   # quickly decrement all post stats
   def decrement_posts_stats
-    # first post don't count towards counters, but allow merged post (visible = 3)
+    # first post don't count towards counters
     if self.topic.posts.length > 1
       self.topic.forum.update_attribute(:post_count, self.topic.forum.post_count - 1)
       self.topic.update_attribute(:replies, self.topic.replies - 1)
