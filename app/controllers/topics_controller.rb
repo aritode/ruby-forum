@@ -368,40 +368,16 @@ private
 
   # moves a topic to a different forum and updates the forum stats & last topic info accordingly
   def move_topic topic_id, dest_forum_id
-    @topic        = Topic.find(topic_id)
-    this_forum_id = @topic.forum_id # keep a record of the forum the topic used to reside in
+    @topic = Topic.find(topic_id)
 
     # return false if already in dest forum
-    if this_forum_id == dest_forum_id.to_i
+    if @topic.forum_id == dest_forum_id.to_i
       return false
     end
     
     # update the topic's forum_id
     @topic.forum_id = dest_forum_id
     @topic.save
-
-    # update the current & destination forum stats if the topic is visible
-    if @topic.visible == 1
-      @this_forum = Forum.find(this_forum_id)
-      @this_forum.topic_count  = @this_forum.topic_count - 1
-      @this_forum.post_count   = @this_forum.post_count  - @topic.replies
-      @this_forum.last_post_id = @this_forum.recent_post.nil? ? 0 : @this_forum.recent_post.id
-      @this_forum.save
-
-      @dest_forum = Forum.find(dest_forum_id)
-      @dest_forum.topic_count  = @dest_forum.topic_count + 1
-      @dest_forum.post_count   = @dest_forum.post_count + @topic.replies
-      @dest_forum.last_post_id = @dest_forum.recent_post.nil? ? 0 : @dest_forum.recent_post.id
-      @dest_forum.save
-      
-      # if there are any parent forums, update the last_post_id for them as well
-      if !@dest_forum.ancestors.empty?  
-        for ancestor in @dest_forum.ancestors
-          ancestor.last_post_id = ancestor.recent_post.nil? ? 0 : ancestor.recent_post.id
-          ancestor.save
-        end
-      end
-    end
   end
 
   # This function will check if the topic's last post is older than the configured timeout setting 

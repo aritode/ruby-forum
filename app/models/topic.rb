@@ -27,6 +27,43 @@ class Topic < ActiveRecord::Base
       User.increment_counter :post_count, t.user_id
       User.decrement_counter :post_count, t.user_id_was
     end
+    
+    # if the forum_id changes, update counters
+    if t.forum_id_changed?
+      # only update if the topic is visible
+      if t.visible == 1
+        # update the old forum
+        old_forum = Forum.find(t.forum_id_was)
+        old_forum.update_attributes(
+          :topic_count  => old_forum.topic_count - 1,
+          :post_count   => old_forum.post_count  - t.replies,
+          :last_post_id => old_forum.recent_post.nil? ? 0 : old_forum.recent_post.id
+        )
+        
+        # update the new forum
+        t.forum.update_attributes(
+          :topic_count  => t.forum.topic_count + 1,
+          :post_count   => t.forum.post_count  + t.replies,
+          :last_post_id => t.forum.recent_post.nil? ? 0 : t.forum.recent_post.id
+        )
+
+        # update all parent forum's last_post_ids for the old and new forum
+        if !old_forum.ancestors.empty?  
+          for ancestor in old_forum.ancestors
+            ancestor.last_post_id = ancestor.recent_post.nil? ? 0 : ancestor.recent_post.id
+            ancestor.save
+          end
+        end
+        if !t.forum.ancestors.empty?  
+          for ancestor in t.forum.ancestors
+            ancestor.last_post_id = ancestor.recent_post.nil? ? 0 : ancestor.recent_post.id
+            ancestor.save
+          end
+        end
+      end
+      
+    end
+    
   end
   
   # update the forum stats after destroying the object
