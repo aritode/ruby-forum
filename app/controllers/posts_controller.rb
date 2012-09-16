@@ -158,8 +158,7 @@ class PostsController < ApplicationController
       if @post.report_id?
         report_topic = Topic.find(@post.report_id)
       else
-        report_user  = User.find(current_user.id)
-        report_topic = report_user.topics.build(
+        report_topic = current_user.topics.build(
           :title    => "Reported Post by %s" % current_user.username,
           :forum_id => @@report_forum_id
         )
@@ -169,7 +168,7 @@ class PostsController < ApplicationController
       report_post = report_topic.posts.build(
         :title   => report_topic.title, 
         :content => build_report_message, 
-        :user_id => report_user.id
+        :user_id => current_user.id
       )
       
       if report_topic.save
