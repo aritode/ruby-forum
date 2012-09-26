@@ -6,6 +6,9 @@ gem 'rails', '3.2.6'
 # databases
 gem 'mysql2'
 
+# cache management
+gem 'memcache-client'
+
 # user management
 gem "bcrypt-ruby", :require => "bcrypt"
 
