@@ -5,7 +5,7 @@
   <%= render :partial => 'sub_forums', :locals => {:forum => @forum} %>
 <% end %>
 
-<% if @forum.can_contain_topics? %>
+<% if @forum.is_forum? %>
   <!-- controls above thread list -->
   <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:3px">
   <tr valign="bottom">

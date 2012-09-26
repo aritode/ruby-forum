@@ -84,7 +84,7 @@ module ForumsHelper
   # @param Array   Any addtional options you would like to include in the <select> list
   def build_forum_chooser_options(forums, selected = nil, options = [])
     for forum in forums
-      if forum.is_root? && !forum.can_contain_topics.nil?
+      if forum.is_root? && !forum.is_forum.nil?
         options.push(["#{forum.title}", forum.id])
         build_child_chooser_options(forum.descendants.arrange(:order => :display_order), options)
       end

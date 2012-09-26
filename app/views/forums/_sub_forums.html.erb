@@ -12,7 +12,7 @@
   <td class="thead">Posts</td>
 </tr>
 <% for child in forum.fetch_forums_by_ids(forum.child_ids) %>
-  <% if child.can_contain_topics?%>
+  <% if child.is_forum?%>
     <%= render :partial => 'level2_post', :locals => {:child => child} %>
   <% else %>
     <%= render :partial => 'level2_nopost', :locals => {:child => child} %>

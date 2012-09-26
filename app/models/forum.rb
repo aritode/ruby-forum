@@ -4,7 +4,7 @@ class Forum < ActiveRecord::Base
   attr_accessible :title, :description, :parent_id, :display_order, :ancestry, :options, :post_count, 
                   :topic_count, :last_post_id, 
                   # forum permissions
-                  :can_contain_topics, :is_active, :allow_posting
+                  :is_forum, :is_active, :is_open
                   
   has_many :topics, :dependent => :destroy
   has_many :announcements, :dependent => :destroy
@@ -19,9 +19,9 @@ class Forum < ActiveRecord::Base
 
   # define forum options using bitfields
   bitfield :options, 
-    1 => :can_contain_topics,
-    2 => :is_active, 
-    4 => :allow_posting
+    1 => :is_forum,  # is forum if true, category if false
+    2 => :is_active, # hidden from forums view if false
+    4 => :is_open    # forum can contain topics if true
 
   # Returns an array of forums based on the ids passed to it. This method will be refactored soon.
   #

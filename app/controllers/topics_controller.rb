@@ -44,11 +44,6 @@ class TopicsController < ApplicationController
 
   # The form to start a new topic
   def new
-    # check posting permissions
-    check_forum_permissions :can_contain_topics, params[:forum_id]
-    check_forum_permissions :allow_posting     , params[:forum_id]
-    check_user_permissions  :can_post_threads
-
     # create a new topic object and fetch the current forum we're posting in
     @topic = Topic.new(:forum_id => params[:forum_id])
     @forum = Forum.find(@topic.forum_id)

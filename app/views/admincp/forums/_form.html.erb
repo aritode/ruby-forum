@@ -41,12 +41,12 @@
         </tr>
         <tr class="odd gradeX">
           <td>
-            <div><strong><%= f.label :can_contain_topics, "Act as forum?" %></strong></div>
+            <div><strong><%= f.label :is_forum, "Act as forum?" %></strong></div>
             <div>Will act as category if no</div>
           </td>
           <td align="right">
-            <%= f.radio_button :can_contain_topics, 1, {:checked => (@forum.can_contain_topics ? true : false)} %> Yes
-            <%= f.radio_button :can_contain_topics, 0, {:checked => (@forum.can_contain_topics ? false : true)} %> No
+            <%= f.radio_button :is_forum, 1, {:checked => (@forum.is_forum ? true : false)} %> Yes
+            <%= f.radio_button :is_forum, 0, {:checked => (@forum.is_forum ? false : true)} %> No
           </td>
         </tr>
         <tr class="odd gradeX">
@@ -61,12 +61,12 @@
         </tr>
         <tr class="odd gradeX">
           <td>
-            <div><strong><%= f.label :allow_posting, "Forum is Open?" %></strong></div>
+            <div><strong><%= f.label :is_open, "Forum is Open?" %></strong></div>
             <div>Set this to 'No' to prevent any new posts being made in this forum</div>
           </td>
           <td align="right">
-            <%= f.radio_button :allow_posting, 1, {:checked => (@forum.allow_posting ? true : false)} %> Yes
-            <%= f.radio_button :allow_posting, 0, {:checked => (@forum.allow_posting ? false : true)} %> No
+            <%= f.radio_button :is_open, 1, {:checked => (@forum.is_open ? true : false)} %> Yes
+            <%= f.radio_button :is_open, 0, {:checked => (@forum.is_open ? false : true)} %> No
           </td>
         </tr>
         <tr>

@@ -9,7 +9,7 @@
   <td class="thead">Posts</td>
 </tr>
 <% for forum in @forums %>
-  <% if forum.is_root? && !forum.can_contain_topics.nil?%>
+  <% if forum.is_root? && !forum.is_forum.nil?%>
     <%= render :partial => 'level1_nopost', :locals => {:forum => forum} %>
     <%= render_child_forums(forum.descendants.arrange(:order => :display_order)) %>
   <% end %>
