@@ -2,7 +2,7 @@ class Forum < ActiveRecord::Base
   include Bitfields
 
   attr_accessible :title, :description, :parent_id, :display_order, :ancestry, :options, :post_count, 
-                  :topic_count, :last_post_id, 
+                  :topic_count, :last_post_id, :child_list,
                   # forum permissions
                   :is_forum, :is_active, :is_open
                   

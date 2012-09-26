@@ -13,7 +13,10 @@ class Admincp::ForumsController < Admincp::ApplicationController
     params[:forum][:parent_id] = params[:parent_id]
     @forum = Forum.new(params[:forum])
     @forums = Forum.all(:order => "ancestry ASC, display_order ASC")
+    
     if @forum.save
+      #TODO: add child_list info to parent forums after creation
+      
       redirect_to admincp_forum_url, :notice => "Successfully created forum."
     else
       render :action => 'new'
@@ -25,7 +28,7 @@ class Admincp::ForumsController < Admincp::ApplicationController
     params[:order].each do | forum_id, display_order |
       Forum.update(forum_id, :display_order => display_order)
     end
-    
+
     redirect_to admincp_forum_url, :notice => "Display order updated successfully."
   end
 
@@ -36,7 +39,8 @@ class Admincp::ForumsController < Admincp::ApplicationController
 
   def update
     @forum = Forum.find(params[:id])
-    params[:forum][:parent_id] = params[:parent_id]
+    params[:forum][:parent_id]  = params[:parent_id]
+    params[:forum][:child_list] = @forum.descendant_ids.join(',')
     
     if @forum.update_attributes(params[:forum])
       redirect_to admincp_forum_url, :notice => "Successfully updated forum."
@@ -54,6 +58,5 @@ class Admincp::ForumsController < Admincp::ApplicationController
     @forum.destroy
     redirect_to admincp_forum_url, :notice => "Successfully destroyed forum."
   end
-  
 
 end

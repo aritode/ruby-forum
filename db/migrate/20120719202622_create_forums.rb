@@ -13,6 +13,9 @@ class CreateForums < ActiveRecord::Migration
       # The forum's hierarchical data (parent / child forum relationship)
       t.string    :ancestry
       
+      # A list of child forum ids
+      t.string    :child_list
+      
       # The forum's settings and permissions stored as bitfields
       t.integer   :options
 

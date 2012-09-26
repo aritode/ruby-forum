@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20120908074926) do
     t.text     "description"
     t.string   "link"
     t.string   "ancestry"
+    t.string   "child_list"
     t.integer  "options"
     t.integer  "display_order", :default => 0
     t.integer  "topic_count",   :default => 0

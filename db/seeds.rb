@@ -11,12 +11,12 @@
 ######################################################################################################
 Forum.delete_all
 ActiveRecord::Base.connection.execute("ALTER TABLE forums AUTO_INCREMENT = 1")
-Forum.create(:title => "Contractors Talk Forums",                                    :options => 2, :display_order => 1)
+Forum.create(:title => "Contractors Talk Forums",                                    :options => 2, :display_order => 1, :child_list => "2,3,4")
 Forum.create(:title => "General Discussion",                     :ancestry => "1",   :options => 7, :display_order => 1)
 Forum.create(:title => "Introductions",                          :ancestry => "1",   :options => 7, :display_order => 2)
 Forum.create(:title => "New Site Feedback & Technical Support",  :ancestry => "1",   :options => 7, :display_order => 3)
-Forum.create(:title => "Business Discussion",                                        :options => 6, :display_order => 2)
-Forum.create(:title => "Business",                               :ancestry => "5",   :options => 3, :display_order => 1)
+Forum.create(:title => "Business Discussion",                                        :options => 6, :display_order => 2, :child_list => "6,9,10,7,8")
+Forum.create(:title => "Business",                               :ancestry => "5",   :options => 3, :display_order => 1, :child_list => "7,8")
 Forum.create(:title => "Contractor Licensing",                   :ancestry => "5/6", :options => 7, :display_order => 1)
 Forum.create(:title => "File Swap",                              :ancestry => "5/6", :options => 7, :display_order => 2)
 Forum.create(:title => "Marketing & Sales",                      :ancestry => "5",   :options => 7, :display_order => 2)
