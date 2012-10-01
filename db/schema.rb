@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(:version => 20120908074926) do
     t.integer  "replies",      :default => 0
     t.integer  "redirect",     :default => 0
     t.datetime "expires"
+    t.integer  "last_post_id"
     t.datetime "last_post_at"
     t.datetime "created_at",                  :null => false
     t.datetime "updated_at",                  :null => false

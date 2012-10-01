@@ -11,11 +11,11 @@
   <td class="thead">Threads</td>
   <td class="thead">Posts</td>
 </tr>
-<% for child in forum.fetch_forums_by_ids(forum.child_ids) %>
-  <% if child.is_forum?%>
-    <%= render :partial => 'level2_post', :locals => {:child => child} %>
+<% for forum in forum.fetch_forums_by_ids(forum.child_ids) %>
+  <% if forum.is_forum?%>
+    <%= render :partial => 'level2_post', :locals => {:forum => forum} %>
   <% else %>
-    <%= render :partial => 'level2_nopost', :locals => {:child => child} %>
+    <%= render :partial => 'level2_nopost', :locals => {:forum => forum} %>
   <% end %>
 <% end %>
 </table>

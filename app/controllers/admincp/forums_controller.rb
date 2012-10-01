@@ -16,7 +16,7 @@ class Admincp::ForumsController < Admincp::ApplicationController
     
     if @forum.save
       #TODO: add child_list info to parent forums after creation
-      
+      build_forum_cache
       redirect_to admincp_forum_url, :notice => "Successfully created forum."
     else
       render :action => 'new'
@@ -29,6 +29,7 @@ class Admincp::ForumsController < Admincp::ApplicationController
       Forum.update(forum_id, :display_order => display_order)
     end
 
+    build_forum_cache
     redirect_to admincp_forum_url, :notice => "Display order updated successfully."
   end
 
@@ -43,6 +44,7 @@ class Admincp::ForumsController < Admincp::ApplicationController
     params[:forum][:child_list] = @forum.descendant_ids.join(',')
     
     if @forum.update_attributes(params[:forum])
+      build_forum_cache
       redirect_to admincp_forum_url, :notice => "Successfully updated forum."
     else
       render :action => 'edit'
@@ -56,7 +58,23 @@ class Admincp::ForumsController < Admincp::ApplicationController
   def destroy
     @forum = Forum.find(params[:id])
     @forum.destroy
+    build_forum_cache
     redirect_to admincp_forum_url, :notice => "Successfully destroyed forum."
   end
 
+private
+  #
+  def build_forum_cache
+    forums  = {}
+    parents = Forum.all(
+      :conditions => "ancestry is null",
+      :order      => "ancestry ASC, display_order ASC"
+    )
+
+    parents.each do |parent|
+      forums = forums.merge({parent => parent.descendants.arrange(:order => :display_order)})
+    end
+
+    Rails.cache.write 'forums', forums
+  end
 end

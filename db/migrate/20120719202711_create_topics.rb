@@ -35,6 +35,9 @@ class CreateTopics < ActiveRecord::Migration
       # The time a topic expires and gets removed from the database (via cron)
       t.datetime :expires
 
+      # The post id of the last post made in the topic
+      t.integer :last_post_id
+
       # The date and time of the user who last posted in the topic
       t.datetime :last_post_at
 

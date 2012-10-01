@@ -2,18 +2,18 @@
   <td class="alt1Active" colspan="2" align="left">
     <table cellpadding="0" cellspacing="0" border="0">
     <tr>
-      <td><%= fetch_forum_lightbulb child %></td>
+      <td>..</td>
       <td>&nbsp;</td>
       <td>
-        <div><strong><%= link_to h(child.title), forum_path(child.id) %></strong></div>
-        <div class="smallfont"><%=h child.description %></div>
+        <div><strong><%= link_to h(forum.title), forum_path(forum.id) %></strong></div>
+        <div class="smallfont"><%=h forum.description %></div>
       </td>
     </tr>
     </table>
   </td>
   <td class="alt2">
-    <%= render :partial => 'last_post', :locals => {:forum => child} %>
+    last post
   </td>
-  <td class="alt1"><%= child.topic_count %></td>
-  <td class="alt2"><%= child.post_count %></td>
+  <td class="alt1"><%= forum.topic_count %></td>
+  <td class="alt2"><%= forum.post_count %></td>
 </tr>

@@ -1,5 +1,5 @@
 class Topic < ActiveRecord::Base
-  attr_accessible :title, :last_poster_id, :last_post_at, :forum_id, :user_id, :views, :replies, 
+  attr_accessible :title, :last_poster_id, :last_post_id, :last_post_at, :forum_id, :user_id, :views, :replies, 
                   :visible, :open, :redirect, :expires, :sticky
 
   belongs_to :forum
@@ -7,7 +7,9 @@ class Topic < ActiveRecord::Base
   
   has_many :posts, :dependent => :destroy
   has_many :topic_reads, :dependent => :destroy
-  
+
+  has_one :last_post, :class_name => 'Post', :primary_key => :last_post_id, :foreign_key => :id
+
   validates_presence_of :title
   
   # Update forum counters and last_post info after a new topic has been created

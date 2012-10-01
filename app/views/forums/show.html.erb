@@ -1,7 +1,7 @@
 <% title @forum.title  %>
 <br />
 
-<% if @forum.has_children? %>
+<% if @forum.child_list %>
   <%= render :partial => 'sub_forums', :locals => {:forum => @forum} %>
 <% end %>
 
@@ -43,9 +43,9 @@
   </tr>
 
   <!-- Topics list  -->
-  <% if !@topicbits.empty? %>
-    <% for topic in @topicbits %>
-    <%= render :partial => 'topic_bit', :locals => {:topic => topic} %>
+  <% if !@topics.empty? %>
+    <% for topic in @topics %>
+      <%= render :partial => 'topic_bit', :locals => {:topic => topic} %>
     <% end %>
   <% else %>
     <tr>
@@ -179,6 +179,5 @@
   </tr>
   </table>
   <!-- icon key & display options -->
-
 
 <% end %>

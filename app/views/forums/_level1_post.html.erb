@@ -1,16 +1,16 @@
 <tr align="center">
   <td class="alt2">
-    <%= fetch_forum_lightbulb child %>
+    <%= fetch_forum_lightbulb forum, @lightbulbs %>
   </td>
   <td class="alt1Active" align="left">
     <div>
-      <strong><%= link_to h(child.title), forum_path(child.id) %></strong>
+      <strong><%= link_to h(forum.title), forum_path(forum.id) %></strong>
     </div>
-    <div class="smallfont"><%=h child.description %></div>
+    <div class="smallfont"><%=h forum.description %></div>
   </td>
   <td class="alt2">
-    <%= render :partial => 'last_post', :locals => {:forum => child} %>
+    <%= fetch_forum_lastpost forum, @lastposts %>
   </td>
-  <td class="alt1"><%= child.total_topics %></td>
-  <td class="alt2"><%= child.total_posts %></td>
+  <td class="alt1"><%= forum.topic_count %></td>
+  <td class="alt2"><%= forum.post_count %></td>
 </tr>

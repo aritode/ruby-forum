@@ -17,7 +17,7 @@ class Forum < ActiveRecord::Base
 
   validates_presence_of :title
 
-  # define forum options using bitfields
+  # define forum options using bitfields (Example usaged: Forum.find(1).is_active?)
   bitfield :options, 
     1 => :is_forum,  # is forum if true, category if false
     2 => :is_active, # hidden from forums view if false
@@ -47,19 +47,4 @@ class Forum < ActiveRecord::Base
     end
   end
 
-  # Returns the total number of replies a forum has (including sub-forums). Used on the forum's index
-  # and show page.
-  def total_posts
-    Forum.calculate :sum, :post_count, 
-      :select     => :total_post, 
-      :conditions => ['id IN(?)', self.child_ids << self.id]
-  end
-
-  # Returns the total number of topics a forum has (including sub-forums). Used on the forum's index
-  # and show page.
-  def total_topics
-    Forum.calculate :sum, :topic_count, 
-      :select     => :topic_count, 
-      :conditions => ['id IN(?)', self.child_ids << self.id]
-  end
 end

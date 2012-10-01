@@ -19,7 +19,7 @@ class Post < ActiveRecord::Base
     end
 
     p.user.update_attribute(:post_count, p.user.post_count + 1)
-    p.topic.update_attribute(:last_post_at, Time.now)
+    p.topic.update_attributes(:last_post_id => p.id, :last_post_at => Time.now)
   end
 
   # update counters when certain actions have been preformed, E.g. when a post is "soft-deleted", etc.

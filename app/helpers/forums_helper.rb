@@ -21,12 +21,12 @@ module ForumsHelper
     forum.each do |key, val|
       break if key.depth >= 2 # break iteration after max_depth is reach
       html << render(:partial => "level#{key.depth}_post", :locals => {:child => key})
-      if !val.empty?
+      unless val.empty?
         render_child_forums(val, html)
       end
     end
 
-    return raw html
+    raw html
   end
   
   # Returns true if you're at the forums home page. I use this for constructing breadcrumbs mostly,
@@ -58,7 +58,7 @@ module ForumsHelper
     depth.times do |d|
       char << depth_char
     end
-    return char
+    char
   end
 
   # Recursive function to render all child forums for a parent forum in the forums manager index.
@@ -109,24 +109,20 @@ module ForumsHelper
   end
   
   # Returns an image_tag with the topic's proper status icon, which depends on a number of conditions,
-  # like was the topic moved, is it closed, did the current user post in it, etc. All factors that 
-  # chage the status icon shown.
+  # like was the topic moved, is it closed, did the current user post in it, etc. All factors that will
+  # change the status icon that's shown.
   #
   # @param Topic   The topic object we're checking against
   def build_status_icon topic
     file = ""
     
     # show that user replied?
-    if logged_in?
-      topic.posts.each do |post|
-        if post.user_id == current_user.id
-          file = "_dot"
-        end
-      end
+    if topic.posted
+      file = "_dot"
     end
     
     # show hot folder?
-    if topic.replies >= 15 || topic.views >= 150
+    if topic.replies >= 15 or topic.views >= 150
       file << "_hot"
     end
     
@@ -141,66 +137,50 @@ module ForumsHelper
     end
 
     # check for unread post
-    if check_for_new_post topic
+    if topic.unread_posts > 0
       file << "_new"
     end
     
     image_tag "/assets/forum/icons/thread#{file}.gif"
   end
 
-  # Returns the appropate status icon for a forum depending on if there are unread post or not. If 
-  # all post in said forum have been read, we show the forum_old icon. If there are unread post in the 
-  # forum, we show the forum_new icon.
+  # Returns the new/old forum icon depending on if there are unread post or not.
   #
-  # @param Forum  The forum object to check
-  def fetch_forum_lightbulb forum
-    # check this forum for unread post
-    if !forum.last_post.blank?
-      forum.topics.each do |topic|
-        if check_for_new_post topic
-          return image_tag "/assets/forum/icons/forum_new.gif"
-        end
-      end
-    end
-
-    # check child forums for unread post
-    if forum.has_children?
-      forum.children.each do |child|
-        child.topics.each do |topic|
-          if check_for_new_post topic
+  # @param Forum  The forum object
+  # @param Array  An array of forum ids that have unread post
+  def fetch_forum_lightbulb forum, lightbulbs
+    if lightbulbs.include?(forum.id)
+       return image_tag "/assets/forum/icons/forum_new.gif"
+    else
+      if forum.child_list
+        forum.child_list.split(',').each do |child_id|
+          if lightbulbs.include?(child_id.to_i)
             return image_tag "/assets/forum/icons/forum_new.gif"
+          else
+            return image_tag "/assets/forum/icons/forum_old.gif"
           end
         end
       end
     end
-
     return image_tag "/assets/forum/icons/forum_old.gif"
   end
 
-  # Returns true if a topic has any unread post.
+  # Returns the 'last_post' partial for said forum, taking child forums, etc. into account.
   #
-  # @param Topic   The topic object to check for unread post
-  def check_for_new_post topic
-    # if this topic is a redirect, then use the orginal topic id
-    topic = Topic.find(topic.redirect) if topic.redirect?
-
-    if logged_in?
-      # check if the user has read this topic before
-      if last_read = topic.topic_reads.by_user(current_user.id).first
-        if (topic.posts.last.created_at > last_read.created_at)
-          return true
-        end
-      # if the user hasn't read the topic, use the configured markread time setting
-      else
-        if (topic.posts.last.created_at > Time.now - 3.days)
-          return true
-        end
-      end
-    # if user is a guest, topics younger than 3 days are considered unread
+  # @param Forum  The forum object
+  # @param Hash   A hash of key->value results of all the forums last post info
+  def fetch_forum_lastpost forum, lastposts
+    if lastposts[forum.id]
+      return render(:partial => "last_post", :locals => {:post => lastposts[forum.id]})
     else
-      if (topic.posts.last.created_at > Time.now - 3.days)
-        return true
+      if forum.child_list
+        forum.child_list.split(',').each do |child_id|
+          if lastposts[child_id.to_i]
+            return render(:partial => "last_post", :locals => {:post => lastposts[child_id.to_i]})
+          end
+        end
       end
     end
+    "--"
   end
 end

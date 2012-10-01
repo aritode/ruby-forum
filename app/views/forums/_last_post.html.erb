@@ -1,23 +1,20 @@
+<% if post %>
 <div class="smallfont" align="left">
-    <% if forum.last_post_id? %>
-      <div>
-        <span style="white-space:nowrap">
-          <strong>
-            <%= link_to "#{forum.last_post.topic.title}", topic_path(forum.last_post.topic) %>
-          </strong>
-        </span>
-      </div>
-      <div style="white-space:nowrap">
-        by <%= link_to forum.last_post.user.username, user_path(forum.last_post.user.id) %>
-      </div>
-      <div align="right" style="white-space:nowrap">
-        <span class="time"><%= time_tag forum.last_post.created_at, :format =>'%m-%d-%y %l:%M %p' %></span>
-        <%= link_to image_tag("/assets/forum/buttons/lastpost.gif", :class => "inlineimg"), topics_lastpost_path(forum.last_post.topic) %>
-      </div>
-    <% else %>
-      <div align="center" style="white-space:nowrap">
-        -
-      </div>
-    <% end %>
+  <div>
+    <span style="white-space:nowrap">
+      <strong>
+        <%= link_to "#{post.title}", topic_path(post.topic_id) %>
+      </strong>
+    </span>
+  </div>
+  <div style="white-space:nowrap">
+    by <%= link_to post.username, user_path(post.user_id) %>
+  </div>
+  <div align="right" style="white-space:nowrap">
+    <span class="time"><%= time_tag post.created_at, :format =>'%m-%d-%y %l:%M %p' %></span>
+    <%= link_to image_tag("/assets/forum/buttons/lastpost.gif", :class => "inlineimg"), topics_lastpost_path(post.topic_id) %>
   </div>
 </div>
+<% else %>
+  --
+<% end %>

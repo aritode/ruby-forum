@@ -10,7 +10,7 @@
         <%= image_tag("/assets/forum/icons/expires.gif", :title => "Expires in #{time_ago_in_words(topic.expires)}") if topic.expires %>
       </span>
 
-      <% if check_for_new_post topic %>
+      <% if topic.unread_posts > 0 %>
         <%= link_to image_tag("/assets/forum/buttons/firstnew.gif", :class => "inlineimg", :title => "Go to first new post"), firstnew_post_path(topic.redirect? ? topic.redirect : topic.id) %>
       <% end %>
 
@@ -21,7 +21,7 @@
       <% if topic.visible == 2 %>
         <em><%= h(topic.title) %></em>
       <% else %>
-        <% if check_for_new_post topic %>
+        <% if topic.unread_posts > 0 %>
           <strong><%= link_to h(topic.title), topic_path(topic.redirect? ? topic.redirect : topic.id) %></strong>
         <% else %>
           <%= link_to h(topic.title), topic_path(topic.redirect? ? topic.redirect : topic.id) %>
@@ -30,7 +30,7 @@
     </div>
     <div class="smallfont">
       <span style="cursor: pointer; " onclick="window.open('<%= user_path(topic.user_id) %>', '_self')">
-        <%= topic.user.username %>
+        <%= topic.username %>
       </span>
     </div>
   </td>
@@ -44,10 +44,11 @@
         <div align="center">-</div>
       <% else %>
         <div class="smallfont" style="text-align:right; white-space:nowrap">
-          <%= time_tag topic.posts.last.created_at, :format =>'%m-%d-%y %l:%M %p' %> <br />
+          <%= time_tag topic.last_post_at, :format =>'%m-%d-%y %l:%M %p' %> <br />
           by 
-          <%= link_to topic.posts.last.user.username, users_path(topic.posts.last.user_id) %>
+          <%= link_to topic.last_post_username, user_path(topic.last_post_user_id) %>
           <%= link_to image_tag("/assets/forum/buttons/lastpost.gif", :class => "inlineimg", :title => "Go to last post"), topics_lastpost_path(topic) %>
+          
         </div>
       <% end %>
     </td>
