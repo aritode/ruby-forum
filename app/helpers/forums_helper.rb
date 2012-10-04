@@ -68,7 +68,7 @@ module ForumsHelper
   def render_admincp_child_forums(hash, html = "")
     hash.each do |key, val|
       html << render(:partial => 'forum', :locals => {:forum => key})
-      if !val.empty?
+      unless val.empty?
         render_admincp_child_forums(val, html)
       end
     end
@@ -100,7 +100,7 @@ module ForumsHelper
   def build_child_chooser_options(forums, options)
     forums.each do |key, val|
       options.push(["#{depth_char(key.depth)} #{key.title}", key.id])
-      if !val.empty?
+      unless val.empty?
         build_child_chooser_options(val, options)
       end
     end
@@ -117,7 +117,7 @@ module ForumsHelper
     file = ""
     
     # show that user replied?
-    if topic.posted
+    if topic.posted > 0
       file = "_dot"
     end
     
@@ -127,7 +127,7 @@ module ForumsHelper
     end
     
     # is the topic locked?
-    if !topic.open?
+    unless topic.open?
       file << "_lock"
     end
 

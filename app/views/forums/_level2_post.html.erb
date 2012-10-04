@@ -2,7 +2,7 @@
   <td class="alt1Active" colspan="2" align="left">
     <table cellpadding="0" cellspacing="0" border="0">
     <tr>
-      <td>..</td>
+      <td><%= fetch_forum_lightbulb forum, @lightbulbs %></td>
       <td>&nbsp;</td>
       <td>
         <div><strong><%= link_to h(forum.title), forum_path(forum.id) %></strong></div>
@@ -12,7 +12,7 @@
     </table>
   </td>
   <td class="alt2">
-    last post
+    <%= fetch_forum_lastpost forum, @lastposts %>
   </td>
   <td class="alt1"><%= forum.topic_count %></td>
   <td class="alt2"><%= forum.post_count %></td>

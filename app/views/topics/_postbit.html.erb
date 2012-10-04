@@ -5,8 +5,9 @@
   <table id="post<%= post.id %>" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
 <tr>
     <td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1; border-right: 0px" >
-      <% if !@last_read.blank? %>
-        <% if @last_read.created_at >= post.created_at %>
+      
+      <% unless post.last_read.blank? %>
+        <% if post.last_read >= post.created_at %>
           <%= image_tag "/assets/forum/icons/post_old.gif", :class => "inlineimg", :title => "This is an old post" %>
         <% else %>
           <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg", :title => "This is a new post" %>
@@ -14,11 +15,12 @@
       <% else %>
         <%= image_tag "/assets/forum/icons/post_new.gif", :class => "inlineimg", :title => "This is a new post" %>
       <% end %>
+
       <%= time_tag post.created_at, :format =>'%m-%d-%Y, %l:%M %p' %>
     </td>
     <td class="thead" style="font-weight:normal; border: 1px solid #D1D1E1; border-left: 0px" align="right">
       <% if params[:controller] != 'posts'%>
-        #<%= link_to "#{post.post_count}", post_path(post) %>
+        #<%= link_to "#{post.id}", post_path(post) %>
       <% end %>
       
       <input type="checkbox" name="post_ids[]" value="<%= post.id %>" id="plist_<%= post.id %>" style="vertical-align:middle; padding:0px; margin:0px 0px 0px 5px" />
@@ -26,20 +28,20 @@
 </tr>
 <tr valign="top">
   <td class="alt2" width="175" style="border: 1px solid #D1D1E1; border-top: 0px; border-bottom: 0px">
-      <%= link_to post.user.username, user_url(post.user), :class => "bigusername" %>
-      <div class="smallfont"><%= post.user.title %></div>
+      <%= link_to post.username, user_url(post.user_id), :class => "bigusername" %>
+      <div class="smallfont"><%= post.user_title %></div>
 
       <div class="smallfont">
         <div>&nbsp;</div>
-        <div>Join Date: <%= time_tag post.user.created_at, :format => "%b %Y" %></div>
-        <div>Posts: <%= number_with_delimiter(post.user.post_count) %></div>
+        <div>Join Date: <%= time_tag post.join_date, :format => "%b %Y" %></div>
+        <div>Posts: <%= number_with_delimiter(post.post_count) %></div>
       </div>
   </td>
 
   <td class="alt1" style="border-right: 1px solid #D1D1E1">
     <% if post.report_id? %>
       <div class="reported_post_alert">
-          <%= link_to "This post has been reported, click here to see why.", topic_url(post.report_topic) %>
+          <%= link_to "This post has been reported, click here to see why.", topic_url(post.report_id) %>
       </div>
     <% end %>
 
@@ -53,13 +55,13 @@
   </td>
   <td class="alt1" align="right" style="border: 1px solid #D1D1E1; border-left: 0px; border-top: 0px">
     <% if logged_in? %>
-      <% if post.topic.visible == 2 && post.post_count == 1 %>
+      <% if @topic.visible == 2 && post.post_count == 1 %>
         <%= image_tag "/assets/forum/icons/trashcan.gif", :title => "This topic was deleted" %>
       <% else %>
         <%= link_to image_tag("/assets/forum/buttons/edit.gif"), edit_post_path(post) %>
         <%= link_to image_tag("/assets/forum/buttons/quote.gif"), new_post_path(:topic_id => @topic.id, :quote => post.id) %>
         <%= image_tag "/assets/forum/icons/moderated.gif", :title => "Moderated Post" if post.visible == 0 %>
-        <%= image_tag "/assets/forum/icons/moderated.gif", :title => "Moderated Topic" if post.topic.visible == 0 && post.post_count == 1 %>
+        <%= image_tag "/assets/forum/icons/moderated.gif", :title => "Moderated Topic" if @topic.visible == 0 && post.post_count == 1 %>
       <% end %>
     <% end %>
   </td>

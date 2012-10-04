@@ -16,7 +16,7 @@
 <!-- / controls above postbits -->
 
 <%= form_for :posts, :url => manage_posts_path do |f| %>
-  <% for post in @postbits  %>
+  <% for post in @posts  %>
     <%= render :partial => 'postbit', :locals => {:post => post} %>
   <% end %>
 

@@ -1,7 +1,7 @@
 class ForumsController < ApplicationController
   # /forums
   def index
-    @forumbits  = build_forum_index
+    @forumbits  = build_forums_list
     @lightbulbs = fetch_unread_forums
     @lastposts  = fetch_lastposts @forumbits.map(&:last_post_id).flatten.delete_if {|x| x == 0 }
   end
@@ -14,17 +14,19 @@ class ForumsController < ApplicationController
     order   = params[:order]     || "desc" 
     sort    = params[:sort]      || "last_post_at"
 
-    # fetch the forum we're in
-    @forum  = Forum.find(params[:id])
+    # forum objects
+    @forum      = Forum.find(params[:id])
+    @children   = build_forums_list @forum.id
+    @lightbulbs = fetch_unread_forums
+    @lastposts  = fetch_lastposts @children.map(&:last_post_id).flatten.delete_if {|x| x == 0 }
 
-    # build the topic result objects
-    @topics = Topic
-    @topics = @topics.select("topics.*, users.username")
-    @topics = @topics.select("last_poster.id as last_post_user_id, last_poster.username as last_post_username, !isnull(user_posts.id) as posted")
+    # TODO: Check if there's a better way to build the topics object than this
+    @topics = Topic.select("topics.*, users.username")
+    @topics = @topics.select("last_poster.id as last_post_user_id, last_poster.username as last_post_username")
+    @topics = @topics.select("(select count(id) from posts where topic_id = topics.id and user_id = #{logged_in? ? current_user.id : 0} and visible = 1) as posted")
     @topics = @topics.select("(isnull(topic_reads.created_at < topics.last_post_at) || topic_reads.created_at < topics.last_post_at) && (topics.last_post_at > '#{Time.now - 3.days}') as unread_posts")
     @topics = @topics.joins(:user, :last_post)
     @topics = @topics.joins("INNER JOIN users as last_poster ON last_poster.id = posts.user_id")
-    @topics = @topics.joins("LEFT JOIN posts as user_posts ON user_posts.topic_id = topics.id and user_posts.user_id = #{logged_in? ? current_user.id : 0}")
     @topics = @topics.joins("LEFT JOIN topic_reads as topic_reads ON topic_reads.topic_id = topics.id and topic_reads.user_id = #{logged_in? ? current_user.id : 0}")
     @topics = @topics.where("topics.forum_id = ?", @forum.id)
     #@topics = @topics.where("topics.visible = ?", 1)
@@ -32,14 +34,14 @@ class ForumsController < ApplicationController
     @topics = @topics.per(perpage)
     @topics = @topics.order('topics.sticky desc')
     @topics = @topics.order("topics.#{sort} #{order}")
-    
+
     # announcements
     @announcements = @forum.announcements
-    @announcements = @announcements.where(['starts_at <= ?', Time.now])
+    @announcements = @announcements.where(['starts_at  <= ?', Time.now])
     @announcements = @announcements.where(['expires_at >= ?', Time.now])
     @announcements = @announcements.order('starts_at desc')
 
-    # start breadcrumbs
+    # breadcrumbs
     add_breadcrumb "Home", root_path
     unless @forum.ancestors.empty?
       for ancestor in @forum.ancestors
@@ -49,63 +51,91 @@ class ForumsController < ApplicationController
   end
 
 private
-  # Returns an array of forum ids that a user can see based on their forum & usergroup permissions.
+  # Returns an array of all active forums based on the user's permissions.
   #
-  # This method will fetch the forums data from memcache and update their stats and last post info on-the-fly. This 
-  # means we can fetch all the forums data (stats, last post info, and read status) using only 4 queries instead of the 
-  # 50+ it was generating before using the lazy loading technique. I'd like to find an even better way to do this if we
-  # can, this method is pretty ugly.
+  # This method will fetch the forums data from memcache (as opposed to MySQL) and update the stats, unread and last 
+  # post info on-the-fly, saving us on a number of database calls. The cached data is updated anytime a change is made 
+  # to the forums via the admin panel. For example, if you changed the forum's title, the cache data would get rebuilt. 
+  # The downside to this method is we still have to query the database to get the lastest stats, last post and unread
+  # info. Still better than the lazy loading technique where it was generating over 60 queries, more when more forums
+  # were present.
   #
-  # @return Array
-  def build_forum_index
-    stats  = {}
-    forums = []
-    
-    # build the forum stats and last post info
+  # I'd be interested in refactoring this technique if there's a more efficient way to do it. Due to time constrants I
+  # wasn't able to put more thought into this.
+  #
+  # @param  Integer   Build the tree starting at forum_id. Zero = build all forums.
+  # @return Array     An array of forum objects a user can see based on the user and forum permissions.
+  def build_forums_list parent_id = 0
+    stats = {} # A hash that holds the forums latest stats and last post ids
+    tree  = [] # The array used to build the forum's tree
+
+    # get the lastest forum stats and last post ids
     Forum.all().each do |forum|
       stats = stats.merge({
         forum.id => {'topics' => forum.topic_count, 'posts' => forum.post_count, 'last_post_id' => forum.last_post_id}
       })
     end
     
-    # see which forums the user can see and update it's stats and last post info
+    # build the forums tree
     Rails.cache.read('forums').each do |parent, children|
-      break unless parent.is_active?
-      forums << parent
+      if parent_id == 0 or parent.id == parent_id
+        break unless parent.is_active?
+        tree << parent 
+      end
 
-      # check for child forums
-      if children
-        children.each do |child, grand|
-          break unless child.is_active?
-
-          child.topic_count  = child.topic_count + stats[child.id]['topics']
-          child.post_count   = child.post_count  + stats[child.id]['posts']
-          child.last_post_id = stats[child.id]['last_post_id']
-
-          # if this forum has children, include their stats and last post info
-          if child.child_list
-            child.child_list.split(',').each do |child_id|
-              child.topic_count = child.topic_count + stats[child_id.to_i]['topics']
-              child.post_count  = child.post_count  + stats[child_id.to_i]['posts']
-
-              if stats[child_id.to_i]['last_post_id'] > child.last_post_id
-                child.last_post_id = stats[child_id.to_i]['last_post_id']
-              end
-            end
-          end
-
-          forums << child
-        end
+      # TODO: this needs to be moved in the above block in order for the forum perms to work. If the user doesn't have
+      # permissions to the parent forum, then it's child forums will inherit the same permissions.
+      if parent.is_active?
+        build_child_forums children, tree, stats, parent_id
       end
     end
+    
+    return tree
+  end
 
-    forums
+  # Recursive function that builds a forum (checking permissions, etc.) and adds it and it's children to an array of
+  # forums (tree) the the user can access.
+  #
+  # @param  Hash      A list of forums and their children to walk through and build
+  # @param  Array     The forum tree to add to if the user has permission to see the forum
+  # @param  Hash      A hash of all the forum stats and last post ids
+  # @param  Integer   Build the tree starting at forum_id. Zero = build all forums.
+  # @return Array     An array of forum objects a user can see based on the user and forum permissions.
+  def build_child_forums forums, tree, stats, parent_id
+    forums.each do |forum, children|
+      break unless forum.is_active?
+
+      if parent_id != 0
+        break unless forum.id == parent_id or forum.ancestry.split('/').map(&:to_i).include?(parent_id)
+      end
+      
+      # update forum stats
+      forum.topic_count  = forum.topic_count + stats[forum.id]['topics']
+      forum.post_count   = forum.post_count  + stats[forum.id]['posts']
+      forum.last_post_id = stats[forum.id]['last_post_id']
+
+      # include sub-forum stats too
+      if forum.child_list?
+        forum.child_list.split(',').each do |forum_id|
+          forum.topic_count = forum.topic_count + stats[forum_id.to_i]['topics']
+          forum.post_count  = forum.post_count + stats[forum_id.to_i]['posts']
+        end
+      end
+      
+      # add forum to tree
+      tree << forum
+      
+      # check for children
+      build_child_forums children, tree, stats, parent_id
+    end
+    
+    return tree
   end
 
   # Returns a key -> value hash of all the forums last post info.
   #
-  # @param  Array  An array of post_ids to look up I.e. [1224,1347,..]
-  # @return Hash   {x => <Post Object>, x => <Post Object>, ...}
+  # @param  Array     An array of post_ids to look up [1224,1347,..]
+  # @return Hash      {x => <Post Object>, x => <Post Object>, ...}
   def fetch_lastposts post_ids
     last_post_data = Post.all(
         :select     => "posts.*, topics.*, users.username",
@@ -118,12 +148,11 @@ private
     last_posts
   end
 
-  # Returns an array of forum ids that has unread post. This is used to change the forum's status icon and to bolded
-  # unread topics.
+  # Returns an array of forum ids that contain unread posts. Used to change the forum's status icons (aka: lightbulbs).
   #
-  # TODO: Use ActiveRecord to fetch the data instead of a raw sql query.
+  # TODO: Use ActiveRecord to fetch the data instead of a raw sql query if we can.
   #
-  # @return Array
+  # @return Array     Array of forum_ids that contain unread posts
   def fetch_unread_forums
     sql = "
       select topics.forum_id

@@ -23,13 +23,6 @@ class Forum < ActiveRecord::Base
     2 => :is_active, # hidden from forums view if false
     4 => :is_open    # forum can contain topics if true
 
-  # Returns an array of forums based on the ids passed to it. This method will be refactored soon.
-  #
-  # @parm String  A comma seperated list of forum ids to fetch from the database
-  def fetch_forums_by_ids(ids)
-    return Forum.all :conditions => ['id IN(?)', ids]
-  end
-
   # Returns the most recent 'post' that's visible to the public. This is only used when we need to 
   # update the forum's "last_post_id" field. E.g. when creating new topcis, posting, deleting, moving, 
   # merging, etc. This method is more efficient than running the query for every forum on the forum's 

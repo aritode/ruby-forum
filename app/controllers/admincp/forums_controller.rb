@@ -1,21 +1,22 @@
 class Admincp::ForumsController < Admincp::ApplicationController
 
+  # /admincp/forums
   def index
     @forums = Forum.all(:order => "ancestry ASC, display_order ASC")
   end
   
+  # /admincp/forums/new
   def new
     @forum  = Forum.new(:parent_id => params[:parent_id])
     @forums = Forum.all(:order => "ancestry ASC, display_order ASC")
   end
 
+  # /admincp/forums/create
   def create
     params[:forum][:parent_id] = params[:parent_id]
-    @forum = Forum.new(params[:forum])
-    @forums = Forum.all(:order => "ancestry ASC, display_order ASC")
+    @forum  = Forum.new(params[:forum])
     
     if @forum.save
-      #TODO: add child_list info to parent forums after creation
       build_forum_cache
       redirect_to admincp_forum_url, :notice => "Successfully created forum."
     else
@@ -23,7 +24,7 @@ class Admincp::ForumsController < Admincp::ApplicationController
     end
   end
 
-  # updates the display order for all the forums via the forums manager page
+  # /admincp/forums/order
   def order
     params[:order].each do | forum_id, display_order |
       Forum.update(forum_id, :display_order => display_order)
@@ -33,11 +34,13 @@ class Admincp::ForumsController < Admincp::ApplicationController
     redirect_to admincp_forum_url, :notice => "Display order updated successfully."
   end
 
+  # /admincp/forums/:id/edit
   def edit
     @forum  = Forum.find(params[:id])
     @forums = Forum.all(:order => "ancestry ASC, display_order ASC")
   end
 
+  # /admincp/forums/:id/edit
   def update
     @forum = Forum.find(params[:id])
     params[:forum][:parent_id]  = params[:parent_id]
@@ -51,10 +54,12 @@ class Admincp::ForumsController < Admincp::ApplicationController
     end
   end
 
+  # /admincp/forums/:id/remove
   def remove
     @forum = Forum.find(params[:id])
   end
   
+  # /admincp/forums/destroy
   def destroy
     @forum = Forum.find(params[:id])
     @forum.destroy
@@ -66,6 +71,13 @@ private
   #
   def build_forum_cache
     forums  = {}
+
+    # update child_list
+    Forum.all().each do |forum|
+      forum.child_list = forum.child_ids.join(',') 
+      forum.save
+    end
+
     parents = Forum.all(
       :conditions => "ancestry is null",
       :order      => "ancestry ASC, display_order ASC"
@@ -77,4 +89,5 @@ private
 
     Rails.cache.write 'forums', forums
   end
+
 end

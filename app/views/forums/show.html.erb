@@ -1,8 +1,8 @@
 <% title @forum.title  %>
 <br />
 
-<% if @forum.child_list %>
-  <%= render :partial => 'sub_forums', :locals => {:forum => @forum} %>
+<% if @forum.child_list? %>
+  <%= render :partial => 'sub_forums', :locals => {:forums => @children} %>
 <% end %>
 
 <% if @forum.is_forum? %>

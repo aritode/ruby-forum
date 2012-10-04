@@ -5,37 +5,30 @@ class TopicsController < ApplicationController
   # Show the topic and all post associated with it
   def show
     @topic = Topic.find(params[:id])
-    
+
     # check if we need to redirect the user
     if @topic.redirect?
       redirect_to topic_url(@topic.redirect)
     end
+
+    # build the post objects
+    @posts = Post.select("posts.*, users.username, users.created_at as join_date, users.post_count, users.title as user_title, topic_reads.created_at as last_read")
+    @posts = @posts.joins(:user)
+    @posts = @posts.joins("LEFT JOIN topic_reads as topic_reads ON topic_reads.topic_id = posts.topic_id and topic_reads.user_id = #{logged_in? ? current_user.id : 0}")
+    @posts = @posts.where("posts.topic_id = ?", @topic.id)
+    #@posts = @posts.where("posts.visible = ?", 1)
+    @posts = @posts.page(params[:page])
+    @posts = @posts.per(@@post_per_page)
     
-    # get all the post
-    @posts        = Post.where(:topic_id => @topic.id).page(params[:page]).per(@@post_per_page)
-    @postbits     = []
-    params[:page] = params[:page] ? params[:page] : 1
-    
-    # loop through the post and check permissions, visibility, etc.
-    @posts.each_with_index do |post, i|
-      # permissions code goes here
-      @postbits[i] = post
-      @postbits[i][:post_count] = @@post_per_page * params[:page].to_i + i - @@post_per_page + 1
-      
-    end
+    mark_topic_as_read
     
     # breadcrumbs
     add_breadcrumb "Forum", root_path
-    if !@topic.forum.ancestors.empty?
+    unless @topic.forum.ancestors.empty?
       for ancestor in @topic.forum.ancestors
         add_breadcrumb ancestor.title, forum_path(ancestor)
       end
       add_breadcrumb @topic.forum.title, forum_path(@topic.forum)
-    end
-    
-    if logged_in?
-      @last_read = @topic.topic_reads.by_user(current_user.id).first
-      mark_topic_as_read @topic, @posts.last.created_at
     end
 
     # update the views count
@@ -50,7 +43,7 @@ class TopicsController < ApplicationController
     
     # breadcrumbs
     add_breadcrumb "Home", root_path
-    if !@forum.ancestors.empty?
+    unless @forum.ancestors.empty?
       for ancestor in @forum.ancestors
         add_breadcrumb ancestor.title, forum_path(ancestor)
       end
@@ -324,22 +317,23 @@ private
   # current page in the "topic_reads" table to keep track of users who read said post. Every time the
   # user loads a page of post, the last post date will be saved and those post will be marked as 
   # "read" too. This will allow us to show users new post in topics that they haven't seen yet.
-  def mark_topic_as_read topic, datetime
-    last_post = topic.posts.last
-    last_read = topic.topic_reads.by_user(current_user.id)
+  def mark_topic_as_read
+    return unless logged_in?
+    last_post = @posts.last
+    last_read = @topic.topic_reads.by_user(current_user.id)
 
     # skip if last post is older than 3 days
-    if !((last_post.created_at + 3.days) < Time.now)
+    if ((last_post.created_at + 3.days) > Time.now)
       # check if the last post on the current page is older than 3 days
-      if !((datetime + 3.days) < Time.now)
+      if ((last_post.created_at + 3.days) > Time.now)
         # first time reading these post, create a new row marking them as read
         if last_read.empty?
-          TopicRead.new(:topic_id => topic.id, :user_id  => current_user.id).save
+          TopicRead.new(:topic_id => @topic.id, :user_id  => current_user.id).save
         else
           # check if the last post date is newer then what we have saved, if so, update the read date
-          if (datetime > last_read.first.created_at)
+          if (last_post.created_at > last_read.first.created_at)
             @topic_read = TopicRead.find_by_topic_id_and_user_id(@topic.id, current_user.id)
-            @topic_read.created_at = datetime
+            @topic_read.created_at = last_post.created_at
             @topic_read.save
           end
         end

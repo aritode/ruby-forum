@@ -9,10 +9,12 @@
   <td class="thead">Posts</td>
 </tr>
 <% for forum in @forumbits %>
-  <% unless forum.is_forum %>
-    <%= render :partial => 'level1_nopost', :locals => {:forum => forum} %>
-  <% else %>
-    <%= render :partial => 'level1_post', :locals => {:forum => forum} %>
+  <% if forum.depth < 2 %>
+    <% unless forum.is_forum %>
+      <%= render :partial => 'level1_nopost', :locals => {:forum => forum} %>
+    <% else %>
+      <%= render :partial => 'level1_post', :locals => {:forum => forum} %>
+    <% end %>
   <% end %>
 <% end %>
 </table>

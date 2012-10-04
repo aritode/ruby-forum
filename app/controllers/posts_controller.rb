@@ -5,12 +5,17 @@ class PostsController < ApplicationController
   
   # Shows the post content on it's own page
   def show
-    @post  = Post.find(params[:id])
-    @topic = @post.topic
+    @post = Post.select("posts.*, users.username, users.created_at as join_date, users.post_count, users.title as user_title, topic_reads.created_at as last_read")
+    @post = @post.joins(:user)
+    @post = @post.joins("LEFT JOIN topic_reads as topic_reads ON topic_reads.topic_id = posts.topic_id and topic_reads.user_id = #{logged_in? ? current_user.id : 0}")
+    @post = @post.find(params[:id])
+    #@posts = @posts.where("posts.visible = ?", 1)
+
+    @topic = Topic.find(@post.topic_id)
 
     # breadcrumbs
     add_breadcrumb "Forum", root_path
-    if !@topic.forum.ancestors.empty?
+    unless @topic.forum.ancestors.empty?
       for ancestor in @topic.forum.ancestors
         add_breadcrumb ancestor.title, forum_path(ancestor)
       end
