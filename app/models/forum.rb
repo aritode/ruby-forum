@@ -35,7 +35,7 @@ class Forum < ActiveRecord::Base
                  .order("last_post_at DESC")
                  .first
     # return the last post if we found a topic
-    if !topic.nil?
+    unless topic.nil?
       topic.posts.where(['visible <> ?', 2]).last
     end
   end

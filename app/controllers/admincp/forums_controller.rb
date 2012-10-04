@@ -44,7 +44,7 @@ class Admincp::ForumsController < Admincp::ApplicationController
   def update
     @forum = Forum.find(params[:id])
     params[:forum][:parent_id]  = params[:parent_id]
-    params[:forum][:child_list] = @forum.descendant_ids.join(',')
+    params[:forum][:child_list] = @forum.descendant_ids.join('/')
     
     if @forum.update_attributes(params[:forum])
       build_forum_cache
@@ -74,7 +74,7 @@ private
 
     # update child_list
     Forum.all().each do |forum|
-      forum.child_list = forum.child_ids.join(',') 
+      forum.child_list = forum.child_ids.join('/') 
       forum.save
     end
 

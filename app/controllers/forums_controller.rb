@@ -109,14 +109,14 @@ private
         break unless forum.id == parent_id or forum.ancestry.split('/').map(&:to_i).include?(parent_id)
       end
       
-      # update forum stats
-      forum.topic_count  = forum.topic_count + stats[forum.id]['topics']
-      forum.post_count   = forum.post_count  + stats[forum.id]['posts']
+      # update forum stats and last_post_id
+      forum.topic_count  = stats[forum.id]['topics']
+      forum.post_count   = stats[forum.id]['posts']
       forum.last_post_id = stats[forum.id]['last_post_id']
 
       # include sub-forum stats too
       if forum.child_list?
-        forum.child_list.split(',').each do |forum_id|
+        forum.child_list.split('/').each do |forum_id|
           forum.topic_count = forum.topic_count + stats[forum_id.to_i]['topics']
           forum.post_count  = forum.post_count + stats[forum_id.to_i]['posts']
         end

@@ -1,38 +1,28 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+# rebuild the forums cache
+def build_forum_cache
+  forums  = {}
+  parents = Forum.all(:conditions => "ancestry is null", :order => "ancestry ASC, display_order ASC")
+  parents.each do |parent|
+    forums = forums.merge({parent => parent.descendants.arrange(:order => :display_order)})
+  end
+  Rails.cache.write 'forums', forums
+end
 
-######################################################################################################
 # Forum
-######################################################################################################
 Forum.delete_all
 ActiveRecord::Base.connection.execute("ALTER TABLE forums AUTO_INCREMENT = 1")
-Forum.create(:title => "Contractors Talk Forums",                                    :options => 2, :display_order => 1, :child_list => "2,3,4")
+Forum.create(:title => "Contractors Talk Forums",                                    :options => 2, :display_order => 1, :child_list => "2/3/4")
 Forum.create(:title => "General Discussion",                     :ancestry => "1",   :options => 7, :display_order => 1)
 Forum.create(:title => "Introductions",                          :ancestry => "1",   :options => 7, :display_order => 2)
 Forum.create(:title => "New Site Feedback & Technical Support",  :ancestry => "1",   :options => 7, :display_order => 3)
-Forum.create(:title => "Business Discussion",                                        :options => 6, :display_order => 2, :child_list => "6,9,10,7,8")
-Forum.create(:title => "Business",                               :ancestry => "5",   :options => 3, :display_order => 1, :child_list => "7,8")
+Forum.create(:title => "Business Discussion",                                        :options => 6, :display_order => 2, :child_list => "6/9/10/7/8")
+Forum.create(:title => "Business",                               :ancestry => "5",   :options => 3, :display_order => 1, :child_list => "7/8")
 Forum.create(:title => "Contractor Licensing",                   :ancestry => "5/6", :options => 7, :display_order => 1)
 Forum.create(:title => "File Swap",                              :ancestry => "5/6", :options => 7, :display_order => 2)
 Forum.create(:title => "Marketing & Sales",                      :ancestry => "5",   :options => 7, :display_order => 2)
 Forum.create(:title => "Technology",                             :ancestry => "5",   :options => 7, :display_order => 3)
+build_forum_cache
 puts "Forum data loaded"
-
-# Topic.delete_all
-# ActiveRecord::Base.connection.execute("ALTER TABLE topics AUTO_INCREMENT = 1")
-# Topic.create(:title => "Test Topic 1", :user_id => 1, :forum_id => 2, :replies => 1, :last_poster_id => 2, :last_post_at => "2012-08-30 07:18:46")
-# puts "Topic data loaded"
-
-# Post.delete_all
-# ActiveRecord::Base.connection.execute("ALTER TABLE posts AUTO_INCREMENT = 1")
-# Post.create(:topic_id => 1, :content => "This is a topic 1!", :user_id => 1, :date => "2012-08-30 07:18:23")
-# Post.create(:topic_id => 1, :content => "This is a reply 1!", :user_id => 2, :date => "2012-08-30 07:25:46")
-# puts "Post data loaded"
 
 ######################################################################################################
 # Usergroup
@@ -57,3 +47,5 @@ User.delete_all
 User.create(:username => "Admin", :email => "admin@escalatemedia.com", :password => "admin", :password_confirmation => "admin", :usergroup_id => "6", :last_visit_at => Time.now)
 User.create(:username => "Kenny", :email => "ken@escalatemedia.com", :password => "kenny", :password_confirmation => "kenny", :usergroup_id => "6", :last_visit_at => Time.now)
 puts "User data loaded"
+
+
