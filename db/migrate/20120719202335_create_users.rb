@@ -7,7 +7,7 @@ class CreateUsers < ActiveRecord::Migration
       # The account's email address
       t.string    :email
 
-      # Basic user authentication (will switch to the devise gem soon)
+      # Basic user authentication (TODO: will switch to the devise gem soon)
       t.string    :password_hash
       t.string    :password_salt
       
