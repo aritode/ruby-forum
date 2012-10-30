@@ -1,10 +1,17 @@
+## Requirements
+  - Ruby 1.9.3+
+  - Rails 3.2.6+
+  - RVM
+  - Memcache
+  
 ## Install Instructions
+*Make sure all the required libraries (memcache in particular) are installed before proceeding.*
 
 The first thing you'll want to do is clone the application to your computer. 
 
     git clone https://github.com/iovino/emp-forum.git /path/to/install
 
-Next, you need to create a RVM gemset for this app
+Next, you need to create an RVM gemset for this app
 
     rvm gemset create emp-forums
 
@@ -19,10 +26,10 @@ The contents of your .rvmrc file should look like this
 Install all the gems
 
     bundle install
+
+Edit the apps database.yml file accordingly and create the databases
     
-Create the databases
-    
-    rake create:db:all
+    rake db:create
 
 Migrate the database
 
@@ -33,7 +40,5 @@ Seed the database
     rake db:seed
 
 Start the server and log into the forums using the following credentials:
-
-Mail: admin@escalatemedia.com 
-
-Pass: admin 
+  
+  admin@escalatemedia.com  / admin 
