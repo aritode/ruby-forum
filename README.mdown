@@ -41,4 +41,4 @@ Seed the database
 
 Start the server and log into the forums using the following credentials:
   
-  admin@escalatemedia.com  / admin 
+    admin@escalatemedia.com  / admin 
