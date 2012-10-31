@@ -5,7 +5,7 @@
   - Memcache
   
 ## Install Instructions
-*Make sure all the required libraries (memcache in particular) are installed before proceeding.*
+**Make sure all the required libraries (memcache in particular) are installed before proceeding.**
 
 The first thing you'll want to do is clone the application to your computer. 
 
@@ -27,7 +27,7 @@ Install all the gems
 
     bundle install
 
-Edit the apps database.yml file accordingly and create the databases
+Edit ```config/database.yml``` accordingly and create the databases
     
     rake db:create
 
@@ -41,4 +41,4 @@ Seed the database
 
 Start the server and log into the forums using the following credentials:
   
-    admin@escalatemedia.com  / admin 
+    admin@escalatemedia.com  / admin
