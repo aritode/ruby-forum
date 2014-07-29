@@ -53,7 +53,7 @@ Start the server and log into the forums using the following credentials:
 ![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/posts-edit.png "Posts Edit")
 ![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/posts-edit.png "Posts Delete")
 ![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/posts-edit.png "Posts Merge")
-![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/announcement.png.png "New Announcement")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/announcement.png "New Announcement")
 ![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/admin-home.png "Admin Home")
 ![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/admin-forum-manager.png "Admin Forum Manager")
 ![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/admin-forum-manager-add.png "Admin Add Forum")
