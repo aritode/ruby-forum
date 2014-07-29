@@ -45,4 +45,30 @@ Start the server and log into the forums using the following credentials:
     
 ## Screenshots
 
-![homepage](https://github.com/iovino/ruby-forum/tree/master/app/assets/images/screenshots/homepage.png "Homepage")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/homepage.png "Homepage")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/thread-listing.png "Thread Listing")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/thread-view.png "Thread View")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/thread-new.png "Thread New")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/thread-move.png "Thread Move")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/posts-edit.png "Posts Edit")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/posts-edit.png "Posts Delete")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/posts-edit.png "Posts Merge")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/announcement.png.png "New Announcement")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/admin-home.png "Admin Home")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/admin-forum-manager.png "Admin Forum Manager")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/admin-forum-manager-add.png "Admin Add Forum")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/admin-usergroup-manager.png "Admin Usergroup Manager")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/admin-usergroup-manager-add.png "Admin Add usergroup")
+![](https://raw.githubusercontent.com/iovino/ruby-forum/master/app/assets/images/screenshots/admin-usergroup-manager-add-bottom.png "Admin Add usergroup options")
+
+
+
+
+
+
+
+
+
+
+
+
