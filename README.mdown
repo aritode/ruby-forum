@@ -9,11 +9,11 @@
 
 The first thing you'll want to do is clone the application to your computer. 
 
-    git clone https://github.com/iovino/emp-forum.git /path/to/install
+    git clone https://github.com/iovino/ruby-forum.git /path/to/install
 
 Next, you need to create an RVM gemset for this app
 
-    rvm gemset create emp-forums
+    rvm gemset create ruby-forums
 
 Then create a .rvmrc file in the application's root folder
 
@@ -21,7 +21,7 @@ Then create a .rvmrc file in the application's root folder
 
 The contents of your .rvmrc file should look like this
 
-    rvm use ruby-1.9.3-p194@emp-forums
+    rvm use ruby-1.9.3-p194@ruby-forums --create
 
 Install all the gems
 
@@ -42,3 +42,7 @@ Seed the database
 Start the server and log into the forums using the following credentials:
   
     admin@escalatemedia.com  / admin
+    
+## Screenshots
+
+![homepage](https://github.com/iovino/ruby-forum/tree/master/app/assets/images/screenshots/homepage.png "Homepage")
